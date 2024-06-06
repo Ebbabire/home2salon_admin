@@ -1,2 +1,2 @@
 export { LoginForm } from "@/pages/login/Login";
-export { Orders } from "@/pages/orders/Orders";
+export { Admins } from "@/pages/admins/Admins";

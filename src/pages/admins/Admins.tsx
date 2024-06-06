@@ -1,0 +1,70 @@
+import { useContext } from "react";
+import useQuery from "@/hooks/useQuery";
+import ListDataContext, { type Payload } from "@/context/ListDataStore";
+
+import Admin from "./component/detaile-page";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "./data-table";
+import useColumns from "./Column";
+import { getAdmins } from "@/services/adminServices";
+import Loading from "@/components/loader";
+import Error from "@/components/error-display";
+
+export type Admin = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  role: string;
+  status: string;
+  createdAt?: string;
+};
+
+export const Admins = () => {
+  const columns = useColumns();
+  const {
+    admins,
+    setAdmins,
+  }: { admins: Admin[]; setAdmins: (payload: Payload) => void } =
+    useContext(ListDataContext);
+
+  const { data, isLoading, isError, error } = useQuery(getAdmins, {
+    onSuccess: (data) => setAdmins(data),
+  });
+
+  return (
+    <>
+      <div className="flex items-center">
+        <h1 className="text-lg font-semibold md:text-2xl">Admins</h1>
+        <Button className="mt-4 ml-auto">Add Admin</Button>
+      </div>
+      <div className="flex-1 rounded-lg border border-dashed dark:border-muted-foreground/70 shadow-sm px-4 py-4">
+        {!isLoading && !isError ? (
+          <>
+            {data ? (
+              <DataTable columns={columns} data={admins} />
+            ) : (
+              <div className="flex flex-1 items-center justify-center h-full">
+                <div className="flex flex-col items-center gap-1 text-center">
+                  <h3 className="text-2xl font-bold tracking-tight">
+                    There are no admins
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    You can add an <span className="font-semibold">admin</span>.
+                  </p>
+                  <Button className="mt-4">Add Admin</Button>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <Loading isLoading={isLoading} />
+            <Error error={error} />
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
