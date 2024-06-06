@@ -67,15 +67,15 @@ export default function AdminDetail({
           </DropdownMenu>
         </div>
       </CardHeader>
-      <CardContent className="p-6 text-sm">
+      <CardContent className="p-3 text-sm overflow-auto scrollbar-none">
         <div className="grid gap-3">
           <div className="font-semibold">User Address</div>
           <ul className="grid gap-3">
-            <li className="flex items-center justify-between">
+            <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Phone Number</span>
-              <span className="font-medium">{user?.phoneNumber}</span>
+              <span className="font-medium">0{user?.phoneNumber}</span>
             </li>
-            <li className="flex items-center justify-between">
+            <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Email</span>
               <span className="font-medium">{user?.email}</span>
             </li>
@@ -83,11 +83,11 @@ export default function AdminDetail({
           <Separator className="my-2" />
           <div className="font-semibold">User Details</div>
           <ul className="grid gap-3">
-            <li className="flex items-center justify-between">
+            <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Registed At</span>
               <span className="font-medium">{user?.createdAt}</span>
             </li>
-            <li className="flex items-center justify-between">
+            <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Status</span>
               <span className="capitalize font-medium">{user?.status}</span>
             </li>

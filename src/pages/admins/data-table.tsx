@@ -72,7 +72,7 @@ export function DataTable<TData, TValue>({
     <div className="flex flex-col lg:flex-row gap-4 justify-between overflow-hidden">
       <div
         className={` ${
-          isOpen ? "lg:w-[80%] xl:w-[65%]" : "w-[90%] mx-auto"
+          isOpen ? "lg:w-[70%] xl:w-[70%]" : "w-[90%] mx-auto"
         } transition-all duration-150`}
       >
         <Filter table={table} />
