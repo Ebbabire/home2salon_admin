@@ -7,8 +7,8 @@ import CollapsedNavLinkItem from "./components/CollapsedNavLinkItem";
 
 function Sidebar({ screenSize }: { screenSize: number }) {
   return (
-    <aside className="hidden border-r dark:border-muted-foreground/30 bg-muted/40 md:block">
-      {screenSize > 1024 ? (
+    <aside className="min-h-screen hidden border-r dark:border-muted-foreground/30 bg-muted/40 md:block">
+      {screenSize > 1280 ? (
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b dark:border-muted-foreground/30 px-4 lg:h-[60px] lg:px-6">
             <Link to="/" className="flex items-center gap-2 font-semibold">

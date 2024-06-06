@@ -10,10 +10,10 @@ function Layout() {
 
   return (
     <div
-      className={`grid min-h-screen w-full md:grid-cols-[80px_1fr] lg:grid-cols-[220px_1fr] transition-all duration-150`}
+      className={`grid w-full md:grid-cols-[80px_1fr] xl:grid-cols-[220px_1fr] transition-all duration-150`}
     >
       <Sidebar screenSize={screenSize} />
-      <div className="flex flex-col">
+      <div className="flex flex-col h-screen max-h-screen overflow-y-scroll">
         <Navbar />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <Outlet />
