@@ -15,5 +15,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </BrowserRouter>
       </ThemeProvider>
     </ListDataContextProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

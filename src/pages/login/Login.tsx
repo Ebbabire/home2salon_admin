@@ -82,7 +82,7 @@ export function LoginForm() {
 
   return (
     <>
-      <div className="flex justify-end mx-12 my-2">
+      <div className="mx-12 my-2 flex justify-end">
         <ModeToggle />
       </div>
       <div className="flex h-screen items-center justify-center">
@@ -109,7 +109,7 @@ export function LoginForm() {
                   required
                 />
                 {!isPhoneNumValid && (
-                  <span className="text-red-500 text-xs">
+                  <span className="text-xs text-red-500">
                     Please enter a valid phone number!
                   </span>
                 )}
@@ -127,7 +127,7 @@ export function LoginForm() {
                   required
                 />
                 {!isPassValid && (
-                  <span className="text-red-500 text-xs">
+                  <span className="text-xs text-red-500">
                     Please enter a valid password, should be between 6 and 14
                     character!
                   </span>

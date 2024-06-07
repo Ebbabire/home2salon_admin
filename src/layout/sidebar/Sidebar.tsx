@@ -7,10 +7,10 @@ import CollapsedNavLinkItem from "./components/CollapsedNavLinkItem";
 
 function Sidebar({ screenSize }: { screenSize: number }) {
   return (
-    <aside className="min-h-screen hidden border-r dark:border-muted-foreground/30 bg-muted/40 md:block">
+    <aside className="hidden min-h-screen border-r bg-muted/40 dark:border-muted-foreground/30 md:block">
       {screenSize >= 1280 ? (
         <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b dark:border-muted-foreground/30 px-4 lg:h-[60px] lg:px-6">
+          <div className="flex h-14 items-center border-b px-4 dark:border-muted-foreground/30 lg:h-[60px] lg:px-6">
             <Link to="/" className="flex items-center gap-2 font-semibold">
               <Package2 className="h-6 w-6" />
               <span>Company Name</span>
@@ -40,7 +40,7 @@ function Sidebar({ screenSize }: { screenSize: number }) {
           </Button> */}
           </div>
           <div className="flex-1">
-            <nav className="grid items-center place-items-center px-2 text-sm font-medium lg:px-4">
+            <nav className="grid place-items-center items-center px-2 text-sm font-medium lg:px-4">
               {navLinks.map(({ to, Icon, title }) => (
                 <CollapsedNavLinkItem
                   key={title}

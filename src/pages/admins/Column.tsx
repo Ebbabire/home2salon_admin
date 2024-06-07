@@ -59,7 +59,7 @@ const useColumns = () => {
           );
         },
         cell: ({ row }) => (
-          <div className="capitalize px-4">{row.getValue("firstName")}</div>
+          <div className="px-4 capitalize">{row.getValue("firstName")}</div>
         ),
       },
       {
@@ -78,7 +78,7 @@ const useColumns = () => {
           );
         },
         cell: ({ row }) => (
-          <div className="capitalize px-4">{row.getValue("lastName")}</div>
+          <div className="px-4 capitalize">{row.getValue("lastName")}</div>
         ),
       },
       {
@@ -102,7 +102,7 @@ const useColumns = () => {
       },
       {
         accessorKey: "phoneNumber",
-        header: () => <div>Phone Number</div>,
+        header: () => <div className="w-32">Phone Number</div>,
         cell: ({ row }) => {
           return <div>{row.getValue("phoneNumber")}</div>;
         },
@@ -151,7 +151,7 @@ const useColumns = () => {
       //   },
       // },
     ],
-    []
+    [],
   );
   return columns;
 };

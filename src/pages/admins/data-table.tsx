@@ -69,10 +69,10 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4 justify-between overflow-hidden">
+    <div className="flex flex-col justify-between gap-4 overflow-hidden lg:flex-row">
       <div
         className={` ${
-          isOpen ? "lg:w-[70%] xl:w-[70%]" : "w-[90%] mx-auto"
+          isOpen ? "lg:w-[70%] xl:w-[72%]" : "mx-auto w-[90%]"
         } transition-all duration-150`}
       >
         <Filter table={table} />
@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     );
@@ -108,7 +108,7 @@ export function DataTable<TData, TValue>({
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -129,7 +129,7 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
       {isOpen && (
-        <div className="w-[85%] sm:w-[55%] lg:w-[25%] mx-auto transition-all duration-150">
+        <div className="mx-auto w-[85%] transition-all duration-150 sm:w-[55%] lg:w-[25%]">
           <AdminDetail user={user} close={handleClose} />
         </div>
       )}

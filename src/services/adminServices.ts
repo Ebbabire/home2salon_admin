@@ -12,7 +12,7 @@ export const login = async (authDetail: Login) => {
   };
   const response = await fetch(
     `${import.meta.env.VITE_API_URL}/api/v1/admin/login`,
-    requestOptions
+    requestOptions,
   );
   if (!response.ok) {
     const error = await response.json(); // Access the error message from the response body
@@ -25,7 +25,7 @@ export const login = async (authDetail: Login) => {
     sessionStorage.setItem("id", JSON.stringify(data.admin._id));
     sessionStorage.setItem(
       "userName",
-      JSON.stringify(`${data.admin.firstName} ${data.admin.lastName}`)
+      JSON.stringify(`${data.admin.firstName} ${data.admin.lastName}`),
     );
     sessionStorage.setItem("userRole", JSON.stringify(data.admin.role));
   }
@@ -47,7 +47,7 @@ export async function getAdmins() {
   };
   const response = await fetch(
     `https://iconscholar.com/backend/api/v1/admin`,
-    requestOptions
+    requestOptions,
   );
   if (!response.ok) {
     const error = await response.json(); // Access the error message from the response body

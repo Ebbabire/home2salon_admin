@@ -22,7 +22,7 @@ function MobileSidbar() {
           <nav className="grid gap-2 text-sm font-medium">
             <Link
               to="#"
-              className="flex items-center gap-2 text-lg font-semibold border-b pb-4"
+              className="flex items-center gap-2 border-b pb-4 text-lg font-semibold"
             >
               <Package2 className="h-6 w-6" />
               <span>Company Name</span>

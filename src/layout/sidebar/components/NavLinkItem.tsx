@@ -23,7 +23,7 @@ function NavLinkItem({
       className={({ isActive }) =>
         `flex items-center gap-3 ${
           isActive ? "bg-muted text-primary" : null
-        } rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-sm ${className}`
+        } rounded-lg px-3 py-2 text-sm text-muted-foreground transition-all hover:text-primary ${className}`
       }
     >
       <Icon className="h-4 w-4" />

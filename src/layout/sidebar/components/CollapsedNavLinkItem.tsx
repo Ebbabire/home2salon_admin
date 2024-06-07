@@ -27,7 +27,7 @@ function CollapsedNavLinkItem({ to, Icon, title }: NavLinkItemProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`rounded-lg my-1 ${
+                className={`my-1 rounded-lg ${
                   isActive
                     ? "bg-muted-foreground/40 hover:bg-muted-foreground"
                     : "bg-muted hover:bg-muted-foreground/30"
