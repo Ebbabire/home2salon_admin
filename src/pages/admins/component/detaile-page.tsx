@@ -26,6 +26,7 @@ import {
 
 import { Separator } from "@/components/ui/separator";
 import { Admin } from "../Admins";
+import EditAdmin from "./edit-admin";
 
 export default function AdminDetail({
   user,
@@ -34,6 +35,7 @@ export default function AdminDetail({
   user: object | Admin;
   close: () => void;
 }) {
+  console.log(user);
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-start bg-muted/50">
@@ -52,13 +54,15 @@ export default function AdminDetail({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem onClick={(e) => e.preventDefault()}>
+                <EditAdmin user={user} />
+              </DropdownMenuItem>
               <DropdownMenuItem>Deactivate</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <Button
                   variant="ghost"
-                  className="hover:bg-red-500 px-8 border-red-500 border hover:text-white transition-all duration-150"
+                  className="border border-red-500 px-8 transition-all duration-150 hover:bg-red-500 hover:text-white"
                 >
                   Delete Admin
                 </Button>
@@ -67,10 +71,10 @@ export default function AdminDetail({
           </DropdownMenu>
         </div>
       </CardHeader>
-      <CardContent className="p-3 text-sm overflow-auto scrollbar-none">
-        <div className="grid gap-3">
+      <CardContent className="overflow-auto p-3 text-sm scrollbar-none">
+        <div className="flex flex-col gap-3">
           <div className="font-semibold">User Address</div>
-          <ul className="grid gap-3">
+          <ul className="flex flex-col gap-3">
             <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Phone Number</span>
               <span className="font-medium">0{user?.phoneNumber}</span>
@@ -82,14 +86,14 @@ export default function AdminDetail({
           </ul>
           <Separator className="my-2" />
           <div className="font-semibold">User Details</div>
-          <ul className="grid gap-3">
+          <ul className="flex flex-col gap-3">
             <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Registed At</span>
               <span className="font-medium">{user?.createdAt}</span>
             </li>
             <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Status</span>
-              <span className="capitalize font-medium">{user?.status}</span>
+              <span className="font-medium capitalize">{user?.status}</span>
             </li>
           </ul>
         </div>
@@ -97,7 +101,7 @@ export default function AdminDetail({
       <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
         <Button
           variant="ghost"
-          className="hover:bg-red-500 px-12 border-red-500 border hover:text-white transition-all duration-150"
+          className="border border-red-500 px-12 transition-all duration-150 hover:bg-red-500 hover:text-white"
           onClick={close}
         >
           Close
