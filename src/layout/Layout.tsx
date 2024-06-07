@@ -13,7 +13,7 @@ function Layout() {
       className={`grid w-full transition-all duration-150 md:grid-cols-[80px_1fr] xl:grid-cols-[220px_1fr]`}
     >
       <Sidebar screenSize={screenSize} />
-      <div className="flex flex-col">
+      <div className="flex h-screen max-h-screen flex-col overflow-y-auto">
         <Navbar />
         <main className="flex flex-1 flex-col gap-4 overflow-y-scroll p-4 lg:gap-6 lg:p-6">
           <Outlet />
