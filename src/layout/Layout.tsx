@@ -1,11 +1,11 @@
-import { Outlet } from "react-router-dom";
-import useScreenSize from "@/hooks/useScreenSize";
+import { Outlet } from "react-router-dom"
+import useScreenSize from "@/hooks/useScreenSize"
 
-import Navbar from "./navbar/Navbar";
-import Sidebar from "./sidebar/Sidebar";
+import Navbar from "./navbar/Navbar"
+import Sidebar from "./sidebar/Sidebar"
 
 function Layout() {
-  const screenSize = useScreenSize();
+  const screenSize = useScreenSize()
   // const LG = 1024;
 
   return (
@@ -20,7 +20,7 @@ function Layout() {
         </main>
       </div>
     </div>
-  );
+  )
 }
 
-export default Layout;
+export default Layout
