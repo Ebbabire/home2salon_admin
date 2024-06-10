@@ -38,12 +38,12 @@ export const Admins = () => {
     <>
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold md:text-2xl">Admins</h1>
-        <AddAdmin />
+        {!isLoading && !isError && admins.length ? <AddAdmin /> : null}
       </div>
       <div className="flex-1 rounded-lg border border-dashed px-4 py-4 shadow-sm dark:border-muted-foreground/70">
-        {!isLoading && !isError ? (
+        {!isLoading && !isError && data ? (
           <>
-            {data ? (
+            {admins.length ? (
               <DataTable columns={columns} data={admins} />
             ) : (
               <div className="flex h-full flex-1 items-center justify-center">

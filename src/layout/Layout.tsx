@@ -15,7 +15,7 @@ function Layout() {
       <Sidebar screenSize={screenSize} />
       <div className="flex h-screen max-h-screen flex-col overflow-y-auto">
         <Navbar />
-        <main className="flex flex-1 flex-col gap-4 overflow-y-scroll p-4 lg:gap-6 lg:p-6">
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <Outlet />
         </main>
       </div>

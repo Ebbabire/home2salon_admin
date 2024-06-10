@@ -20,7 +20,7 @@ function Filter<TData>({ table }: FilterProps<TData>) {
   const [filterType, setFilterType] = useState<string>("email");
 
   return (
-    <div className="flex items-center py-4">
+    <div className="flex flex-col items-start gap-2 py-4 md:flex-row md:items-center">
       <Input
         placeholder={`Filter by ${filterType}...`}
         value={(table.getColumn(filterType)?.getFilterValue() as string) ?? ""}
@@ -31,7 +31,7 @@ function Filter<TData>({ table }: FilterProps<TData>) {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="ml-4">
+          <Button variant="outline">
             Filter by <ChevronDown className="ml-2 h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
