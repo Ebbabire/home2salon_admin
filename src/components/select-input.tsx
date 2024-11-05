@@ -16,6 +16,8 @@ export type SelectInpuPorp = {
   value: string;
   setValue: UseFormSetValue<any>;
   placeholder: string;
+  name: string;
+  className: string;
 };
 
 const SelectInput = ({
@@ -24,13 +26,15 @@ const SelectInput = ({
   label,
   value,
   placeholder,
+  name,
+  className,
 }: SelectInpuPorp) => {
   return (
-    <Select onValueChange={(value) => setValue("role", value)} value={value}>
-      <SelectTrigger className="w-[180px]">
+    <Select onValueChange={(value) => setValue(name, value)} value={value}>
+      <SelectTrigger>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className={`${className}`}>
         <SelectGroup>
           <SelectLabel>{label}</SelectLabel>
           {options.map(({ value, name }: { value: string; name: string }) => (

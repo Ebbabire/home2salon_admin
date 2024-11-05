@@ -1,16 +1,9 @@
 export const newAdminFormFields = [
   {
     type: "text",
-    label: "First Name",
-    name: "firstName",
+    label: "Full Name",
+    name: "fullName",
     placeholder: "Enter First Name",
-    className: "col-span-2",
-  },
-  {
-    type: "text",
-    label: "Last Name",
-    name: "lastName",
-    placeholder: "Enter Last Name",
     className: "col-span-2",
   },
 

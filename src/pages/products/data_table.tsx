@@ -13,6 +13,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import Filter from "@/components/filter/Filter";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -21,10 +23,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Filter from "@/components/filter/Filter";
-import { type Admin } from "./Admins";
-import AdminDetail from "./component/detaile-page";
-import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,12 +39,8 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
-    pageSize: 6, //default page size
+    pageSize: 9, //default page size
   });
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [userId, setUserId] = useState("");
-
   const table = useReactTable({
     data,
     columns,
@@ -68,27 +62,9 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const handleClick = (user: Admin) => {
-    console.log(user);
-    if (isOpen) {
-      setIsOpen(false);
-    } else {
-      setIsOpen(true);
-      if (user._id) setUserId(user._id);
-    }
-  };
-  const handleClose = () => {
-    setIsOpen(false);
-    setUserId("");
-  };
-
   return (
     <div className="flex flex-col justify-between gap-4 overflow-hidden lg:flex-row">
-      <div
-        className={` ${
-          isOpen ? "lg:w-[70%] xl:w-[72%]" : "mx-auto w-[90%]"
-        } transition-all duration-150`}
-      >
+      <div className={`mx-auto w-[90%] transition-all duration-150`}>
         <Filter table={table} />
         <div className="rounded-md border">
           <Table>
@@ -116,7 +92,6 @@ export function DataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => handleClick(row.original as Admin)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
@@ -171,11 +146,6 @@ export function DataTable<TData, TValue>({
           </div>
         </div>
       </div>
-      {isOpen && (
-        <div className="mx-auto w-[85%] transition-all duration-150 sm:w-[55%] lg:w-[25%]">
-          <AdminDetail id={userId} close={handleClose} />
-        </div>
-      )}
     </div>
   );
 }

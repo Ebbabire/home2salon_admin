@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,8 +11,9 @@ import {
 import AdminForm from "./admin-form";
 
 const AddAdmin = () => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>
         <Button>Add Admin</Button>
       </DialogTrigger>
@@ -20,7 +23,7 @@ const AddAdmin = () => {
             Add New Admin
           </DialogTitle>
         </DialogHeader>
-        <AdminForm />
+        <AdminForm setIsOpen={setIsOpen} />
       </DialogContent>
     </Dialog>
   );

@@ -1,61 +1,38 @@
 import { useQuery } from "@tanstack/react-query";
-
-import { getAdmins } from "@/services/adminServices";
-import { DataTable } from "./data-table";
-
-import Admin from "./component/detaile-page";
-import useColumns from "./Column";
-
+import { DataTable } from "../admins/data-table";
 import Loading from "@/components/loader";
 import Error from "@/components/error-display";
-import AddAdmin from "./component/add-admin";
 
-export type Admin = {
-  _id?: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  role: string;
-  status?: string;
-  createdAt?: string;
-};
-
-export const Admins = () => {
+const Influencers = () => {
   // table column config
   const columns = useColumns();
 
   // fetch products
   const {
-    data: admins,
+    data: influencers,
     isLoading,
     isError,
     error,
   } = useQuery({
     queryKey: ["admins"],
-    queryFn: getAdmins,
+    queryFn: getInfluencers,
   });
-
   return (
     <>
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold md:text-2xl">Admins</h1>
-        {!isLoading && !isError && admins ? <AddAdmin /> : null}
+        <h1 className="text-lg font-semibold md:text-2xl">Influencers</h1>
       </div>
       <div className="flex-1 rounded-lg border border-dashed px-4 py-4 shadow-sm dark:border-muted-foreground/70">
-        {!isLoading && !isError && admins ? (
+        {!isLoading && !isError && influencers ? (
           <>
-            {admins.length ? (
-              <DataTable columns={columns} data={admins} />
+            {Influencers.length ? (
+              <DataTable columns={columns} data={influencers} />
             ) : (
               <div className="flex h-full flex-1 items-center justify-center">
                 <div className="flex flex-col items-center gap-1 text-center">
                   <h3 className="text-2xl font-bold tracking-tight">
-                    There are no admins
+                    There are no products
                   </h3>
-                  <p className="text-sm text-muted-foreground">
-                    You can add an <span className="font-semibold">admin</span>.
-                  </p>
-                  <AddAdmin />
                 </div>
               </div>
             )}
@@ -70,3 +47,5 @@ export const Admins = () => {
     </>
   );
 };
+
+export default Influencers;
