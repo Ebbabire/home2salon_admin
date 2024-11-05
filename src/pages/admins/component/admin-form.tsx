@@ -1,26 +1,15 @@
 import { z } from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addAdmin, updateAdmin } from "@/services/adminServices";
 
 import FormComp from "@/components/form/form-comp";
 import { newAdminFormFields } from "./form-data";
-import { type Admin } from "../Admins";
-import { slicePhoneNumber } from "@/pages/login/utils/validator";
+import { type AdminFormProps } from "./edit-admin";
 
 type FormValues = z.infer<typeof formSchema>;
-type AdminFormProps = {
-  admin?: Admin;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
 const formSchema = z.object({
-  fullName: z.string().min(1),
-  phoneNumber: z
-    .string()
-    .refine(
-      (value) => /^(\+251|0)\d{9}$/.test(value),
-      "Please enter a valid phone number",
-    ),
+  firstName: z.string(),
+  lastName: z.string(),
+  phoneNumber: z.string(),
   email: z.string().email(),
   password: z.string().min(6, {
     message: "password must be at least 6 characters.",
@@ -28,62 +17,30 @@ const formSchema = z.object({
   role: z.union([z.literal("Admin"), z.literal("Super Admin")]),
 });
 
-const editFormSchema = z.object({
-  fullName: z.string(),
-  phoneNumber: z
-    .string()
-    .refine(
-      (value) => /^(\+251|0)\d{9}$/.test(value),
-      "Please enter a valid phone number",
-    ),
-  email: z.string().email(),
-  role: z.union([z.literal("Admin"), z.literal("Super Admin")]),
-});
-
-const AdminForm = ({ admin, setIsOpen }: AdminFormProps) => {
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending, error } = useMutation({
-    mutationFn: admin ? updateAdmin : addAdmin,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: admin ? ["admin"] : ["admins"],
-      });
-      setIsOpen(false);
-    },
-  });
-  // const { toast } = useToast();
+const AdminForm = ({ user }: AdminFormProps) => {
   const defaultValues = {
-    fullName: admin ? admin.fullName : "",
-    phoneNumber: admin ? admin.phoneNumber : "",
-    email: admin ? admin.email : "",
+    firstName: user ? user.firstName : "",
+    lastName: user ? user.lastName : "",
+    phoneNumber: user ? user.phoneNumber : "",
+    email: user ? user.email : "",
     password: "",
-    role: admin ? admin.role : "Admin",
+    role: user ? user.role : "Admin",
   };
 
-  const formFields = admin
+  const formFields = user
     ? newAdminFormFields.filter((field) => field.type !== "password")
     : [...newAdminFormFields];
 
-  async function handleSubmit(values: FormValues) {
+  function handleSubmit(values: FormValues) {
     console.log(values);
-    const phoneNumber = slicePhoneNumber(values.phoneNumber);
-
-    if (admin) {
-      mutate({ ...values, phoneNumber, _id: admin?._id });
-    } else {
-      mutate({ ...values, phoneNumber });
-    }
   }
   return (
     <div>
       <FormComp
-        isLoading={isPending}
         formFields={formFields}
         defaultValues={defaultValues}
         onSubmit={handleSubmit}
-        formSchema={admin ? editFormSchema : formSchema}
-        error={error?.message ?? ""}
+        formSchema={formSchema}
       />
     </div>
   );

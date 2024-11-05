@@ -24,7 +24,6 @@ import {
 import Filter from "@/components/filter/Filter";
 import { type Admin } from "./Admins";
 import AdminDetail from "./component/detaile-page";
-import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,14 +38,8 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [pagination, setPagination] = useState({
-    pageIndex: 0, //initial page index
-    pageSize: 6, //default page size
-  });
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [userId, setUserId] = useState("");
-
+  const [user, setUser] = useState<Admin | object>({});
   const table = useReactTable({
     data,
     columns,
@@ -58,28 +51,21 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
-      pagination,
     },
   });
 
-  const handleClick = (user: Admin) => {
-    console.log(user);
-    if (isOpen) {
-      setIsOpen(false);
-    } else {
-      setIsOpen(true);
-      if (user._id) setUserId(user._id);
-    }
+  const handleClick = (data: Admin) => {
+    setIsOpen(true);
+    setUser(data);
   };
   const handleClose = () => {
     setIsOpen(false);
-    setUserId("");
+    setUser({});
   };
 
   return (
@@ -116,7 +102,7 @@ export function DataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => handleClick(row.original as Admin)}
+                    onClick={() => handleClick(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
@@ -140,40 +126,11 @@ export function DataTable<TData, TValue>({
               )}
             </TableBody>
           </Table>
-          <div
-            className={`${table.getPageCount() === 1 ? "hidden" : ""} flex items-center justify-between space-x-2 px-4 py-4`}
-          >
-            <div className="flex gap-3 text-sm text-muted-foreground">
-              <span>{table.getRowCount()} results</span>
-              <span>
-                Showing page {pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}{" "}
-              </span>
-            </div>
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
         </div>
       </div>
       {isOpen && (
         <div className="mx-auto w-[85%] transition-all duration-150 sm:w-[55%] lg:w-[25%]">
-          <AdminDetail id={userId} close={handleClose} />
+          <AdminDetail user={user} close={handleClose} />
         </div>
       )}
     </div>

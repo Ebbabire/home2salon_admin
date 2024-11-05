@@ -1,48 +1,47 @@
-import { useQuery } from "@tanstack/react-query";
-
-import { getAdmins } from "@/services/adminServices";
-import { DataTable } from "./data-table";
+import { useContext } from "react";
+import useQuery from "@/hooks/useQuery";
+import ListDataContext, { type Payload } from "@/context/ListDataStore";
 
 import Admin from "./component/detaile-page";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "./data-table";
 import useColumns from "./Column";
-
+import { getAdmins } from "@/services/adminServices";
 import Loading from "@/components/loader";
 import Error from "@/components/error-display";
 import AddAdmin from "./component/add-admin";
 
 export type Admin = {
-  _id?: string;
-  fullName: string;
+  id: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phoneNumber: string;
   role: string;
-  status?: string;
+  status: string;
   createdAt?: string;
 };
 
 export const Admins = () => {
-  // table column config
   const columns = useColumns();
-
-  // fetch products
   const {
-    data: admins,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["admins"],
-    queryFn: getAdmins,
+    admins,
+    setAdmins,
+  }: { admins: Admin[]; setAdmins: (payload: Payload) => void } =
+    useContext(ListDataContext);
+
+  const { data, isLoading, isError, error } = useQuery(getAdmins, {
+    onSuccess: (data) => setAdmins(data),
   });
 
   return (
     <>
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold md:text-2xl">Admins</h1>
-        {!isLoading && !isError && admins ? <AddAdmin /> : null}
+        {!isLoading && !isError && admins.length ? <AddAdmin /> : null}
       </div>
       <div className="flex-1 rounded-lg border border-dashed px-4 py-4 shadow-sm dark:border-muted-foreground/70">
-        {!isLoading && !isError && admins ? (
+        {!isLoading && !isError && data ? (
           <>
             {admins.length ? (
               <DataTable columns={columns} data={admins} />

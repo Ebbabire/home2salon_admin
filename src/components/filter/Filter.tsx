@@ -17,9 +17,7 @@ interface FilterProps<TData> {
 }
 
 function Filter<TData>({ table }: FilterProps<TData>) {
-  const [filterType, setFilterType] = useState<string>(
-    table.getAllColumns()[0].id,
-  );
+  const [filterType, setFilterType] = useState<string>("email");
 
   return (
     <div className="flex flex-col items-start gap-2 py-4 md:flex-row md:items-center">

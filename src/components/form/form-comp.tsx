@@ -13,8 +13,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import SelectInput, { OptionPorp } from "../select-input";
-import { Textarea } from "../ui/textarea";
-import Loading from "../loader";
+import { FormEvent } from "react";
 
 type FormObj = {
   type: string;
@@ -32,27 +31,26 @@ const FormComp = ({
   defaultValues,
   onSubmit,
   formFields,
-  isLoading,
-  error,
 }: {
   formSchema: any;
   defaultValues: any;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
   formFields: FormFields;
-  error: string;
-  isLoading: boolean;
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues,
   });
-  const { handleSubmit, setValue, /*formState,*/ register } = form;
+  const { handleSubmit, setValue } = form;
+
+  const handleFileInputChange = (e: FormEvent) => {
+    console.log(e.target.value);
+  };
 
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid w-full gap-x-4 gap-y-6 lg:grid-cols-6">
-          {/* {console.log(formState.errors)} */}
+        <div className="grid w-full gap-x-4 gap-y-6 lg:grid-cols-3">
           {formFields?.map(
             ({ type, label, name, placeholder, className, options }) =>
               type === "select" ? (
@@ -61,19 +59,18 @@ const FormComp = ({
                   control={form.control}
                   name={name}
                   render={() => (
-                    <FormItem className={className}>
+                    <FormItem>
                       <FormLabel>{label}</FormLabel>
                       <FormControl>
                         <SelectInput
                           placeholder={placeholder ?? ""}
                           label={label}
-                          name={name}
                           value={form.getValues(name)}
                           setValue={setValue}
                           options={options ? options : []}
-                          className={className ? className : ""}
                         />
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -84,32 +81,14 @@ const FormComp = ({
                   control={form.control}
                   name={name}
                   render={() => (
-                    <FormItem className={className}>
+                    <FormItem>
                       <FormLabel>{label}</FormLabel>
                       <FormControl>
                         <Input
+                          onChange={handleFileInputChange}
                           placeholder={placeholder}
                           type={type}
                           className={className}
-                          {...register(name)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ) : type === "textArea" ? (
-                <FormField
-                  key={name}
-                  control={form.control}
-                  name={name}
-                  render={({ field }) => (
-                    <FormItem className={className}>
-                      <FormLabel>{label}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Type your message here."
-                          {...field}
                         />
                       </FormControl>
 
@@ -123,25 +102,18 @@ const FormComp = ({
                   control={form.control}
                   name={name}
                   render={({ field }) => (
-                    <FormItem className={className}>
+                    <FormItem>
                       <FormLabel>{label}</FormLabel>
                       <FormControl>
                         <Input
                           placeholder={placeholder}
                           type={type}
+                          className={className}
                           {...field}
-                          maxLength={
-                            type === "tel"
-                              ? form.getValues(name) &&
-                                form.getValues(name)[0] === "0"
-                                ? 10
-                                : 13
-                              : undefined
-                          }
                         />
                       </FormControl>
 
-                      <FormMessage className="text-xs" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -149,21 +121,7 @@ const FormComp = ({
           )}
         </div>
 
-        <div className="flex flex-wrap items-center justify-end">
-          {error && (
-            <span className="mx-2 py-2 text-sm text-destructive">{error}</span>
-          )}
-
-          <Button type="submit" disabled={isLoading}>
-            {isLoading && (
-              <span className="w-14">
-                <Loading isLoading={isLoading} />
-              </span>
-            )}
-            {error && !isLoading && <span>Retry</span>}
-            {!isLoading && !error && <span>Submit</span>}
-          </Button>
-        </div>
+        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );

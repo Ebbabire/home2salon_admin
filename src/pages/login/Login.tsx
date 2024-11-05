@@ -1,5 +1,4 @@
-import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,14 +11,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FormEvent, useState } from "react";
 import {
   slicePhoneNumber,
   validatePass,
   validatePhone,
 } from "./utils/validator";
 import { ModeToggle } from "@/components/mood-toggle";
-import { login } from "@/services/adminServices";
-import Loading from "@/components/loader";
 
 export type Login = {
   password: string;
@@ -27,11 +25,6 @@ export type Login = {
 };
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const navigate = useNavigate();
-
   const [loginData, setLoginData] = useState({
     phoneNumber: "",
     password: "",
@@ -45,9 +38,7 @@ export function LoginForm() {
   const { isPhoneNumValid, isPassValid } = isValid;
   const { phoneNumber, password } = loginData;
 
-  const handleInputChange:
-    | React.ChangeEventHandler<HTMLInputElement>
-    | undefined = (e) => {
+  const handleInputChange = (e: FormEvent) => {
     const { name, value } = e.target;
 
     setLoginData((prevState) => ({
@@ -81,27 +72,12 @@ export function LoginForm() {
     }));
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!isPassValid || !isPhoneNumValid) return;
 
     const phoneNum = slicePhoneNumber(loginData.phoneNumber);
-    // console.log({ phoneNumber: phoneNum, password: loginData.password });
-
-    setIsLoading(true);
-    try {
-      const data = await login({
-        phoneNumber: `${phoneNum}`,
-        password: loginData.password,
-      });
-      data.token && navigate("/admins");
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    console.log({ phoneNumber: phoneNum, password: loginData.password });
   };
 
   return (
@@ -161,19 +137,10 @@ export function LoginForm() {
                 </Link>
               </div>
             </CardContent>
-            <CardFooter className="felx flex-col gap-1">
+            <CardFooter>
               <Button type="submit" className="w-full">
-                {isLoading && (
-                  <span className="w-14">
-                    <Loading isLoading={isLoading} />
-                  </span>
-                )}
-                {!isLoading && error !== "" && <span>Retry</span>}
-                {!isLoading && error === "" && <span>Login </span>}
+                Sign in
               </Button>
-              {!isLoading && error !== "" && (
-                <span className="text-sm text-red-500">{error}</span>
-              )}
             </CardFooter>
           </Card>
         </form>

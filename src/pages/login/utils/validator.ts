@@ -10,7 +10,8 @@ export const validatePass = (value: string) => {
   }
 };
 export const slicePhoneNumber = (value: string) => {
-  let phoneNumber = value;
+  if (!value) return;
+  let phoneNumber;
 
   if (value.length === 10) {
     phoneNumber = value.slice(1);
