@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { z, ZodSchema, infer as ZodInfer } from "zod";
 
 import { Button } from "../ui/button";
 import {
@@ -13,7 +13,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import SelectInput, { OptionPorp } from "../select-input";
-import { FormEvent } from "react";
+import Loading from "../loader";
 
 type FormObj = {
   type: string;
@@ -26,24 +26,36 @@ type FormObj = {
 
 type FormFields = FormObj[];
 
+interface FormCompProps {
+  formSchema: ZodSchema;
+  defaultValues?: ZodInfer<ZodSchema>;
+  onSubmit: (values: ZodInfer<ZodSchema>) => void;
+  formFields: FormFields;
+  error: Error | null;
+  btn: string;
+  btnWidth?: string;
+  isLoading: boolean;
+}
+
 const FormComp = ({
   formSchema,
   defaultValues,
   onSubmit,
   formFields,
-}: {
-  formSchema: any;
-  defaultValues: any;
-  onSubmit: (values: z.infer<typeof formSchema>) => void;
-  formFields: FormFields;
-}) => {
+  error,
+  isLoading,
+  btn,
+  btnWidth,
+}: FormCompProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues,
   });
   const { handleSubmit, setValue } = form;
 
-  const handleFileInputChange = (e: FormEvent) => {
+  const handleFileInputChange:
+    | React.ChangeEventHandler<HTMLInputElement>
+    | undefined = (e) => {
     console.log(e.target.value);
   };
 
@@ -121,7 +133,27 @@ const FormComp = ({
           )}
         </div>
 
-        <Button type="submit">Submit</Button>
+        <div className="flex flex-wrap items-center justify-end">
+          {error && (
+            <span className="mx-2 py-2 text-sm text-destructive">
+              {error.message}
+            </span>
+          )}
+
+          <Button
+            type="submit"
+            className={`${btnWidth} bg-[#16432d] hover:bg-[#16432d]/80`}
+            disabled={isLoading}
+          >
+            {isLoading && (
+              <span className="w-14">
+                <Loading isLoading={isLoading} />
+              </span>
+            )}
+            {error && !isLoading && <span>Retry</span>}
+            {!isLoading && !error && <span>{btn}</span>}
+          </Button>
+        </div>
       </form>
     </Form>
   );

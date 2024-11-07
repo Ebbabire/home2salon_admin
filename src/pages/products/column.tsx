@@ -13,10 +13,10 @@ import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { type IAdmin } from "./Admins";
+import { type Admin } from "./Admins";
 
 const useColumns = () => {
-  const columns: ColumnDef<IAdmin, unknown>[] = useMemo(
+  const columns: ColumnDef<Admin>[] = useMemo(
     () => [
       //   {
       //     id: "select",
@@ -44,7 +44,7 @@ const useColumns = () => {
       //   },
 
       {
-        accessorKey: "fullName",
+        accessorKey: "firstName",
         header: ({ column }) => {
           return (
             <Button
@@ -53,16 +53,34 @@ const useColumns = () => {
                 column.toggleSorting(column.getIsSorted() === "asc")
               }
             >
-              Full Name
+              First Name
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           );
         },
         cell: ({ row }) => (
-          <div className="px-4 capitalize">{row.getValue("fullName")}</div>
+          <div className="px-4 capitalize">{row.getValue("firstName")}</div>
         ),
       },
-
+      {
+        accessorKey: "lastName",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Last Name
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <div className="px-4 capitalize">{row.getValue("lastName")}</div>
+        ),
+      },
       {
         accessorKey: "email",
         header: ({ column }) => {
@@ -86,7 +104,7 @@ const useColumns = () => {
         accessorKey: "phoneNumber",
         header: () => <div className="w-32">Phone Number</div>,
         cell: ({ row }) => {
-          return <div>0{row.getValue("phoneNumber")}</div>;
+          return <div>{row.getValue("phoneNumber")}</div>;
         },
       },
       {
@@ -100,11 +118,7 @@ const useColumns = () => {
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => (
-          <div
-            className={`font-semibold ${row.getValue("status") === "Active" ? "text-green-600" : "text-red-600"} font-semibold`}
-          >
-            {row.getValue("status")}
-          </div>
+          <div className="capitalize">{row.getValue("status")}</div>
         ),
       },
       // {

@@ -1,9 +1,12 @@
+import { type IAdmin } from "@/pages/admins/Admins";
 import { getSession } from "./session";
 
 import { Login } from "@/pages/login/Login";
 
 // login service
-export const login = async (authDetail: Login) => {
+export const login = async (
+  authDetail: Login,
+): Promise<{ token: string; admin: IAdmin }> => {
   // options object to pass to the fetch api function
   const requestOptions = {
     method: "POST",
@@ -11,21 +14,21 @@ export const login = async (authDetail: Login) => {
     body: JSON.stringify(authDetail),
   };
   const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/api/v1/admin/login`,
+    `${import.meta.env.VITE_BASE_URL}/admin/login`,
     requestOptions,
   );
   if (!response.ok) {
     const error = await response.json(); // Access the error message from the response body
     throw new Error(error.message);
   }
-  const data = await response.json();
+  const { data } = await response.json();
 
   if (data.token) {
     sessionStorage.setItem("token", JSON.stringify(data.token));
     sessionStorage.setItem("id", JSON.stringify(data.admin._id));
     sessionStorage.setItem(
       "userName",
-      JSON.stringify(`${data.admin.firstName} ${data.admin.lastName}`),
+      JSON.stringify(`${data.admin.fullName}`),
     );
     sessionStorage.setItem("userRole", JSON.stringify(data.admin.role));
   }
@@ -34,10 +37,8 @@ export const login = async (authDetail: Login) => {
 };
 
 // function to get admins
-export async function getAdmins() {
-  // const { token } = getSession();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2M4ZDJlZGQ3MWUxMmQyODQyYTdhMCIsImlhdCI6MTcxNzU4MDAwNCwiZXhwIjoxNzE4NDQ0MDA0fQ.Zrfli-fFAbmpFe-w-XM-Oa_goy6fJ-_Ro7lWdI53E8Q";
+export async function getAdmins(): Promise<IAdmin[]> {
+  const { token } = getSession();
   const requestOptions = {
     method: "GET",
     headers: {
@@ -46,7 +47,7 @@ export async function getAdmins() {
     },
   };
   const response = await fetch(
-    `https://iconscholar.com/backend/api/v1/admin`,
+    `${import.meta.env.VITE_BASE_URL}/admin`,
     requestOptions,
   );
   if (!response.ok) {
@@ -56,4 +57,103 @@ export async function getAdmins() {
   const data = await response.json();
 
   return data;
+}
+
+// function to get admin by id
+export async function getAdminById(id: string): Promise<IAdmin> {
+  const { token } = getSession();
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/admin/${id}`,
+    requestOptions,
+  );
+  if (!response.ok) {
+    const error = await response.json(); // Access the error message from the response body
+    throw new Error(error.message);
+  }
+  const { requiredAdmin } = await response.json();
+
+  return requiredAdmin;
+}
+
+// function to add new admin
+export async function addAdmin(admin: IAdmin): Promise<IAdmin> {
+  const { token } = getSession();
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(admin),
+  };
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/admin`,
+    requestOptions,
+  );
+  if (!response.ok) {
+    const error = await response.json(); // Access the error message from the response body
+    throw new Error(error.message);
+  }
+  const { requiredAdmin } = await response.json();
+
+  return requiredAdmin;
+}
+
+// function to get admins
+export async function updateAdmin(updatedAdmin: IAdmin): Promise<IAdmin> {
+  console.log(updatedAdmin);
+  const { token } = getSession();
+  const requestOptions = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updatedAdmin),
+  };
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/admin/${updatedAdmin._id}`,
+    requestOptions,
+  );
+  if (!response.ok) {
+    const error = await response.json(); // Access the error message from the response body
+    throw new Error(error.message);
+  }
+  const { admin } = await response.json();
+
+  return admin;
+}
+
+// function to add new admin
+export async function changeAdminStatus(status: {
+  id: string;
+  status: string;
+}): Promise<IAdmin> {
+  const { token } = getSession();
+  const requestOptions = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status: status.status }),
+  };
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/admin/${status.id}`,
+    requestOptions,
+  );
+  if (!response.ok) {
+    const error = await response.json(); // Access the error message from the response body
+    throw new Error(error.message);
+  }
+  const { requiredAdmin } = await response.json();
+
+  return requiredAdmin;
 }
