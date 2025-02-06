@@ -24,6 +24,8 @@ type FormObj = {
   options?: OptionPorp;
 };
 
+export type ModalFn = (value: boolean) => void;
+
 type FormFields = FormObj[];
 
 const FormComp = ({
@@ -31,17 +33,19 @@ const FormComp = ({
   defaultValues,
   onSubmit,
   formFields,
+  setIsOpen,
 }: {
   formSchema: any;
   defaultValues: any;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
   formFields: FormFields;
+  setIsOpen: ModalFn;
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues,
   });
-  const { handleSubmit, setValue } = form;
+  const { handleSubmit, setValue, formState } = form;
 
   const handleFileInputChange = (e: FormEvent) => {
     console.log(e.target.value);
@@ -121,7 +125,16 @@ const FormComp = ({
           )}
         </div>
 
-        <Button type="submit">Submit</Button>
+        <div className="flex justify-end gap-4">
+          <Button type="submit">Submit</Button>
+          {/* <Button
+            variant="destructive"
+            type="reset"
+            onClick={() => setIsOpen(false)}
+          >
+            Close
+          </Button> */}
+        </div>
       </form>
     </Form>
   );

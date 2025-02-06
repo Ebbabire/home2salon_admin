@@ -1,12 +1,3 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  CreditCard,
-  MoreVertical,
-  Truck,
-} from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,17 +7,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { MdDelete } from "react-icons/md";
 
 import { Separator } from "@/components/ui/separator";
 import { Admin } from "../Admins";
 import EditAdmin from "./edit-admin";
+import { Edit } from "lucide-react";
 
 export default function AdminDetail({
   user,
@@ -35,7 +21,14 @@ export default function AdminDetail({
   user: object | Admin;
   close: () => void;
 }) {
-  console.log(user);
+  const user2 = {
+    email: "ebba.birhanu@gmail.com",
+    firstName: "Ebba",
+    lastName: "Birhanu",
+    password: "123456",
+    phoneNumber: "0935287667",
+    role: "Admin",
+  };
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-start bg-muted/50">
@@ -45,30 +38,13 @@ export default function AdminDetail({
           </CardTitle>
           <CardDescription>{user?.role}</CardDescription>
         </div>
-        <div className="ml-auto flex items-center gap-1">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="icon" variant="outline" className="h-8 w-8">
-                <MoreVertical className="h-3.5 w-3.5" />
-                <span className="sr-only top-0">More</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={(e) => e.preventDefault()}>
-                <EditAdmin user={user} />
-              </DropdownMenuItem>
-              <DropdownMenuItem>Deactivate</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Button
-                  variant="ghost"
-                  className="border border-red-500 px-8 transition-all duration-150 hover:bg-red-500 hover:text-white"
-                >
-                  Delete Admin
-                </Button>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="ml-auto flex items-center gap-2 text-green-600 dark:text-green-400">
+          <EditAdmin user={user2} />
+          <MdDelete
+            color="fa3f3f"
+            size="1.3rem"
+            className="hover:cursor-pointer"
+          />
         </div>
       </CardHeader>
       <CardContent className="overflow-auto p-3 text-sm scrollbar-none">
@@ -93,7 +69,14 @@ export default function AdminDetail({
             </li>
             <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Status</span>
-              <span className="font-medium capitalize">{user?.status}</span>
+              <span
+                className={`flex items-center gap-2 font-medium capitalize ${user?.status === "Active" ? "text-green-600" : "text-red-600"}`}
+              >
+                {user?.status}{" "}
+                <Button variant="ghost" className="h-4 p-0 font-normal">
+                  <Edit size={"1rem"} />
+                </Button>
+              </span>
             </li>
           </ul>
         </div>

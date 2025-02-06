@@ -7,8 +7,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AdminForm from "./admin-form";
+import { ModalFn } from "@/components/form/form-comp";
 
-const AddAdmin = () => {
+const AddAdmin = ({ setIsOpen }: { setIsOpen: ModalFn }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -20,7 +21,7 @@ const AddAdmin = () => {
             Add New Admin
           </DialogTitle>
         </DialogHeader>
-        <AdminForm />
+        <AdminForm setIsOpen={setIsOpen} />
       </DialogContent>
     </Dialog>
   );

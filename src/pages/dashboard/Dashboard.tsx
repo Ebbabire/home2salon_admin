@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import AdminForm from "../admins/component/admin-form";
 
 export const Dashboard = () => {
@@ -9,9 +10,40 @@ export const Dashboard = () => {
     phoneNumber: "0935287667",
     role: "Admin",
   };
+  const [months, setMonths] = useState([{ name: "Jan" }]);
+  const [nextSelectable, setNextSelectable] = useState(null);
+
   return (
     <div>
-      <AdminForm user={user} />
+      {/* <AdminForm user={user} /> */}
+
+      <ul>
+        {months.map((month) => (
+          <MonthItem
+            key={month}
+            month={month}
+            paid={nextSelectable && month === nextSelectable}
+            // onClick={() => handleMonthClick(month)}
+            // disabled={!paid && month !== nextSelectable}
+          />
+        ))}
+      </ul>
     </div>
   );
 };
+
+const MonthItem = ({ month, paid, onClick, disabled }) => {
+  const handleClick = () => onClick && onClick(month);
+
+  return (
+    <li
+      className={`month-item ${paid ? "paid" : "unpaid"}`}
+      onClick={handleClick}
+      disabled={disabled}
+    >
+      {month.name}
+    </li>
+  );
+};
+
+export default MonthItem;

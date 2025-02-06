@@ -16,8 +16,21 @@ const formSchema = z.object({
   }),
   role: z.union([z.literal("Admin"), z.literal("Super Admin")]),
 });
+const editFormSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  phoneNumber: z.string(),
+  email: z.string().email(),
+  role: z.union([z.literal("Admin"), z.literal("Super Admin")]),
+});
 
-const AdminForm = ({ user }: AdminFormProps) => {
+const AdminForm = ({
+  user,
+  setIsOpen,
+}: {
+  user?: AdminFormProps;
+  setIsOpen: (value: boolean) => void;
+}) => {
   const defaultValues = {
     firstName: user ? user.firstName : "",
     lastName: user ? user.lastName : "",
@@ -40,7 +53,8 @@ const AdminForm = ({ user }: AdminFormProps) => {
         formFields={formFields}
         defaultValues={defaultValues}
         onSubmit={handleSubmit}
-        formSchema={formSchema}
+        formSchema={user ? editFormSchema : formSchema}
+        setIsOpen={setIsOpen}
       />
     </div>
   );
