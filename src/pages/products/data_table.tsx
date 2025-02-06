@@ -13,6 +13,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import Filter from "@/components/filter/Filter";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -20,24 +22,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import Filter from "@/components/filter/Filter";
-import AdminDetail from "./component/detaile-page";
-import { IAdmin } from "./Admins";
+} from "";
 
-interface DataTableProps {
-  columns: ColumnDef<IAdmin, unknown>[];
-  data: IAdmin[];
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
-export function DataTable({ columns, data }: DataTableProps) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [userId, setUserId] = useState("");
-
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, //initial page index
+    pageSize: 9, //default page size
+  });
   const table = useReactTable({
     data,
     columns,
@@ -49,36 +52,19 @@ export function DataTable({ columns, data }: DataTableProps) {
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination,
     },
   });
 
-  const handleClick = (id: string | undefined) => {
-    // if (isOpen) {
-    //   setIsOpen(false);
-    // } else {
-    //   setIsOpen(true);
-    //   id && setUserId(id);
-    // }
-    setIsOpen(true);
-    id && setUserId(id);
-  };
-  const handleClose = () => {
-    setIsOpen(false);
-    setUserId("");
-  };
-
   return (
     <div className="flex flex-col justify-between gap-4 overflow-hidden lg:flex-row">
-      <div
-        className={` ${
-          isOpen ? "lg:w-[70%] xl:w-[72%]" : "mx-auto w-[90%]"
-        } transition-all duration-150`}
-      >
+      <div className={`mx-auto w-[90%] transition-all duration-150`}>
         <Filter table={table} />
         <div className="rounded-md border">
           <Table>
@@ -106,7 +92,6 @@ export function DataTable({ columns, data }: DataTableProps) {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => handleClick(row.original._id)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
@@ -130,13 +115,37 @@ export function DataTable({ columns, data }: DataTableProps) {
               )}
             </TableBody>
           </Table>
+          <div
+            className={`${table.getPageCount() === 1 ? "hidden" : ""} flex items-center justify-between space-x-2 px-4 py-4`}
+          >
+            <div className="flex gap-3 text-sm text-muted-foreground">
+              <span>{table.getRowCount()} results</span>
+              <span>
+                Showing page {pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}{" "}
+              </span>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
-      {isOpen && (
-        <div className="mx-auto w-[85%] transition-all duration-150 sm:w-[55%] lg:w-[25%]">
-          <AdminDetail userId={userId} close={handleClose} />
-        </div>
-      )}
     </div>
   );
 }
