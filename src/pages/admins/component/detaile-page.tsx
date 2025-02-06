@@ -22,7 +22,7 @@ import Loading from "@/components/loader";
 import Error from "@/components/error-display";
 
 interface AdminDetailProps {
-  userId: string;
+  userId: string | undefined;
   close: () => void;
 }
 
@@ -38,7 +38,13 @@ export default function AdminDetail({ userId, close }: AdminDetailProps) {
     queryKey: ["admin", userId],
     queryFn: () => getAdminById(userId),
   });
-  console.log(admin);
+
+  function CamelCase(name: string) {
+    const ans = name.split(" ");
+    const result = ans.map((item) => item[0].toUpperCase() + item.slice(1));
+    return result.join(" ");
+  }
+
   return (
     <>
       {(isLoading || isError) && (
@@ -52,7 +58,7 @@ export default function AdminDetail({ userId, close }: AdminDetailProps) {
           <CardHeader className="flex flex-row items-start bg-muted/50">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
-                {admin?.fullName}
+                {CamelCase(admin?.fullName)}
               </CardTitle>
               <CardDescription>{admin?.role}</CardDescription>
             </div>

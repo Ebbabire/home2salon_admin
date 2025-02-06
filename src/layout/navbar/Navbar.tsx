@@ -1,15 +1,15 @@
 import { Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
-import { ModeToggle } from "@/components/mood-toggle";
 
-import MobileSidbar from "../sidebar/MobileSidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+
 import UserMenu from "./components/UserMenu";
 
 function Navbar() {
   return (
     <header className="sticky top-0 z-50 flex h-14 items-center gap-4 border-b bg-muted/40 px-4 py-3 dark:border-muted-foreground/30 lg:h-[60px] lg:px-6">
-      <MobileSidbar />
+      <SidebarTrigger />
       <div className="w-full flex-1">
         <form>
           <div className="relative">
@@ -22,7 +22,6 @@ function Navbar() {
           </div>
         </form>
       </div>
-      <ModeToggle />
 
       <UserMenu />
     </header>

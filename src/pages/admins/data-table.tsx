@@ -35,6 +35,11 @@ export function DataTable({ columns, data }: DataTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, //initial page index
+    pageSize: 9, //default page size
+  });
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [userId, setUserId] = useState("");
 
@@ -49,21 +54,17 @@ export function DataTable({ columns, data }: DataTableProps) {
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination,
     },
   });
 
   const handleClick = (id: string | undefined) => {
-    // if (isOpen) {
-    //   setIsOpen(false);
-    // } else {
-    //   setIsOpen(true);
-    //   id && setUserId(id);
-    // }
     setIsOpen(true);
     id && setUserId(id);
   };
@@ -134,7 +135,10 @@ export function DataTable({ columns, data }: DataTableProps) {
       </div>
       {isOpen && (
         <div className="mx-auto w-[85%] transition-all duration-150 sm:w-[55%] lg:w-[25%]">
-          <AdminDetail userId={userId} close={handleClose} />
+          <AdminDetail
+            userId={userId ? userId : data[0]._id}
+            close={handleClose}
+          />
         </div>
       )}
     </div>

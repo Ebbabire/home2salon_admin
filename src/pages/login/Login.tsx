@@ -17,7 +17,6 @@ import {
   validatePass,
   validatePhone,
 } from "./utils/validator";
-import { ModeToggle } from "@/components/mood-toggle";
 import { login } from "@/services/adminServices";
 import Loading from "@/components/loader";
 
@@ -47,17 +46,23 @@ export function LoginForm() {
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const { name, value } = e.target;
 
+    if (name === "phoneNumber") {
+      if (value.length > 13) {
+        setError(`Phone number cannot exceed 13 digits.`);
+      }
+    }
+
     setLoginData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-    if (name === "phoneNumber" && !isPhoneNumValid) {
+
+    if (name === "phoneNumber") {
       setIsValid((prevState) => ({
         ...prevState,
         isPhoneNumValid: validatePhone(value),
       }));
-    }
-    if (name === "password" && !isPassValid) {
+    } else if (name === "password") {
       setIsValid((prevState) => ({
         ...prevState,
         isPassValid: validatePass(value),
@@ -83,7 +88,6 @@ export function LoginForm() {
     if (!isPassValid || !isPhoneNumValid) return;
 
     const phoneNum = slicePhoneNumber(loginData.phoneNumber);
-    console.log({ phoneNumber: phoneNum, password: loginData.password });
 
     setIsLoading(true);
     try {
@@ -102,10 +106,8 @@ export function LoginForm() {
   };
 
   return (
-    <>
-      <div className="mx-12 my-2 flex justify-end">
-        <ModeToggle />
-      </div>
+    <div className="w-screen">
+      <div className="mx-12 my-2 flex justify-end"></div>
       <div className="flex h-screen items-center justify-center">
         <form onSubmit={handleSubmit}>
           <Card className="w-full max-w-sm dark:border-white/50">
@@ -127,6 +129,11 @@ export function LoginForm() {
                   placeholder="09xxxxxxxx"
                   onChange={handleInputChange}
                   onBlur={handlePhoneNumBlur}
+                  maxLength={
+                    loginData.phoneNumber && loginData.phoneNumber[0] === "0"
+                      ? 10
+                      : 13
+                  }
                   required
                 />
                 {!isPhoneNumValid && (
@@ -150,16 +157,19 @@ export function LoginForm() {
                 {!isPassValid && (
                   <span className="text-xs text-red-500">
                     Please enter a valid password, should be between 6 and 14
-                    character!
+                    characters!
                   </span>
                 )}
-                <Link to="#" className="ml-auto inline-block text-sm underline">
+                <Link
+                  to="/pass-reset"
+                  className="ml-auto inline-block text-sm underline"
+                >
                   Forgot your password?
                 </Link>
               </div>
             </CardContent>
-            <CardFooter className="felx flex-col gap-1">
-              <Button type="submit" className="w-full">
+            <CardFooter className="flex flex-col gap-1">
+              <Button disabled={isLoading} type="submit" className="w-full">
                 {isLoading && (
                   <span className="w-14">
                     <Loading isLoading={isLoading} />
@@ -171,10 +181,22 @@ export function LoginForm() {
               {!isLoading && error !== "" && (
                 <span className="text-sm text-red-500">{error}</span>
               )}
+              <div className="mt-5 text-xs">
+                <span>Powered By </span>
+
+                <a
+                  href="https://www.qemertech.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400"
+                >
+                  Qemer Software Technology
+                </a>
+              </div>
             </CardFooter>
           </Card>
         </form>
       </div>
-    </>
+    </div>
   );
 }

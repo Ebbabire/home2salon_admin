@@ -9,8 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useLogout from "@/hooks/useLogout";
 
 function UserMenu() {
+  const logout = useLogout();
+
   return (
     <div>
       <DropdownMenu>
@@ -23,9 +26,7 @@ function UserMenu() {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Change Password</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

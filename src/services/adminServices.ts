@@ -60,7 +60,7 @@ export async function getAdmins(): Promise<IAdmin[]> {
 }
 
 // function to get admin by id
-export async function getAdminById(id: string): Promise<IAdmin> {
+export async function getAdminById(id?: string): Promise<IAdmin> {
   const { token } = getSession();
   const requestOptions = {
     method: "GET",

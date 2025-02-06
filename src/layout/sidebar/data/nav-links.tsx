@@ -1,6 +1,10 @@
-import { Home, User } from "lucide-react";
+import { BiHome, BiUser } from "react-icons/bi";
 
 export const navLinks = [
-  { to: "/dashboard", title: "Dashboard", Icon: Home },
-  { to: "/admins", title: "Admins", isBadge: true, Icon: User },
+  {
+    url: "/dashboard",
+    title: "Dashboard",
+    icon: BiHome,
+  },
+  { url: "/admins", title: "Admins", icon: BiUser },
 ];
