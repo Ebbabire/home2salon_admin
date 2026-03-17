@@ -1,3 +1,10 @@
 export { LoginForm } from "@/pages/login/Login";
 export { Admins } from "@/pages/admins/Admins";
 export { Dashboard } from "@/pages/dashboard/Dashboard";
+export { Services } from "@/pages/services/Services";
+export { Professionals } from "@/pages/professionals/Professionals";
+export { PendingOrders } from "@/pages/orders/pending/PendingOrders";
+export { AssignedOrders } from "@/pages/orders/assigned/AssignedOrders";
+export { CompletedOrders } from "@/pages/orders/completed/CompletedOrders";
+export { OrderDetail } from "@/pages/orders/detail/OrderDetail";
+export { Wallet } from "@/pages/wallet/Wallet";

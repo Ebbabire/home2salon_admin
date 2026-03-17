@@ -1,158 +1,71 @@
 import { type IAdmin } from "@/pages/admins/Admins";
-import { getSession } from "./session";
+import { mockAdmins, nextId } from "./mock/data";
 
 import { Login } from "@/pages/login/Login";
 
-// login service
+const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
+
 export const login = async (
   authDetail: Login,
 ): Promise<{ token: string; admin: IAdmin }> => {
-  // options object to pass to the fetch api function
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(authDetail),
-  };
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/admin/login`,
-    requestOptions,
+  await delay(500);
+
+  const admin = mockAdmins.find(
+    (a) =>
+      a.phoneNumber === authDetail.phoneNumber ||
+      a.email === authDetail.phoneNumber,
   );
-  if (!response.ok) {
-    const error = await response.json(); // Access the error message from the response body
-    throw new Error(error.message);
-  }
-  const { data } = await response.json();
 
-  if (data.token) {
-    sessionStorage.setItem("token", JSON.stringify(data.token));
-    sessionStorage.setItem("id", JSON.stringify(data.admin._id));
-    sessionStorage.setItem(
-      "userName",
-      JSON.stringify(`${data.admin.fullName}`),
-    );
-    sessionStorage.setItem("userRole", JSON.stringify(data.admin.role));
-  }
+  if (!admin) throw new Error("Invalid credentials");
 
-  return data;
+  const token = "mock-token-" + Date.now();
+  sessionStorage.setItem("token", JSON.stringify(token));
+  sessionStorage.setItem("id", JSON.stringify(admin._id));
+  sessionStorage.setItem("userName", JSON.stringify(admin.fullName));
+  sessionStorage.setItem("userRole", JSON.stringify(admin.role));
+
+  return { token, admin };
 };
 
-// function to get admins
 export async function getAdmins(): Promise<IAdmin[]> {
-  const { token } = getSession();
-  const requestOptions = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/admin`,
-    requestOptions,
-  );
-  if (!response.ok) {
-    const error = await response.json(); // Access the error message from the response body
-    throw new Error(error.message);
-  }
-  const data = await response.json();
-
-  return data;
+  await delay();
+  return [...mockAdmins];
 }
 
-// function to get admin by id
 export async function getAdminById(id?: string): Promise<IAdmin> {
-  const { token } = getSession();
-  const requestOptions = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/admin/${id}`,
-    requestOptions,
-  );
-  if (!response.ok) {
-    const error = await response.json(); // Access the error message from the response body
-    throw new Error(error.message);
-  }
-  const { requiredAdmin } = await response.json();
-
-  return requiredAdmin;
+  await delay();
+  const admin = mockAdmins.find((a) => a._id === id);
+  if (!admin) throw new Error("Admin not found");
+  return { ...admin };
 }
 
-// function to add new admin
 export async function addAdmin(admin: IAdmin): Promise<IAdmin> {
-  const { token } = getSession();
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(admin),
+  await delay();
+  const newAdmin: IAdmin = {
+    ...admin,
+    _id: nextId(),
+    status: "Active",
+    createdAt: new Date(),
   };
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/admin`,
-    requestOptions,
-  );
-  if (!response.ok) {
-    const error = await response.json(); // Access the error message from the response body
-    throw new Error(error.message);
-  }
-  const { requiredAdmin } = await response.json();
-
-  return requiredAdmin;
+  mockAdmins.push(newAdmin);
+  return newAdmin;
 }
 
-// function to get admins
 export async function updateAdmin(updatedAdmin: IAdmin): Promise<IAdmin> {
-  const { token } = getSession();
-  const requestOptions = {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(updatedAdmin),
-  };
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/admin/${updatedAdmin._id}`,
-    requestOptions,
-  );
-  if (!response.ok) {
-    const error = await response.json(); // Access the error message from the response body
-    throw new Error(error.message);
-  }
-  const { admin } = await response.json();
-
-  return admin;
+  await delay();
+  const idx = mockAdmins.findIndex((a) => a._id === updatedAdmin._id);
+  if (idx === -1) throw new Error("Admin not found");
+  mockAdmins[idx] = { ...mockAdmins[idx], ...updatedAdmin };
+  return mockAdmins[idx];
 }
 
-// function to add new admin
 export async function changeAdminStatus(status: {
   id: string;
   status: string;
 }): Promise<IAdmin> {
-  const { token } = getSession();
-  const requestOptions = {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ status: status.status }),
-  };
-  const response = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/admin/${status.id}`,
-    requestOptions,
-  );
-  if (!response.ok) {
-    const error = await response.json(); // Access the error message from the response body
-    throw new Error(error.message);
-  }
-  const { requiredAdmin } = await response.json();
-
-  return requiredAdmin;
+  await delay();
+  const idx = mockAdmins.findIndex((a) => a._id === status.id);
+  if (idx === -1) throw new Error("Admin not found");
+  mockAdmins[idx] = { ...mockAdmins[idx], status: status.status };
+  return mockAdmins[idx];
 }

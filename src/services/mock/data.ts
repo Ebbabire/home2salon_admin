@@ -1,0 +1,391 @@
+import type { IAdmin } from "@/pages/admins/Admins";
+import type {
+  ICategory,
+  IService,
+  IProfessional,
+  IOrder,
+  IWalletBalance,
+  IWalletTransaction,
+} from "@/types";
+import { OrderStatus } from "@/types";
+
+const PLACEHOLDER_IMG = "https://placehold.co/200x200/e2e8f0/64748b?text=Service";
+const RECEIPT_IMG = "https://placehold.co/400x600/d1fae5/16a34a?text=Receipt";
+
+let _id = 100;
+const nextId = () => String(++_id);
+
+// ─── Admins ──────────────────────────────────────────────
+export const mockAdmins: IAdmin[] = [
+  {
+    _id: "a1",
+    fullName: "Abebe Kebede",
+    email: "abebe@home2salon.com",
+    phoneNumber: "911223344",
+    role: "Super Admin",
+    status: "Active",
+    createdAt: new Date("2025-06-10"),
+  },
+  {
+    _id: "a2",
+    fullName: "Sara Tesfaye",
+    email: "sara@home2salon.com",
+    phoneNumber: "922334455",
+    role: "Admin",
+    status: "Active",
+    createdAt: new Date("2025-09-15"),
+  },
+  {
+    _id: "a3",
+    fullName: "Daniel Bekele",
+    email: "daniel@home2salon.com",
+    phoneNumber: "933445566",
+    role: "Admin",
+    status: "Inactive",
+    createdAt: new Date("2025-11-20"),
+  },
+];
+
+// ─── Categories ──────────────────────────────────────────
+export const mockCategories: ICategory[] = [
+  { _id: "cat1", name: "Hair", createdAt: "2025-08-01T00:00:00Z" },
+  { _id: "cat2", name: "Nails", createdAt: "2025-08-01T00:00:00Z" },
+  { _id: "cat3", name: "Makeup", createdAt: "2025-08-05T00:00:00Z" },
+  { _id: "cat4", name: "Skin Care", createdAt: "2025-09-01T00:00:00Z" },
+];
+
+// ─── Services ────────────────────────────────────────────
+export const mockServices: IService[] = [
+  {
+    _id: "s1",
+    name: "Women's Haircut",
+    price: 500,
+    category: "cat1",
+    description: "Professional women's haircut and styling",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-08-10T00:00:00Z",
+  },
+  {
+    _id: "s2",
+    name: "Men's Haircut",
+    price: 300,
+    category: "cat1",
+    description: "Classic men's cut with fade options",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-08-10T00:00:00Z",
+  },
+  {
+    _id: "s3",
+    name: "Hair Coloring",
+    price: 1200,
+    category: "cat1",
+    description: "Full hair coloring with premium dye",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-08-12T00:00:00Z",
+  },
+  {
+    _id: "s4",
+    name: "Braiding",
+    price: 800,
+    category: "cat1",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-08-15T00:00:00Z",
+  },
+  {
+    _id: "s5",
+    name: "Gel Manicure",
+    price: 400,
+    category: "cat2",
+    description: "Long-lasting gel nail polish",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-08-11T00:00:00Z",
+  },
+  {
+    _id: "s6",
+    name: "Pedicure",
+    price: 350,
+    category: "cat2",
+    description: "Relaxing pedicure with foot massage",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-08-11T00:00:00Z",
+  },
+  {
+    _id: "s7",
+    name: "Nail Art",
+    price: 600,
+    category: "cat2",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-09-01T00:00:00Z",
+  },
+  {
+    _id: "s8",
+    name: "Bridal Makeup",
+    price: 3000,
+    category: "cat3",
+    description: "Full bridal makeup with trial session",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-08-20T00:00:00Z",
+  },
+  {
+    _id: "s9",
+    name: "Party Makeup",
+    price: 1500,
+    category: "cat3",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-08-22T00:00:00Z",
+  },
+  {
+    _id: "s10",
+    name: "Facial Treatment",
+    price: 700,
+    category: "cat4",
+    description: "Deep cleansing facial with mask",
+    image: PLACEHOLDER_IMG,
+    createdAt: "2025-09-05T00:00:00Z",
+  },
+];
+
+// ─── Professionals ───────────────────────────────────────
+export const mockProfessionals: IProfessional[] = [
+  {
+    _id: "p1",
+    fullName: "Hiwot Alemayehu",
+    phoneNumber: "944556677",
+    status: "Active",
+    assignedOrders: 3,
+    createdAt: "2025-07-01T00:00:00Z",
+  },
+  {
+    _id: "p2",
+    fullName: "Meron Tadesse",
+    phoneNumber: "955667788",
+    status: "Active",
+    assignedOrders: 2,
+    createdAt: "2025-07-15T00:00:00Z",
+  },
+  {
+    _id: "p3",
+    fullName: "Tigist Hailu",
+    phoneNumber: "966778899",
+    status: "Active",
+    assignedOrders: 1,
+    createdAt: "2025-08-01T00:00:00Z",
+  },
+  {
+    _id: "p4",
+    fullName: "Rahel Worku",
+    phoneNumber: "977889900",
+    status: "Inactive",
+    assignedOrders: 0,
+    createdAt: "2025-09-10T00:00:00Z",
+  },
+];
+
+// ─── Orders ──────────────────────────────────────────────
+export const mockOrders: IOrder[] = [
+  {
+    _id: "ord1",
+    customer: { _id: "c1", fullName: "Liya Haile", phoneNumber: "912345678" },
+    services: [
+      { service: { _id: "s1", name: "Women's Haircut", price: 500, category: "cat1" }, price: 500 },
+      { service: { _id: "s5", name: "Gel Manicure", price: 400, category: "cat2" }, price: 400 },
+    ],
+    totalPrice: 900,
+    scheduledDate: "2026-03-20T00:00:00Z",
+    scheduledTime: "10:00",
+    location: "Bole, Addis Ababa",
+    notes: "Please bring extra nail colors",
+    status: OrderStatus.PENDING_REVIEW,
+    createdAt: "2026-03-17T08:00:00Z",
+    updatedAt: "2026-03-17T08:00:00Z",
+  },
+  {
+    _id: "ord2",
+    customer: { _id: "c2", fullName: "Bethlehem Girma", phoneNumber: "923456789" },
+    services: [
+      { service: { _id: "s8", name: "Bridal Makeup", price: 3000, category: "cat3" }, price: 3000 },
+    ],
+    totalPrice: 3000,
+    scheduledDate: "2026-03-25T00:00:00Z",
+    scheduledTime: "08:00",
+    location: "Kazanchis, Addis Ababa",
+    status: OrderStatus.ADVANCE_PAYMENT_REQUESTED,
+    advancePaymentAmount: 1500,
+    advancePaymentInstructions: "Transfer to CBE account 1000123456789",
+    createdAt: "2026-03-15T10:00:00Z",
+    updatedAt: "2026-03-16T09:00:00Z",
+  },
+  {
+    _id: "ord3",
+    customer: { _id: "c3", fullName: "Selam Demeke", phoneNumber: "934567890" },
+    services: [
+      { service: { _id: "s3", name: "Hair Coloring", price: 1200, category: "cat1" }, price: 1200 },
+      { service: { _id: "s10", name: "Facial Treatment", price: 700, category: "cat4" }, price: 700 },
+    ],
+    totalPrice: 1900,
+    scheduledDate: "2026-03-22T00:00:00Z",
+    scheduledTime: "14:00",
+    location: "Megenagna, Addis Ababa",
+    status: OrderStatus.ADVANCE_PAYMENT_SUBMITTED,
+    advancePaymentAmount: 950,
+    advancePaymentInstructions: "Transfer to CBE account 1000123456789",
+    advancePaymentReceipt: RECEIPT_IMG,
+    createdAt: "2026-03-14T12:00:00Z",
+    updatedAt: "2026-03-16T14:00:00Z",
+  },
+  {
+    _id: "ord4",
+    customer: { _id: "c4", fullName: "Feven Tadesse", phoneNumber: "945678901" },
+    services: [
+      { service: { _id: "s6", name: "Pedicure", price: 350, category: "cat2" }, price: 350 },
+    ],
+    totalPrice: 350,
+    scheduledDate: "2026-03-21T00:00:00Z",
+    scheduledTime: "11:00",
+    location: "CMC, Addis Ababa",
+    status: OrderStatus.PAYMENT_APPROVED,
+    advancePaymentAmount: 175,
+    advancePaymentReceipt: RECEIPT_IMG,
+    createdAt: "2026-03-13T09:00:00Z",
+    updatedAt: "2026-03-15T11:00:00Z",
+  },
+  {
+    _id: "ord5",
+    customer: { _id: "c5", fullName: "Mahlet Abera", phoneNumber: "956789012" },
+    services: [
+      { service: { _id: "s2", name: "Men's Haircut", price: 300, category: "cat1" }, price: 300 },
+    ],
+    totalPrice: 300,
+    scheduledDate: "2026-03-19T00:00:00Z",
+    scheduledTime: "09:00",
+    location: "Sarbet, Addis Ababa",
+    status: OrderStatus.PROFESSIONAL_ASSIGNED,
+    professional: { _id: "p1", fullName: "Hiwot Alemayehu", phoneNumber: "944556677", status: "Active" },
+    advancePaymentAmount: 150,
+    advancePaymentReceipt: RECEIPT_IMG,
+    createdAt: "2026-03-12T07:00:00Z",
+    updatedAt: "2026-03-14T10:00:00Z",
+  },
+  {
+    _id: "ord6",
+    customer: { _id: "c6", fullName: "Ruth Mengistu", phoneNumber: "967890123" },
+    services: [
+      { service: { _id: "s9", name: "Party Makeup", price: 1500, category: "cat3" }, price: 1500 },
+      { service: { _id: "s4", name: "Braiding", price: 800, category: "cat1" }, price: 800 },
+    ],
+    totalPrice: 2300,
+    scheduledDate: "2026-03-18T00:00:00Z",
+    scheduledTime: "15:00",
+    location: "Piassa, Addis Ababa",
+    status: OrderStatus.IN_PROGRESS,
+    professional: { _id: "p2", fullName: "Meron Tadesse", phoneNumber: "955667788", status: "Active" },
+    advancePaymentAmount: 1150,
+    advancePaymentReceipt: RECEIPT_IMG,
+    createdAt: "2026-03-10T13:00:00Z",
+    updatedAt: "2026-03-18T15:30:00Z",
+  },
+  {
+    _id: "ord7",
+    customer: { _id: "c7", fullName: "Helen Alemu", phoneNumber: "978901234" },
+    services: [
+      { service: { _id: "s7", name: "Nail Art", price: 600, category: "cat2" }, price: 600 },
+    ],
+    totalPrice: 600,
+    scheduledDate: "2026-03-17T00:00:00Z",
+    scheduledTime: "16:00",
+    location: "Arat Kilo, Addis Ababa",
+    status: OrderStatus.AWAITING_COMPLETION_CONFIRMATION,
+    professional: { _id: "p3", fullName: "Tigist Hailu", phoneNumber: "966778899", status: "Active" },
+    advancePaymentAmount: 300,
+    advancePaymentReceipt: RECEIPT_IMG,
+    finalPaymentReceipt: RECEIPT_IMG,
+    createdAt: "2026-03-09T10:00:00Z",
+    updatedAt: "2026-03-17T17:00:00Z",
+  },
+  {
+    _id: "ord8",
+    customer: { _id: "c8", fullName: "Kidist Bekele", phoneNumber: "989012345" },
+    services: [
+      { service: { _id: "s1", name: "Women's Haircut", price: 500, category: "cat1" }, price: 500 },
+      { service: { _id: "s10", name: "Facial Treatment", price: 700, category: "cat4" }, price: 700 },
+    ],
+    totalPrice: 1200,
+    scheduledDate: "2026-03-15T00:00:00Z",
+    scheduledTime: "10:00",
+    location: "Bole, Addis Ababa",
+    status: OrderStatus.COMPLETED,
+    professional: { _id: "p1", fullName: "Hiwot Alemayehu", phoneNumber: "944556677", status: "Active" },
+    advancePaymentAmount: 600,
+    advancePaymentReceipt: RECEIPT_IMG,
+    finalPaymentReceipt: RECEIPT_IMG,
+    createdAt: "2026-03-05T08:00:00Z",
+    updatedAt: "2026-03-15T12:00:00Z",
+  },
+  {
+    _id: "ord9",
+    customer: { _id: "c9", fullName: "Tsion Worku", phoneNumber: "990123456" },
+    services: [
+      { service: { _id: "s8", name: "Bridal Makeup", price: 3000, category: "cat3" }, price: 3000 },
+      { service: { _id: "s3", name: "Hair Coloring", price: 1200, category: "cat1" }, price: 1200 },
+    ],
+    totalPrice: 4200,
+    scheduledDate: "2026-03-12T00:00:00Z",
+    scheduledTime: "07:00",
+    location: "Mexico, Addis Ababa",
+    status: OrderStatus.COMPLETED,
+    professional: { _id: "p2", fullName: "Meron Tadesse", phoneNumber: "955667788", status: "Active" },
+    advancePaymentAmount: 2100,
+    advancePaymentReceipt: RECEIPT_IMG,
+    finalPaymentReceipt: RECEIPT_IMG,
+    createdAt: "2026-03-01T06:00:00Z",
+    updatedAt: "2026-03-12T10:00:00Z",
+  },
+  {
+    _id: "ord10",
+    customer: { _id: "c10", fullName: "Meseret Yohannes", phoneNumber: "901234567" },
+    services: [
+      { service: { _id: "s5", name: "Gel Manicure", price: 400, category: "cat2" }, price: 400 },
+      { service: { _id: "s6", name: "Pedicure", price: 350, category: "cat2" }, price: 350 },
+    ],
+    totalPrice: 750,
+    scheduledDate: "2026-03-10T00:00:00Z",
+    scheduledTime: "13:00",
+    location: "Lideta, Addis Ababa",
+    status: OrderStatus.COMPLETED,
+    professional: { _id: "p3", fullName: "Tigist Hailu", phoneNumber: "966778899", status: "Active" },
+    advancePaymentAmount: 375,
+    advancePaymentReceipt: RECEIPT_IMG,
+    finalPaymentReceipt: RECEIPT_IMG,
+    createdAt: "2026-02-28T09:00:00Z",
+    updatedAt: "2026-03-10T15:00:00Z",
+  },
+];
+
+// ─── Wallet ──────────────────────────────────────────────
+export const mockWalletBalances: IWalletBalance[] = [
+  { professional: mockProfessionals[0], balance: 4500 },
+  { professional: mockProfessionals[1], balance: 7200 },
+  { professional: mockProfessionals[2], balance: 2100 },
+  { professional: mockProfessionals[3], balance: 0 },
+];
+
+export const mockWalletTransactions: Record<string, IWalletTransaction[]> = {
+  p1: [
+    { _id: "wt1", professional: "p1", type: "earning", amount: 1200, date: "2026-03-15T12:00:00Z", order: "ord8", notes: "Completed order #ord8" },
+    { _id: "wt2", professional: "p1", type: "earning", amount: 3800, date: "2026-03-10T14:00:00Z", order: "ord5", notes: "Completed order #ord5" },
+    { _id: "wt3", professional: "p1", type: "deduction", amount: 500, date: "2026-03-11T09:00:00Z", notes: "Bank transfer payout" },
+  ],
+  p2: [
+    { _id: "wt4", professional: "p2", type: "earning", amount: 4200, date: "2026-03-12T10:00:00Z", order: "ord9", notes: "Completed order #ord9" },
+    { _id: "wt5", professional: "p2", type: "earning", amount: 4500, date: "2026-03-08T11:00:00Z", notes: "Previous completed orders" },
+    { _id: "wt6", professional: "p2", type: "deduction", amount: 1500, date: "2026-03-09T10:00:00Z", notes: "Bank transfer payout" },
+  ],
+  p3: [
+    { _id: "wt7", professional: "p3", type: "earning", amount: 2500, date: "2026-03-10T15:00:00Z", order: "ord10", notes: "Completed order #ord10" },
+    { _id: "wt8", professional: "p3", type: "deduction", amount: 400, date: "2026-03-12T08:00:00Z", notes: "Cash payout" },
+  ],
+  p4: [],
+};
+
+// ─── Helpers for mutations ───────────────────────────────
+export { nextId };
