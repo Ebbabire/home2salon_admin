@@ -1,0 +1,36 @@
+---
+description: Always load + maintain PROJECT_MEMORY_POOL.md
+alwaysApply: true
+---
+
+# Project Memory Pool workflow
+
+This repo uses `PROJECT_MEMORY_POOL.md` as the single source of truth for project architecture and conventions.
+
+## Always do this
+- At the start of **every** user request, **read `PROJECT_MEMORY_POOL.md` first** and follow its conventions.
+- Treat the memory pool as authoritative for:
+  - Providers, routing, layout shell
+  - Where features live and how they’re wired
+  - API/service patterns and env var names
+
+## Update cadence (important)
+- Update `PROJECT_MEMORY_POOL.md` **once per completed user task** (feature, refactor, or behavior change).
+- Do **not** spam updates for micro-edits (formatting only, renames with no behavior, trivial copy changes), unless they change conventions or architecture.
+
+## What counts as “memory-worthy”
+Update the memory pool when you introduce or change any of:
+- **Routes/navigation/layout**
+- **New feature modules** (new pages, major components, flows)
+- **Services/API endpoints** or query keys / caching strategy
+- **Global providers/state** (contexts, React Query config, theme behavior)
+- **New env vars** / config keys (never store secret values)
+- **New dependencies** or significant tooling changes
+- **Important decisions / constraints** (trade-offs we chose)
+- **Known gaps/tech debt** we discovered or resolved
+
+## How to update the file (format rules)
+- Keep it **concise and high-signal**; prefer bullets over paragraphs.
+- Update the **“Last updated”** date.
+- Add a bullet to **“Change log”** summarizing the task’s delta (include key files touched).
+

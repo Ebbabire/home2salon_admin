@@ -2,7 +2,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/components/ui/collapsible"
 import {
   SidebarGroup,
   SidebarMenu,
@@ -11,25 +11,21 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
-import { ChevronRight } from "lucide-react";
-import type { IconType } from "react-icons/lib";
-import { NavLink } from "react-router-dom";
+} from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
+import { ChevronRight } from "lucide-react"
+import type { IconType } from "react-icons/lib"
+import { NavLink } from "react-router-dom"
 
-const NavMain = ({
-  items,
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon?: IconType;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
-  }[];
-}) => {
+interface NavItem {
+  title: string
+  url: string
+  icon?: IconType
+  isActive?: boolean
+  items?: { title: string; url: string }[]
+}
+
+const NavMain = ({ items }: { items: NavItem[] }) => {
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -42,19 +38,20 @@ const NavMain = ({
           >
             <SidebarMenuItem>
               {!item.items ? (
-                <NavLink
-                  to={item.url}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 ${
-                      isActive ? "bg-muted font-medium text-primary" : null
-                    } rounded-lg text-sm transition-all hover:text-primary`
-                  }
-                >
-                  <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton tooltip={item.title} asChild>
+                  <NavLink
+                    to={item.url}
+                    className={({ isActive }) =>
+                      cn(
+                        "rounded-lg text-sm transition-all hover:text-primary",
+                        isActive && "bg-muted font-medium text-primary"
+                      )
+                    }
+                  >
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </NavLink>
+                  </NavLink>
+                </SidebarMenuButton>
               ) : (
                 <>
                   <CollapsibleTrigger asChild>
@@ -68,22 +65,20 @@ const NavMain = ({
                     <SidebarMenuSub>
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <NavLink
-                            to={subItem.url}
-                            className={({ isActive }) =>
-                              `flex items-center gap-3 ${
-                                isActive
-                                  ? "bg-muted font-medium text-primary"
-                                  : null
-                              } rounded-lg text-sm transition-all hover:text-primary`
-                            }
-                          >
-                            <SidebarMenuSubButton asChild>
-                              <a href={subItem.url}>
-                                <span>{subItem.title}</span>
-                              </a>
-                            </SidebarMenuSubButton>
-                          </NavLink>
+                          <SidebarMenuSubButton asChild>
+                            <NavLink
+                              to={subItem.url}
+                              className={({ isActive }) =>
+                                cn(
+                                  "rounded-lg text-sm transition-all hover:text-primary",
+                                  isActive &&
+                                    "bg-muted font-medium text-primary"
+                                )
+                              }
+                            >
+                              <span>{subItem.title}</span>
+                            </NavLink>
+                          </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
                     </SidebarMenuSub>
@@ -95,7 +90,7 @@ const NavMain = ({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  );
-};
+  )
+}
 
-export default NavMain;
+export default NavMain

@@ -1,8 +1,8 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z, ZodSchema, infer as ZodInfer } from "zod";
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z, ZodSchema, infer as ZodInfer } from "zod"
 
-import { Button } from "../ui/button";
+import { Button } from "../ui/button"
 import {
   Form,
   FormControl,
@@ -10,33 +10,33 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import SelectInput, { OptionPorp } from "../select-input";
-import Loading from "../loader";
+} from "../ui/form"
+import { Input } from "../ui/input"
+import SelectInput, { type SelectOption } from "../select-input"
+import Loading from "../loader"
 
 type FormObj = {
-  type: string;
-  label: string;
-  name: string;
-  placeholder?: string;
-  className?: string;
-  options?: OptionPorp;
-};
+  type: string
+  label: string
+  name: string
+  placeholder?: string
+  className?: string
+  options?: SelectOption[]
+}
 
-export type ModalFn = (value: boolean) => void;
+export type ModalFn = (value: boolean) => void
 
-type FormFields = FormObj[];
+type FormFields = FormObj[]
 
 interface FormCompProps {
-  formSchema: ZodSchema;
-  defaultValues?: ZodInfer<ZodSchema>;
-  onSubmit: (values: ZodInfer<ZodSchema>) => void;
-  formFields: FormFields;
-  error: Error | null;
-  btn: string;
-  btnWidth?: string;
-  isLoading: boolean;
+  formSchema: ZodSchema
+  defaultValues?: ZodInfer<ZodSchema>
+  onSubmit: (values: ZodInfer<ZodSchema>) => void
+  formFields: FormFields
+  error: Error | null
+  btn: string
+  btnWidth?: string
+  isLoading: boolean
 }
 
 const FormComp = ({
@@ -52,14 +52,8 @@ const FormComp = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues,
-  });
-  const { handleSubmit, setValue, formState } = form;
-
-  const handleFileInputChange:
-    | React.ChangeEventHandler<HTMLInputElement>
-    | undefined = (e) => {
-    console.log(e.target.value);
-  };
+  })
+  const { handleSubmit, setValue } = form
 
   return (
     <Form {...form}>
@@ -80,8 +74,8 @@ const FormComp = ({
                           placeholder={placeholder ?? ""}
                           label={label}
                           value={form.getValues(name)}
-                          setValue={setValue}
-                          options={options ? options : []}
+                          onValueChange={(val) => setValue(name, val)}
+                          options={options ?? []}
                         />
                       </FormControl>
 
@@ -99,7 +93,6 @@ const FormComp = ({
                       <FormLabel>{label}</FormLabel>
                       <FormControl>
                         <Input
-                          onChange={handleFileInputChange}
                           placeholder={placeholder}
                           type={type}
                           className={className}
@@ -131,7 +124,7 @@ const FormComp = ({
                     </FormItem>
                   )}
                 />
-              ),
+              )
           )}
         </div>
 
@@ -158,7 +151,7 @@ const FormComp = ({
         </div>
       </form>
     </Form>
-  );
-};
+  )
+}
 
-export default FormComp;
+export default FormComp

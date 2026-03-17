@@ -108,7 +108,6 @@ export async function addAdmin(admin: IAdmin): Promise<IAdmin> {
 
 // function to get admins
 export async function updateAdmin(updatedAdmin: IAdmin): Promise<IAdmin> {
-  console.log(updatedAdmin);
   const { token } = getSession();
   const requestOptions = {
     method: "PATCH",

@@ -1,0 +1,39 @@
+---
+description: Frontend conventions for consistent TS/React/UI patterns
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Frontend conventions
+
+## TypeScript
+- No `any`. Use proper generics or `unknown` + narrowing.
+- Shared types/interfaces used across features go in `src/types/*`, not inside page modules.
+- Services (`src/services/*`) must NOT import types from `src/pages/*`; import from `src/types/*` instead.
+
+## React components
+- Functional components + hooks only.
+- Use early returns (guard clauses) to reduce nesting.
+- If a component exceeds ~150 lines, extract logic into a custom hook or break into sub-components.
+- Avoid inline anonymous functions in JSX props for non-trivial components; define stable handlers instead.
+
+## Navigation / interactive elements
+- Never nest interactive elements (`<a>` inside `<a>`, `<button>` inside `<a>`).
+- Use shadcn `asChild` so the intended element (e.g. `NavLink`) becomes the rendered interactive node.
+- Use `cn()` from `@/lib/utils` for conditional class merging (never interpolate `null` into className strings).
+
+## Data fetching
+- Use TanStack React Query for all remote data.
+- Query keys must be consistent arrays: `["entity"]` for lists, `["entity", id]` for detail.
+- Mutations must invalidate the matching query keys on success.
+
+## Forms
+- Use `react-hook-form` + `zod` for validation.
+- Reusable form components (`FormComp`, `SelectInput`) must not hardcode field names.
+
+## Logging / debugging
+- No `console.log` in committed code. Remove debug logs before completing a task.
+
+## Formatting
+- Single Prettier config: `.prettierrc.json` (2 spaces, double quotes, no semicolons, trailing commas ES5, tailwind class sorting via plugin).
+- No duplicate config files.

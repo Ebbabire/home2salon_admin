@@ -33,7 +33,7 @@ export const Admins = () => {
         <h1 className="text-lg font-semibold md:text-2xl">Admins</h1>
         {!isLoading && !isError && admins ? <AddAdmin /> : null}
       </div>
-      <div className="flex-1 rounded-lg border border-dashed px-4 py-4 shadow-sm dark:border-muted-foreground/70">
+      <div className="flex-1 rounded-lg border border-dashed px-4 py-4 shadow-sm">
         {!isLoading && !isError && admins ? (
           <>
             {admins.length ? (

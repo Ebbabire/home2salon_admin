@@ -29,14 +29,14 @@ const AddAdmin = () => {
       });
       setIsOpen(false);
       toast({
-        title: "Admin Edited Successfully!",
+        title: "Admin Added Successfully!",
         className: "bg-[#16432D] text-muted",
         description: `${moment(new Date()).format("LL")}`,
       });
     },
     onError: () => {
       toast({
-        title: "Admin Edit Failed!",
+        title: "Admin Add Failed!",
         className: "text-muted",
         variant: "destructive",
         description: `${moment(new Date()).format("LL")}`,

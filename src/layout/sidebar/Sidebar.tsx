@@ -16,7 +16,7 @@ import { navLinks } from "./data/nav-links";
 export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="h-14 flex-row border-b dark:border-muted-foreground/30 lg:h-[60px]">
+      <SidebarHeader className="h-14 flex-row border-b lg:h-[60px]">
         <SidebarMenu className="justify-center">
           <SidebarMenuItem>
             <SidebarMenuButton

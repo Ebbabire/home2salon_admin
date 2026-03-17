@@ -110,7 +110,7 @@ export function LoginForm() {
       <div className="mx-12 my-2 flex justify-end"></div>
       <div className="flex h-screen items-center justify-center">
         <form onSubmit={handleSubmit}>
-          <Card className="w-full max-w-sm dark:border-white/50">
+          <Card className="w-full max-w-sm">
             <CardHeader>
               <CardTitle className="text-2xl">Login</CardTitle>
               <CardDescription>

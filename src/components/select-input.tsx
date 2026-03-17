@@ -1,4 +1,3 @@
-import { UseFormSetValue } from "react-hook-form";
 import {
   Select,
   SelectContent,
@@ -7,41 +6,42 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "./ui/select"
 
-export type OptionPorp = { value: string; name: string }[];
-export type SelectInpuPorp = {
-  options: OptionPorp;
-  label: string;
-  value: string;
-  setValue: UseFormSetValue<any>;
-  placeholder: string;
-};
+export type SelectOption = { value: string; name: string }
+
+interface SelectInputProps {
+  options: SelectOption[]
+  label: string
+  value: string
+  onValueChange: (value: string) => void
+  placeholder: string
+}
 
 const SelectInput = ({
   options,
-  setValue,
   label,
   value,
+  onValueChange,
   placeholder,
-}: SelectInpuPorp) => {
+}: SelectInputProps) => {
   return (
-    <Select onValueChange={(value) => setValue("role", value)} value={value}>
+    <Select onValueChange={onValueChange} value={value}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectLabel>{label}</SelectLabel>
-          {options.map(({ value, name }: { value: string; name: string }) => (
-            <SelectItem key={name} value={value}>
-              {name}
+          {options.map((option) => (
+            <SelectItem key={option.name} value={option.value}>
+              {option.name}
             </SelectItem>
           ))}
         </SelectGroup>
       </SelectContent>
     </Select>
-  );
-};
+  )
+}
 
-export default SelectInput;
+export default SelectInput

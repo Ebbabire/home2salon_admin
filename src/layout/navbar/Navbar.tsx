@@ -8,7 +8,7 @@ import UserMenu from "./components/UserMenu";
 
 function Navbar() {
   return (
-    <header className="sticky top-0 z-50 flex h-14 items-center gap-4 border-b bg-muted/40 px-4 py-3 dark:border-muted-foreground/30 lg:h-[60px] lg:px-6">
+    <header className="sticky top-0 z-50 flex h-14 items-center gap-4 border-b bg-muted/40 px-4 py-3 lg:h-[60px] lg:px-6">
       <SidebarTrigger />
       <div className="w-full flex-1">
         <form>
