@@ -21,9 +21,9 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="text-primary font-semibold data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              {/* logo */}
+              Home2Salon
               <div className="flex w-full justify-center">
                 {/* <img className="w-20" src={ALIBOLOGO} alt="Alibo logo" /> */}
               </div>
@@ -46,7 +46,7 @@ export function AppSidebar() {
               href="https://www.qemertech.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400"
+              className="text-sidebar-foreground/60"
             >
               Qemer Software Technology
             </a>

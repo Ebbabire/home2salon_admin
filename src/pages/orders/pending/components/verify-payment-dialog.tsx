@@ -33,7 +33,7 @@ const VerifyPaymentDialog = ({ orderId, receiptUrl }: Props) => {
       setOpen(false);
       toast({
         title: "Payment Verified",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -88,7 +88,7 @@ const VerifyPaymentDialog = ({ orderId, receiptUrl }: Props) => {
               )}
             </Button>
             <Button
-              className="bg-[#16432d] hover:bg-[#16432d]/80"
+              className="bg-primary hover:bg-primary/80"
               disabled={isPending}
               onClick={() => mutate({ orderId, approved: true })}
             >

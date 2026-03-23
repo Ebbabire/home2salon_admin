@@ -39,7 +39,7 @@ const EditService = ({ service }: { service: IService }) => {
       setOpen(false);
       toast({
         title: "Service Updated",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },

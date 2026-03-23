@@ -117,7 +117,7 @@ const ServiceForm = ({
           )}
           <Button
             type="submit"
-            className="bg-[#16432d] hover:bg-[#16432d]/80"
+            className="bg-primary hover:bg-primary/80"
             disabled={isPending}
           >
             {isPending ? (

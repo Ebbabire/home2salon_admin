@@ -30,7 +30,7 @@ const AddAdmin = () => {
       setIsOpen(false);
       toast({
         title: "Admin Added Successfully!",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: `${moment(new Date()).format("LL")}`,
       });
     },
@@ -46,7 +46,7 @@ const AddAdmin = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-[#276145] hover:bg-[#378b63]">Add Admin</Button>
+        <Button className="bg-primary hover:bg-primary/90">Add Admin</Button>
       </DialogTrigger>
       <DialogContent className="h-[25rem] overflow-y-auto lg:max-w-3xl">
         <DialogHeader>

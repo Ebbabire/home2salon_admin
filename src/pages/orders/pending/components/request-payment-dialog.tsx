@@ -35,7 +35,7 @@ const RequestPaymentDialog = ({ orderId }: Props) => {
       setInstructions("");
       toast({
         title: "Payment Request Sent",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -90,7 +90,7 @@ const RequestPaymentDialog = ({ orderId }: Props) => {
           </div>
           <Button
             type="submit"
-            className="bg-[#16432d] hover:bg-[#16432d]/80"
+            className="bg-primary hover:bg-primary/80"
             disabled={isPending}
           >
             {isPending ? (

@@ -43,7 +43,7 @@ const AssignProfessionalDialog = ({ orderId }: Props) => {
       setSelectedId("");
       toast({
         title: "Professional Assigned",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -100,7 +100,7 @@ const AssignProfessionalDialog = ({ orderId }: Props) => {
               ))}
             </div>
             <Button
-              className="bg-[#16432d] hover:bg-[#16432d]/80"
+              className="bg-primary hover:bg-primary/80"
               disabled={!selectedId || isPending}
               onClick={handleAssign}
             >

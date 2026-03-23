@@ -53,12 +53,16 @@
   - Admins (`/admins`)
   - Wallet (`/wallet`)
 - **Navbar**: `src/layout/navbar/Navbar.tsx`
-  - Search input is present (currently placeholder: "Search products...")
+  - Search input placeholder: "Search..."
   - User dropdown uses `useLogout()`
 
 ## Theme
+- **Green/cream palette** matching the mobile app design.
 - Light mode only. Dark mode has been fully removed.
-- CSS variables are defined in `:root` only (`src/index.css`); no `.dark` block.
+- CSS variables in `:root` (`src/index.css`): deep green primary (`#1B4332`), cream backgrounds, green accents.
+- Sidebar: warm cream background (matching page bg) with deep green icons and green active-state highlight (via `--sidebar-*` vars).
+- All buttons/toasts use `bg-primary` / `hover:bg-primary/80` — no hardcoded hex colors.
+- Login page: split layout with green left panel + white card right.
 - `darkMode` is not set in `tailwind.config.js`.
 - `ThemeProvider` and `ModeToggle` components have been deleted.
 
@@ -172,3 +176,5 @@
 - 2026-03-17: Created initial memory pool from repo scan (routing, layout, Admins, Login, services, providers).
 - 2026-03-17: Full feature build — implemented all admin panel features per functional requirements: shared types (`src/types/`), 6 API service files, Dashboard with stats + recent orders, Service Management (2-level: categories + services with image upload), Professional Management (CRUD + status toggle + detail panel), Order Management (3 sub-pages: pending/assigned/completed with inline status badges + action dialogs + detail page with full workflow), Wallet Management (Super Admin gated: balances + transaction history + payout recording). Updated routing to 10 routes, sidebar to 6 nav items (Orders collapsible with 3 sub-links). Added `StatusBadge` and `ImagePreviewDialog` shared components.
 - 2026-03-17: Added mock data layer — replaced all service files with in-memory mock implementations (`src/services/mock/data.ts`). Covers admins (3), categories (4), services (10), professionals (4), orders (10 across all statuses), wallet balances + transactions. Mock login accepts any existing admin. Mutations modify arrays in place with 300ms simulated latency.
+- 2026-03-17: Applied mobile app green/cream theme — updated all CSS variables in `index.css` (deep green primary, cream backgrounds, green sidebar); replaced 18 files' hardcoded hex colors (`#16432d`, `#276145`, `#378b63`) with `bg-primary`/`hover:bg-primary` tokens; updated sidebar navMain active-state classes for dark-green sidebar; restyled login page with green split layout; changed navbar search placeholder; fixed error-display text color.
+- 2026-03-17: Cream sidebar with green accents — changed `--sidebar-*` CSS vars from dark green bg to warm cream (`47 75% 98%`); icons use `text-primary` (deep green); active nav items use light green bg (`--sidebar-accent: 133 47% 90%`) with deep green text; header "Home2Salon" styled in `text-primary font-semibold`.

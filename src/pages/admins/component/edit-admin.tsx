@@ -55,7 +55,7 @@ const EditAdmin = ({ admin }: { admin: IAdmin }) => {
       setIsOpen(false);
       toast({
         title: "Admin Edited Successfully!",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: `${moment(new Date()).format("LL")}`,
       });
     },

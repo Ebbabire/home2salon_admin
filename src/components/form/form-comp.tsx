@@ -137,7 +137,7 @@ const FormComp = ({
 
           <Button
             type="submit"
-            className={`${btnWidth} bg-[#16432d] hover:bg-[#16432d]/80`}
+            className={`${btnWidth} bg-primary hover:bg-primary/80`}
             disabled={isLoading}
           >
             {isLoading && (

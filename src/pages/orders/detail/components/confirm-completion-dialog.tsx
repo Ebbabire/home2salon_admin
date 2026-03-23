@@ -34,7 +34,7 @@ const ConfirmCompletionDialog = ({ orderId }: Props) => {
       setOpen(false);
       toast({
         title: "Order Completed!",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -50,7 +50,7 @@ const ConfirmCompletionDialog = ({ orderId }: Props) => {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button size="sm" className="bg-[#16432d] hover:bg-[#16432d]/80">
+        <Button size="sm" className="bg-primary hover:bg-primary/80">
           Confirm Completion
         </Button>
       </AlertDialogTrigger>
@@ -70,7 +70,7 @@ const ConfirmCompletionDialog = ({ orderId }: Props) => {
           )}
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            className="bg-[#16432d] hover:bg-[#16432d]/80"
+            className="bg-primary hover:bg-primary/80"
             onClick={(e) => {
               e.preventDefault();
               mutate(orderId);

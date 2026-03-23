@@ -60,7 +60,7 @@ const CategoryList = ({
       setName("");
       toast({
         title: "Category Created",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -82,7 +82,7 @@ const CategoryList = ({
       setName("");
       toast({
         title: "Category Updated",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -102,7 +102,7 @@ const CategoryList = ({
       if (selectedId) onSelect("");
       toast({
         title: "Category Deleted",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -164,7 +164,7 @@ const CategoryList = ({
               />
               <Button
                 type="submit"
-                className="bg-[#16432d] hover:bg-[#16432d]/80"
+                className="bg-primary hover:bg-primary/80"
                 disabled={isPending}
               >
                 {isPending ? (

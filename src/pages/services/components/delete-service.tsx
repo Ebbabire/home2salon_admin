@@ -31,7 +31,7 @@ const DeleteService = ({ serviceId }: { serviceId: string }) => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
       toast({
         title: "Service Deleted",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },

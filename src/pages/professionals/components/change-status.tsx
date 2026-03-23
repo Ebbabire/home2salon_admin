@@ -45,7 +45,7 @@ const ChangeProfessionalStatus = ({ id, status }: Props) => {
       setOpen(false);
       toast({
         title: "Status Changed!",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -113,7 +113,7 @@ const ChangeProfessionalStatus = ({ id, status }: Props) => {
             className={
               status === "Active"
                 ? "bg-destructive hover:bg-destructive/80"
-                : "bg-[#16432d] hover:bg-[#16432d]/80"
+                : "bg-primary hover:bg-primary/80"
             }
           >
             {isPending ? (

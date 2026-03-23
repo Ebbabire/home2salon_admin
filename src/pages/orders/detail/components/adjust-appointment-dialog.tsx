@@ -42,7 +42,7 @@ const AdjustAppointmentDialog = ({
       setOpen(false);
       toast({
         title: "Appointment Adjusted",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -92,7 +92,7 @@ const AdjustAppointmentDialog = ({
           </div>
           <Button
             type="submit"
-            className="bg-[#16432d] hover:bg-[#16432d]/80"
+            className="bg-primary hover:bg-primary/80"
             disabled={isPending}
           >
             {isPending ? (

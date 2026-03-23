@@ -106,11 +106,23 @@ export function LoginForm() {
   };
 
   return (
-    <div className="w-screen">
-      <div className="mx-12 my-2 flex justify-end"></div>
-      <div className="flex h-screen items-center justify-center">
-        <form onSubmit={handleSubmit}>
-          <Card className="w-full max-w-sm">
+    <div className="flex min-h-screen w-screen">
+      <div className="hidden flex-col items-center justify-center gap-6 bg-primary px-12 text-primary-foreground lg:flex lg:w-1/2">
+        <div className="flex flex-col items-center gap-3">
+          <h1 className="text-4xl font-bold tracking-tight">Home2Salon</h1>
+          <p className="text-lg text-primary-foreground/70">
+            Admin Panel
+          </p>
+        </div>
+        <p className="max-w-sm text-center text-sm leading-relaxed text-primary-foreground/60">
+          Manage services, professionals, orders, and wallets — all from one
+          dashboard.
+        </p>
+      </div>
+
+      <div className="flex flex-1 items-center justify-center px-4">
+        <form onSubmit={handleSubmit} className="w-full max-w-sm">
+          <Card>
             <CardHeader>
               <CardTitle className="text-2xl">Login</CardTitle>
               <CardDescription>
@@ -176,19 +188,18 @@ export function LoginForm() {
                   </span>
                 )}
                 {!isLoading && error !== "" && <span>Retry</span>}
-                {!isLoading && error === "" && <span>Login </span>}
+                {!isLoading && error === "" && <span>Login</span>}
               </Button>
               {!isLoading && error !== "" && (
                 <span className="text-sm text-red-500">{error}</span>
               )}
               <div className="mt-5 text-xs">
                 <span>Powered By </span>
-
                 <a
                   href="https://www.qemertech.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400"
+                  className="text-muted-foreground"
                 >
                   Qemer Software Technology
                 </a>

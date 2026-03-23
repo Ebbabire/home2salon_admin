@@ -53,7 +53,7 @@ const ChangeStatus = ({ id, status }: ChangeAdminStatusProps) => {
       setIsOpen(false);
       toast({
         title: "Admin Status Changed!",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: `${moment(new Date()).format("LL")}`,
       });
     },
@@ -132,7 +132,7 @@ const ChangeStatus = ({ id, status }: ChangeAdminStatusProps) => {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleChange}
-            className={`${status === "Active" ? "bg-destructive hover:bg-destructive/80" : "bg-[#16432d] hover:bg-[#16432d]/80"}`}
+            className={`${status === "Active" ? "bg-destructive hover:bg-destructive/80" : "bg-primary hover:bg-primary/80"}`}
           >
             {isLoading && (
               <span className="w-14">

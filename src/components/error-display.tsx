@@ -7,7 +7,7 @@ const Error = ({ error, size }: { error: Error | null; size?: string }) => {
       {error && (
         <div className="flex h-[50vh] flex-col items-center justify-center gap-2">
           <TbFaceIdError size={size || "24rem"} color="999999" />
-          <span className="text-lg font-medium text-[#16243D]">
+          <span className="text-lg font-medium text-foreground">
             {error.message}
           </span>
           <Button onClick={() => window.location.reload()}>Retry</Button>

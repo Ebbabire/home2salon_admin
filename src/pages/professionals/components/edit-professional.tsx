@@ -42,7 +42,7 @@ const EditProfessional = ({
       setOpen(false);
       toast({
         title: "Professional Updated Successfully!",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },

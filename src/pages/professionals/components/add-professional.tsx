@@ -25,7 +25,7 @@ const AddProfessional = () => {
       setOpen(false);
       toast({
         title: "Professional Added Successfully!",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -41,7 +41,7 @@ const AddProfessional = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-[#276145] hover:bg-[#378b63]">
+        <Button className="bg-primary hover:bg-primary/90">
           Add Professional
         </Button>
       </DialogTrigger>

@@ -29,7 +29,7 @@ const AddService = ({ categoryId }: AddServiceProps) => {
       setOpen(false);
       toast({
         title: "Service Created",
-        className: "bg-[#16432D] text-muted",
+        className: "bg-primary text-primary-foreground",
         description: moment().format("LL"),
       });
     },
@@ -55,7 +55,7 @@ const AddService = ({ categoryId }: AddServiceProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-[#276145] hover:bg-[#378b63]">
+        <Button className="bg-primary hover:bg-primary/90">
           Add Service
         </Button>
       </DialogTrigger>
