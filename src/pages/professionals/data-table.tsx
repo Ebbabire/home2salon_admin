@@ -69,7 +69,7 @@ export function ProfessionalDataTable({ columns, data }: Props) {
         className={`${isOpen ? "lg:w-[70%] xl:w-[72%]" : "mx-auto w-[90%]"} transition-all duration-150`}
       >
         <Filter table={table} />
-        <div className="rounded-md border">
+        <div className="rounded-lg border">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((hg) => (

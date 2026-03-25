@@ -12,7 +12,7 @@ function Layout() {
 
       <SidebarInset>
         <Navbar />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <main className="flex flex-1 flex-col gap-5 p-4 lg:gap-6 lg:p-8">
           <Outlet />
         </main>
       </SidebarInset>

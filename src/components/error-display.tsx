@@ -5,12 +5,14 @@ const Error = ({ error, size }: { error: Error | null; size?: string }) => {
   return (
     <>
       {error && (
-        <div className="flex h-[50vh] flex-col items-center justify-center gap-2">
-          <TbFaceIdError size={size || "24rem"} color="999999" />
-          <span className="text-lg font-medium text-foreground">
+        <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
+          <div className="rounded-2xl bg-muted/50 p-6">
+            <TbFaceIdError size={size || "5rem"} className="text-muted-foreground/50" />
+          </div>
+          <span className="text-base font-medium text-foreground">
             {error.message}
           </span>
-          <Button onClick={() => window.location.reload()}>Retry</Button>
+          <Button onClick={() => window.location.reload()} size="sm">Retry</Button>
         </div>
       )}
     </>

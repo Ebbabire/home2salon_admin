@@ -47,7 +47,7 @@ export function ServiceDataTable({ columns, data }: Props) {
   return (
     <div>
       <Filter table={table} />
-      <div className="rounded-md border">
+      <div className="rounded-lg border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (

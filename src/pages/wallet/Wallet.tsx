@@ -33,10 +33,10 @@ export const Wallet = () => {
 
   return (
     <>
-      <h1 className="text-lg font-semibold md:text-2xl">
+      <h1 className="text-xl font-bold tracking-tight md:text-2xl">
         Wallet Management
       </h1>
-      <div className="flex-1 rounded-lg border border-dashed px-4 py-4 shadow-sm">
+      <div className="flex-1 rounded-xl border bg-card px-4 py-4 shadow-sm">
         {isLoading || isError ? (
           <div className="flex h-full items-center justify-center">
             <Loading isLoading={isLoading} />

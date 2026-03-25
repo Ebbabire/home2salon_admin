@@ -107,24 +107,27 @@ export function LoginForm() {
 
   return (
     <div className="flex min-h-screen w-screen">
-      <div className="hidden flex-col items-center justify-center gap-6 bg-primary px-12 text-primary-foreground lg:flex lg:w-1/2">
-        <div className="flex flex-col items-center gap-3">
+      <div className="hidden flex-col items-center justify-center gap-8 bg-primary px-12 text-primary-foreground lg:flex lg:w-1/2">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex size-14 items-center justify-center rounded-2xl bg-white/10 text-xl font-bold backdrop-blur-sm">
+            H2
+          </div>
           <h1 className="text-4xl font-bold tracking-tight">Home2Salon</h1>
-          <p className="text-lg text-primary-foreground/70">
+          <p className="text-lg font-medium text-primary-foreground/70">
             Admin Panel
           </p>
         </div>
-        <p className="max-w-sm text-center text-sm leading-relaxed text-primary-foreground/60">
+        <p className="max-w-sm text-center text-sm leading-relaxed text-primary-foreground/50">
           Manage services, professionals, orders, and wallets — all from one
           dashboard.
         </p>
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-4">
-        <form onSubmit={handleSubmit} className="w-full max-w-sm">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Login</CardTitle>
+      <div className="flex flex-1 items-center justify-center bg-background px-4">
+        <form onSubmit={handleSubmit} className="w-full max-w-[400px]">
+          <Card className="shadow-lg">
+            <CardHeader className="space-y-1.5">
+              <CardTitle className="text-2xl font-bold">Login</CardTitle>
               <CardDescription>
                 Enter your <span className="font-medium">Phone Number</span> and
                 <span className="font-medium"> Password</span> below to login to
@@ -174,7 +177,7 @@ export function LoginForm() {
                 )}
                 <Link
                   to="/pass-reset"
-                  className="ml-auto inline-block text-sm underline"
+                  className="ml-auto inline-block text-sm text-muted-foreground transition-colors hover:text-primary"
                 >
                   Forgot your password?
                 </Link>

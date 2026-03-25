@@ -81,7 +81,7 @@ export function DataTable({ columns, data }: DataTableProps) {
         } transition-all duration-150`}
       >
         <Filter table={table} />
-        <div className="rounded-md border">
+        <div className="rounded-lg border">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -107,6 +107,7 @@ export function DataTable({ columns, data }: DataTableProps) {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className="cursor-pointer"
                     onClick={() => handleClick(row.original._id)}
                   >
                     {row.getVisibleCells().map((cell) => (

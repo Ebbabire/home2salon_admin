@@ -16,17 +16,17 @@ import { navLinks } from "./data/nav-links";
 export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="h-14 flex-row border-b lg:h-[60px]">
+      <SidebarHeader className="flex h-14 flex-row items-center border-b px-2 lg:h-[60px]">
         <SidebarMenu className="justify-center">
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              className="text-primary font-semibold data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="font-bold tracking-tight text-primary data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              Home2Salon
-              <div className="flex w-full justify-center">
-                {/* <img className="w-20" src={ALIBOLOGO} alt="Alibo logo" /> */}
-              </div>
+              <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
+                H2
+              </span>
+              <span className="text-base">Home2Salon</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -34,19 +34,18 @@ export function AppSidebar() {
       <SidebarContent>
         <NavMain items={navLinks} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t">
         <SidebarMenuButton
           size="lg"
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
-          <div className="flex flex-col justify-center pb-[1px] text-[10px]">
+          <div className="flex flex-col justify-center pb-[1px] text-[10px] text-muted-foreground">
             <span>Powered By</span>
-
             <a
               href="https://www.qemertech.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sidebar-foreground/60"
+              className="font-medium text-muted-foreground/80 transition-colors hover:text-primary"
             >
               Qemer Software Technology
             </a>

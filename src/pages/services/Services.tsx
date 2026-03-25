@@ -27,8 +27,8 @@ export const Services = () => {
 
   return (
     <>
-      <h1 className="text-lg font-semibold md:text-2xl">Services</h1>
-      <div className="flex flex-1 gap-4 rounded-lg border border-dashed p-4 shadow-sm">
+      <h1 className="text-xl font-bold tracking-tight md:text-2xl">Services</h1>
+      <div className="flex flex-1 gap-4 rounded-xl border bg-card p-4 shadow-sm">
         <CategoryList
           categories={categories ?? []}
           selectedId={selectedCategoryId}

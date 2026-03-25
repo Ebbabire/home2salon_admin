@@ -2,7 +2,7 @@
 
 **Purpose**: a single, versioned, repo-local source of truth the AI + humans read first to understand this project's architecture, conventions, and current state.
 
-**Last updated**: 2026-03-17
+**Last updated**: 2026-03-25
 
 ## What this repo is
 - **App type**: Beauty Service Admin Panel (Vite SPA)
@@ -57,12 +57,17 @@
   - User dropdown uses `useLogout()`
 
 ## Theme
-- **Green/cream palette** matching the mobile app design.
+- **Green/cream palette** matching the mobile app design; modernized in a UI-only skin pass (2026-03-25).
 - Light mode only. Dark mode has been fully removed.
-- CSS variables in `:root` (`src/index.css`): deep green primary (`#1B4332`), cream backgrounds, green accents.
-- Sidebar: warm cream background (matching page bg) with deep green icons and green active-state highlight (via `--sidebar-*` vars).
-- All buttons/toasts use `bg-primary` / `hover:bg-primary/80` — no hardcoded hex colors.
-- Login page: split layout with green left panel + white card right.
+- CSS variables in `:root` (`src/index.css`): deep green primary (`#1B4332`), subtle cream background, white cards (`--card: 0 0% 100%`), softer green-tinted borders (`150 18% 88%`).
+- **Design radius**: base `--radius: 0.75rem`; cards & dialogs use `rounded-xl`, tables/inputs use `rounded-lg`, badges use `rounded-md`.
+- Sidebar: white background, border-top footer, branded "H2" logo pill; active nav items use accent bg + primary text; icons use `text-muted-foreground` (green on hover/active).
+- Navbar: frosted glass effect (`bg-background/80 backdrop-blur-md`), ghost search input that gains border on focus.
+- All buttons/toasts use `bg-primary` / `hover:bg-primary/80` — no hardcoded hex colors; buttons have `shadow-sm` and `transition-all`.
+- Table headers: `bg-muted/40`, uppercase `text-xs font-semibold` tracking.
+- Page containers: `rounded-xl border bg-card shadow-sm` (replaced old `border-dashed`).
+- Page headings: `text-xl font-bold tracking-tight`.
+- Login page: split layout with green left panel (includes frosted H2 badge) + white card right (`shadow-lg`).
 - `darkMode` is not set in `tailwind.config.js`.
 - `ThemeProvider` and `ModeToggle` components have been deleted.
 
@@ -92,6 +97,10 @@
 - Stats cards: pending/assigned/completed order counts, total professionals, total services
 - Recent orders table (5 latest) with eye icon → detail page
 - React Query keys: `["orders"]`, `["professionals"]`, `["services"]`
+- Refactored into smaller units:
+  - `hooks/useDashboardData.ts` (queries + memoized counts/stats/recent orders + combined error)
+  - `components/DashboardStatsGrid.tsx` (keyboard-accessible stat navigation via links)
+  - `components/RecentOrdersTable.tsx` (date/service formatting helpers, link-based row action)
 
 ### Orders (`src/pages/orders/`)
 - **Pending** (`pending/PendingOrders.tsx`): filters orders by `PENDING_STATUSES`; inline actions per status (Request Payment / Verify / Assign Professional)
@@ -171,6 +180,8 @@
 - **Mock data active**: All services use in-memory mock — swap back to fetch when backend is ready.
 
 ## Change log
+- 2026-03-25: UI modernization (presentation-only skin pass) — refined CSS tokens (`index.css`: softer borders, white cards, `--radius: 0.75rem`, antialiased body); updated 12 `src/components/ui/*` primitives (button: `rounded-lg` + shadow + gap; card: `rounded-xl`; input/select: hover-border + ring polish; table: muted header bg + uppercase `text-xs` heads; badge: `rounded-md`; dialog/alert-dialog/toast: `rounded-xl` + `shadow-xl`; dropdown: `rounded-xl` + `p-1.5`; tooltip: `rounded-lg`; skeleton: `rounded-lg`); modernized sidebar (white bg, branded H2 pill logo, border-top footer, `text-muted-foreground` icons); navbar frosted glass effect (`backdrop-blur-md`, ghost search input); unified all page containers from `border-dashed` → `rounded-xl border bg-card`; standardized headings to `text-xl font-bold tracking-tight`; elevated login card (`shadow-lg` + frosted H2 badge on green panel); softened error-display layout; added `cursor-pointer` to admins data-table clickable rows. No logic, hooks, services, routes, or component tree changes.
+- 2026-03-23: Refactored Dashboard for maintainability and resilience — split `src/pages/dashboard/Dashboard.tsx` into orchestration + extracted `hooks/useDashboardData.ts`, `components/DashboardStatsGrid.tsx`, and `components/RecentOrdersTable.tsx`; added combined query error state, memoized dashboard derivations, and replaced click-only navigation with accessible links.
 - 2026-03-17: Removed dark mode — deleted `theme-provider.tsx` + `mood-toggle.tsx`; removed `ThemeProvider` from `main.tsx`; removed `.dark` CSS vars block; removed `darkMode` from tailwind config; stripped `dark:` classes from Navbar, Sidebar, Login, Admins, Input.
 - 2026-03-17: Pre-feature cleanup — deleted broken `productServices.ts`; refactored sidebar nav (fixed nested-interactive elements + `null` className bug via `cn()`); fixed `use-toast` listener leak; deleted unused `useQuery`/`useScreenSize` hooks; made `SelectInput` reusable (no `any`, no hardcoded field); removed debug logs; fixed AddAdmin toast copy; merged duplicate Prettier configs into single `.prettierrc.json`; added `.cursor/rules/frontend-conventions.mdc`.
 - 2026-03-17: Created initial memory pool from repo scan (routing, layout, Admins, Login, services, providers).
@@ -178,3 +189,4 @@
 - 2026-03-17: Added mock data layer — replaced all service files with in-memory mock implementations (`src/services/mock/data.ts`). Covers admins (3), categories (4), services (10), professionals (4), orders (10 across all statuses), wallet balances + transactions. Mock login accepts any existing admin. Mutations modify arrays in place with 300ms simulated latency.
 - 2026-03-17: Applied mobile app green/cream theme — updated all CSS variables in `index.css` (deep green primary, cream backgrounds, green sidebar); replaced 18 files' hardcoded hex colors (`#16432d`, `#276145`, `#378b63`) with `bg-primary`/`hover:bg-primary` tokens; updated sidebar navMain active-state classes for dark-green sidebar; restyled login page with green split layout; changed navbar search placeholder; fixed error-display text color.
 - 2026-03-17: Cream sidebar with green accents — changed `--sidebar-*` CSS vars from dark green bg to warm cream (`47 75% 98%`); icons use `text-primary` (deep green); active nav items use light green bg (`--sidebar-accent: 133 47% 90%`) with deep green text; header "Home2Salon" styled in `text-primary font-semibold`.
+- 2026-03-17: Refined theme to match reference design — sidebar active state: light green bg (`147 40% 85%`) + dark green text/icons; hover: very light green (`accent`); borders/inputs: clearly green-tinted (`147 40% 78%`); sidebar header: green box-shadow; icons: muted green (`primary/50`) normal → dark green on hover/active.

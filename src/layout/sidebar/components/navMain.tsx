@@ -46,15 +46,15 @@ const NavMain = ({ items }: { items: NavItem[] }) => {
                   <SidebarMenuButton
                     tooltip={item.title}
                     isActive={isTopActive}
-                    className="hover:!bg-accent hover:!text-primary"
+                    className="transition-colors duration-150 hover:!bg-accent hover:!text-primary"
                     asChild
                   >
                     <NavLink to={item.url}>
                       {item.icon && (
                         <item.icon
                           className={cn(
-                            "text-primary/60 group-hover/menu-item:text-primary",
-                            isTopActive && "!text-white"
+                            "text-muted-foreground transition-colors group-hover/menu-item:text-primary",
+                            isTopActive && "!text-primary"
                           )}
                         />
                       )}
@@ -66,13 +66,13 @@ const NavMain = ({ items }: { items: NavItem[] }) => {
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton
                         tooltip={item.title}
-                        className="hover:!bg-accent hover:!text-primary"
+                        className="transition-colors duration-150 hover:!bg-accent hover:!text-primary"
                       >
                         {item.icon && (
-                          <item.icon className="text-primary/60 group-hover/menu-item:text-primary" />
+                          <item.icon className="text-muted-foreground transition-colors group-hover/menu-item:text-primary" />
                         )}
                         <span>{item.title}</span>
-                        <ChevronRight className="ml-auto !text-sidebar-foreground transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        <ChevronRight className="ml-auto !text-muted-foreground/60 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
@@ -84,7 +84,7 @@ const NavMain = ({ items }: { items: NavItem[] }) => {
                             <SidebarMenuSubItem key={subItem.title}>
                               <SidebarMenuSubButton
                                 isActive={isSubActive}
-                                className="hover:!bg-accent hover:!text-primary"
+                                className="transition-colors duration-150 hover:!bg-accent hover:!text-primary"
                                 asChild
                               >
                                 <NavLink to={subItem.url}>

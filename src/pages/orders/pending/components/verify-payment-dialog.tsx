@@ -58,7 +58,7 @@ const VerifyPaymentDialog = ({ orderId, receiptUrl }: Props) => {
           <DialogTitle>Verify Advance Payment</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">
-          <div className="flex justify-center rounded-md border bg-muted/30 p-2">
+          <div className="flex justify-center rounded-lg border bg-muted/30 p-2">
             <img
               src={receiptUrl}
               alt="Payment receipt"

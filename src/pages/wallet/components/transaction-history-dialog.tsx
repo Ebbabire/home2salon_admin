@@ -57,7 +57,7 @@ const TransactionHistoryDialog = ({
             {transactions?.map((tx) => (
               <div
                 key={tx._id}
-                className="flex items-center justify-between rounded-md border px-3 py-2 text-sm"
+                className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm"
               >
                 <div className="flex flex-col gap-0.5">
                   <Badge

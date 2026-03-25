@@ -55,12 +55,12 @@ export const OrderDetail = () => {
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-4">
+    <div className="flex flex-col gap-5">
+      <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-lg font-semibold md:text-2xl">Order Details</h1>
+        <h1 className="text-xl font-bold tracking-tight md:text-2xl">Order Details</h1>
         <StatusBadge status={order.status} />
       </div>
 
@@ -194,7 +194,7 @@ export const OrderDetail = () => {
 
       <Separator />
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-3">
         {order.status === OrderStatus.PENDING_REVIEW && (
           <RequestPaymentDialog orderId={order._id ?? ""} />
         )}
