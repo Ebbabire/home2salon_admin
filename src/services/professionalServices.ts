@@ -1,10 +1,25 @@
 import type { IProfessional } from "@/types"
 import { apiFetch, type PaginatedResponse } from "./api"
 
-export async function getProfessionals(): Promise<{
+export interface GetProfessionalsQuery {
+  full_name?: string
+  phone_number?: string
+}
+
+export async function getProfessionals(
+  query: GetProfessionalsQuery = {},
+): Promise<{
   professionals: IProfessional[]
 }> {
-  return apiFetch<{ professionals: IProfessional[] }>("/professionals")
+  const params = new URLSearchParams()
+  const name = query.full_name?.trim()
+  const phone = query.phone_number?.trim()
+  if (name) params.set("full_name", name)
+  if (phone) params.set("phone_number", phone)
+  const qs = params.toString()
+  return apiFetch<{ professionals: IProfessional[] }>(
+    `/professionals${qs ? `?${qs}` : ""}`,
+  )
 }
 
 interface ListParams {

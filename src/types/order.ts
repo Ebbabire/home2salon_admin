@@ -77,7 +77,7 @@ export interface IOrder {
   advance_amount: number
   advance_percentage: number
   advance_payment_id?: IAdvancePayment
-  final_payment_receipt?: string
+  final_payment_id?: IAdvancePayment
   createdAt: string
   updatedAt: string
 }

@@ -353,31 +353,133 @@ export const mockOrders = [
   },
 ];
 
-// ─── Wallet ──────────────────────────────────────────────
-export const mockWalletBalances = [
-  { professional: mockProfessionals[0], balance: 4500 },
-  { professional: mockProfessionals[1], balance: 7200 },
-  { professional: mockProfessionals[2], balance: 2100 },
-  { professional: mockProfessionals[3], balance: 0 },
-];
-
+// ─── Wallet (aligned with API transaction documents) ─────
 export const mockWalletTransactions: Record<string, unknown[]> = {
   p1: [
-    { _id: "wt1", professional: "p1", type: "earning", amount: 1200, date: "2026-03-15T12:00:00Z", order: "ord8", notes: "Completed order #ord8" },
-    { _id: "wt2", professional: "p1", type: "earning", amount: 3800, date: "2026-03-10T14:00:00Z", order: "ord5", notes: "Completed order #ord5" },
-    { _id: "wt3", professional: "p1", type: "deduction", amount: 500, date: "2026-03-11T09:00:00Z", notes: "Bank transfer payout" },
+    {
+      _id: "wt1",
+      wallet_id: "w1",
+      professional_id: {
+        _id: "p1",
+        full_name: "Hiwot Alemayehu",
+        phone_number: "944556677",
+      },
+      order_id: { _id: "ord8", total_price: 15000, status: "completed" },
+      type: "earning",
+      amount: 1200,
+      note: "Completed order #ord8",
+      createdAt: "2026-03-15T12:00:00Z",
+      updatedAt: "2026-03-15T12:00:00Z",
+    },
+    {
+      _id: "wt2",
+      wallet_id: "w1",
+      professional_id: {
+        _id: "p1",
+        full_name: "Hiwot Alemayehu",
+        phone_number: "944556677",
+      },
+      order_id: { _id: "ord5", total_price: 12000, status: "completed" },
+      type: "earning",
+      amount: 3800,
+      note: "Completed order #ord5",
+      createdAt: "2026-03-10T14:00:00Z",
+      updatedAt: "2026-03-10T14:00:00Z",
+    },
+    {
+      _id: "wt3",
+      wallet_id: "w1",
+      professional_id: {
+        _id: "p1",
+        full_name: "Hiwot Alemayehu",
+        phone_number: "944556677",
+      },
+      type: "deduction",
+      amount: 500,
+      note: "Bank transfer payout",
+      createdAt: "2026-03-11T09:00:00Z",
+      updatedAt: "2026-03-11T09:00:00Z",
+    },
   ],
   p2: [
-    { _id: "wt4", professional: "p2", type: "earning", amount: 4200, date: "2026-03-12T10:00:00Z", order: "ord9", notes: "Completed order #ord9" },
-    { _id: "wt5", professional: "p2", type: "earning", amount: 4500, date: "2026-03-08T11:00:00Z", notes: "Previous completed orders" },
-    { _id: "wt6", professional: "p2", type: "deduction", amount: 1500, date: "2026-03-09T10:00:00Z", notes: "Bank transfer payout" },
+    {
+      _id: "wt4",
+      wallet_id: "w2",
+      professional_id: {
+        _id: "p2",
+        full_name: "Meron Tadesse",
+        phone_number: "955667788",
+      },
+      order_id: { _id: "ord9", total_price: 8000, status: "completed" },
+      type: "earning",
+      amount: 4200,
+      note: "Completed order #ord9",
+      createdAt: "2026-03-12T10:00:00Z",
+      updatedAt: "2026-03-12T10:00:00Z",
+    },
+    {
+      _id: "wt5",
+      wallet_id: "w2",
+      professional_id: {
+        _id: "p2",
+        full_name: "Meron Tadesse",
+        phone_number: "955667788",
+      },
+      order_id: { _id: "ord4", total_price: 9000, status: "completed" },
+      type: "earning",
+      amount: 4500,
+      note: "Previous completed orders",
+      createdAt: "2026-03-08T11:00:00Z",
+      updatedAt: "2026-03-08T11:00:00Z",
+    },
+    {
+      _id: "wt6",
+      wallet_id: "w2",
+      professional_id: {
+        _id: "p2",
+        full_name: "Meron Tadesse",
+        phone_number: "955667788",
+      },
+      type: "deduction",
+      amount: 1500,
+      note: "Bank transfer payout",
+      createdAt: "2026-03-09T10:00:00Z",
+      updatedAt: "2026-03-09T10:00:00Z",
+    },
   ],
   p3: [
-    { _id: "wt7", professional: "p3", type: "earning", amount: 2500, date: "2026-03-10T15:00:00Z", order: "ord10", notes: "Completed order #ord10" },
-    { _id: "wt8", professional: "p3", type: "deduction", amount: 400, date: "2026-03-12T08:00:00Z", notes: "Cash payout" },
+    {
+      _id: "wt7",
+      wallet_id: "w3",
+      professional_id: {
+        _id: "p3",
+        full_name: "Tigist Hailu",
+        phone_number: "966778899",
+      },
+      order_id: { _id: "ord10", total_price: 5000, status: "completed" },
+      type: "earning",
+      amount: 2500,
+      note: "Completed order #ord10",
+      createdAt: "2026-03-10T15:00:00Z",
+      updatedAt: "2026-03-10T15:00:00Z",
+    },
+    {
+      _id: "wt8",
+      wallet_id: "w3",
+      professional_id: {
+        _id: "p3",
+        full_name: "Tigist Hailu",
+        phone_number: "966778899",
+      },
+      type: "deduction",
+      amount: 400,
+      note: "Cash payout",
+      createdAt: "2026-03-12T08:00:00Z",
+      updatedAt: "2026-03-12T08:00:00Z",
+    },
   ],
   p4: [],
-};
+}
 
 // ─── Helpers for mutations ───────────────────────────────
 export { nextId };

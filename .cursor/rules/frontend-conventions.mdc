@@ -28,7 +28,8 @@ alwaysApply: false
 - Mutations must invalidate the matching query keys on success.
 
 ## Forms
-- Use `react-hook-form` + `zod` for validation.
+- Use `react-hook-form` + `zod` for validation on substantive forms (create/edit flows, multi-field validation).
+- Simple search/filter controls (e.g. table filters, assign-dialog lookup) may use controlled inputs + debounced queries without RHF/Zod.
 - Reusable form components (`FormComp`, `SelectInput`) must not hardcode field names.
 
 ## Logging / debugging

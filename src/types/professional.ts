@@ -6,26 +6,14 @@ export interface IProfessional {
   phone_number: string
   password?: string
   skills: IService[]
+  wallet_id: {
+    _id: string
+    professional_id: string
+    balance: number
+    createdAt: string
+    updatedAt: string
+  }
   status?: "Active" | "Inactive"
-  assigned_orders?: number
-  created_at?: string
-  updated_at?: string
-}
-
-export type TransactionType = "earning" | "deduction"
-
-export interface IWalletTransaction {
-  _id?: string
-  professional: string | IProfessional
-  type: TransactionType
-  amount: number
-  date?: string
-  order?: string
-  notes?: string
-  created_at?: string
-}
-
-export interface IWalletBalance {
-  professional: IProfessional
-  balance: number
+  createdAt?: string
+  updatedAt?: string
 }

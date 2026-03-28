@@ -7,4 +7,5 @@ export { PendingOrders } from "@/pages/orders/pending/PendingOrders";
 export { AssignedOrders } from "@/pages/orders/assigned/AssignedOrders";
 export { CompletedOrders } from "@/pages/orders/completed/CompletedOrders";
 export { OrderDetail } from "@/pages/orders/detail/OrderDetail";
-export { Wallet } from "@/pages/wallet/Wallet";
+export { Wallet } from "@/pages/wallet/Wallet"
+export { Settings } from "@/pages/settings/Settings"

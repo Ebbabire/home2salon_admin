@@ -19,9 +19,10 @@ import SmartImage from "@/components/smart-image"
 interface Props {
   paymentId: string
   receiptUrl: string
+  orderId: string
 }
 
-const VerifyPaymentDialog = ({ paymentId, receiptUrl }: Props) => {
+const VerifyPaymentDialog = ({ paymentId, receiptUrl, orderId }: Props) => {
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState("")
   const queryClient = useQueryClient()
@@ -34,6 +35,7 @@ const VerifyPaymentDialog = ({ paymentId, receiptUrl }: Props) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pendingOrders"] })
       queryClient.invalidateQueries({ queryKey: ["dashboardOrders"] })
+      queryClient.invalidateQueries({ queryKey: ["order", orderId] })
       setOpen(false)
       setApproving(false)
       setRejecting(false)

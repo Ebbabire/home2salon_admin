@@ -1,63 +1,94 @@
-import { useMemo } from "react";
-import { ColumnDef } from "@tanstack/react-table";
-import type { IWalletBalance } from "@/types";
-import TransactionHistoryDialog from "./components/transaction-history-dialog";
-import RecordPayoutDialog from "./components/record-payout-dialog";
+import { useMemo } from "react"
+import { ColumnDef } from "@tanstack/react-table"
+import moment from "moment"
+import type { IWalletTransaction } from "@/types"
+import { Badge } from "@/components/ui/badge"
 
 const useWalletColumns = () => {
-  const columns: ColumnDef<IWalletBalance, unknown>[] = useMemo(
+  const columns: ColumnDef<IWalletTransaction, unknown>[] = useMemo(
     () => [
       {
+        id: "createdAt",
+        accessorFn: (row) => row.createdAt,
+        header: "Date",
+        cell: ({ row }) => (
+          <span className="text-sm text-muted-foreground">
+            {moment(row.original.createdAt).format("lll")}
+          </span>
+        ),
+      },
+      {
         id: "full_name",
-        accessorFn: (row) => row.professional.full_name,
+        accessorFn: (row) => row.professional_id.full_name,
         header: "Professional",
         cell: ({ row }) => (
           <div className="capitalize">
-            {row.original.professional.full_name}
+            {row.original.professional_id?.full_name ?? "—"}
           </div>
         ),
       },
       {
         id: "phone_number",
-        accessorFn: (row) => row.professional.phone_number,
+        accessorFn: (row) => row.professional_id?.phone_number ?? "—",
         header: "Phone",
         cell: ({ row }) => (
-          <div>0{row.original.professional.phone_number}</div>
+          <div>{row.original.professional_id?.phone_number ?? "—"}</div>
         ),
       },
       {
-        accessorKey: "balance",
-        header: "Balance (ETB)",
-        cell: ({ row }) => (
-          <div className="font-semibold text-green-700">
-            {row.original.balance.toLocaleString()} ETB
-          </div>
-        ),
-      },
-      {
-        id: "actions",
-        header: () => <div className="text-right">Actions</div>,
+        id: "type",
+        accessorFn: (row) => row.type,
+        header: "Type",
         cell: ({ row }) => {
-          const proId = row.original.professional._id ?? "";
-          const proName = row.original.professional.full_name;
+          const { type } = row.original
           return (
-            <div className="flex justify-end gap-2">
-              <TransactionHistoryDialog
-                professionalId={proId}
-                professionalName={proName}
-              />
-              <RecordPayoutDialog
-                professionalId={proId}
-                professionalName={proName}
-              />
-            </div>
-          );
+            <Badge
+              variant="outline"
+              className={
+                type === "earning"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }
+            >
+              {type === "earning" ? "Earning" : "Deduction"}
+            </Badge>
+          )
         },
       },
-    ],
-    [],
-  );
-  return columns;
-};
+      {
+        accessorKey: "amount",
+        header: "Amount (ETB)",
+        cell: ({ row }) => {
+          const { type, amount } = row.original
+          return (
+            <div
+              className={
+                type === "earning"
+                  ? "font-semibold text-green-700"
+                  : "font-semibold text-red-700"
+              }
+            >
+              {type === "earning" ? "+" : "-"}
+              {amount.toLocaleString()} ETB
+            </div>
+          )
+        },
+      },
 
-export default useWalletColumns;
+      {
+        id: "note",
+        accessorFn: (row) => row.note ?? "",
+        header: "Note",
+        cell: ({ row }) => (
+          <span className="line-clamp-2 max-w-[200px] text-xs text-muted-foreground">
+            {row.original.note ?? "—"}
+          </span>
+        ),
+      },
+    ],
+    []
+  )
+  return columns
+}
+
+export default useWalletColumns

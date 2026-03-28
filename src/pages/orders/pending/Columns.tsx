@@ -83,6 +83,7 @@ const usePendingColumns = () => {
                   <VerifyPaymentDialog
                     paymentId={order.advance_payment_id?._id as string}
                     receiptUrl={order.advance_payment_id?.receipt_image ?? ""}
+                    orderId={order._id ?? ""}
                   />
                 </>
               )}

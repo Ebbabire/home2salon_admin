@@ -10,7 +10,8 @@ import {
   Professionals,
   Services,
   Wallet,
-} from "@/pages";
+  Settings,
+} from "@/pages"
 import { Navigate, Route, Routes } from "react-router-dom";
 
 const AllRoutes = () => {
@@ -27,6 +28,7 @@ const AllRoutes = () => {
         <Route path="professionals" element={<Professionals />} />
         <Route path="admins" element={<Admins />} />
         <Route path="wallet" element={<Wallet />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
       <Route path="/login" element={<LoginForm />} />
     </Routes>

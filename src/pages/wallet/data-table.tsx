@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -8,7 +8,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+} from "@tanstack/react-table"
 import {
   Table,
   TableBody,
@@ -16,24 +16,24 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import Filter from "@/components/filter/Filter";
-import type { IWalletBalance } from "@/types";
+} from "@/components/ui/table"
+// import Filter from "@/components/filter/Filter"
+import type { IWalletTransaction } from "@/types"
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "@/components/ui/pagination"
 
 interface Props {
-  columns: ColumnDef<IWalletBalance, unknown>[];
-  data: IWalletBalance[];
-  page: number;
-  totalPages: number;
-  totalResults: number;
-  onPageChange: (page: number) => void;
+  columns: ColumnDef<IWalletTransaction, unknown>[]
+  data: IWalletTransaction[]
+  page: number
+  totalPages: number
+  totalResults: number
+  onPageChange: (page: number) => void
 }
 
 export function WalletDataTable({
@@ -44,8 +44,8 @@ export function WalletDataTable({
   totalResults,
   onPageChange,
 }: Props) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const table = useReactTable({
     data,
     columns,
@@ -55,11 +55,11 @@ export function WalletDataTable({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     state: { sorting, columnFilters },
-  });
+  })
 
   return (
     <div>
-      <Filter table={table} />
+      {/* <Filter table={table} /> */}
       <div className="rounded-lg border">
         <Table>
           <TableHeader>
@@ -71,7 +71,7 @@ export function WalletDataTable({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 ))}
@@ -86,7 +86,7 @@ export function WalletDataTable({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
@@ -115,8 +115,8 @@ export function WalletDataTable({
               <PaginationPrevious
                 href="#"
                 onClick={(e) => {
-                  e.preventDefault();
-                  if (page > 1) onPageChange(page - 1);
+                  e.preventDefault()
+                  if (page > 1) onPageChange(page - 1)
                 }}
                 className={page <= 1 ? "pointer-events-none opacity-50" : ""}
               />
@@ -125,8 +125,8 @@ export function WalletDataTable({
               <PaginationNext
                 href="#"
                 onClick={(e) => {
-                  e.preventDefault();
-                  if (page < totalPages) onPageChange(page + 1);
+                  e.preventDefault()
+                  if (page < totalPages) onPageChange(page + 1)
                 }}
                 className={
                   page >= totalPages ? "pointer-events-none opacity-50" : ""
@@ -137,5 +137,5 @@ export function WalletDataTable({
         </Pagination>
       </div>
     </div>
-  );
+  )
 }

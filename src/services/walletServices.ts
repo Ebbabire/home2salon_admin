@@ -1,45 +1,42 @@
-import type { IWalletBalance, IWalletTransaction } from "@/types";
-import { apiFetch, type PaginatedResponse } from "./api";
-
-export async function getWalletBalances(): Promise<IWalletBalance[]> {
-  return apiFetch<IWalletBalance[]>("/wallet");
-}
+import type { IWalletTransaction } from "@/types"
+import { apiFetch, type PaginatedResponse } from "./api"
 
 interface ListParams {
-  page?: number;
-  limit?: number;
+  page?: number
+  limit?: number
 }
 
-export async function getWalletBalancesPaginated(
-  params: ListParams = {},
-): Promise<PaginatedResponse<IWalletBalance[]>> {
-  const page = params.page ?? 1;
-  const limit = params.limit ?? 10;
+export async function getWalletTransactionsAdminPaginated(
+  params: ListParams = {}
+): Promise<PaginatedResponse<IWalletTransaction[]>> {
+  const page = params.page ?? 1
+  const limit = params.limit ?? 10
 
-  return apiFetch<PaginatedResponse<IWalletBalance[]>>(
-    `/wallet?page=${page}&limit=${limit}`,
-    { unwrapData: false },
-  );
+  return apiFetch<PaginatedResponse<IWalletTransaction[]>>(
+    `/wallet/transactions-admin?page=${page}&limit=${limit}`,
+    { unwrapData: false }
+  )
 }
 
 export async function getWalletTransactions(
-  professional_id: string,
+  professional_id: string
 ): Promise<IWalletTransaction[]> {
   return apiFetch<IWalletTransaction[]>(
-    `/wallet/${professional_id}/transactions`,
-  );
+    `/wallet/${professional_id}/transactions`
+  )
 }
 
 export async function recordPayout(payload: {
-  professional_id: string;
-  amount: number;
-  notes?: string;
+  professional_id: string
+  amount: number
+  notes?: string
 }): Promise<IWalletTransaction> {
-  return apiFetch<IWalletTransaction>(`/wallet/${payload.professional_id}/deduct`, {
+  return apiFetch<IWalletTransaction>(`/wallet/deduct`, {
     method: "POST",
     body: {
+      professional_id: payload.professional_id,
       amount: payload.amount,
-      notes: payload.notes,
+      note: payload.notes,
     },
-  });
+  })
 }

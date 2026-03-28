@@ -14,6 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import Loading from "@/components/loader"
 import Error from "@/components/error-display"
+import { WalletDeductDialog } from "@/components/wallet-deduct-dialog"
 import EditProfessional from "./edit-professional"
 import ChangeProfessionalStatus from "./change-status"
 
@@ -73,8 +74,37 @@ export default function ProfessionalDetail({ professionalId, close }: Props) {
             <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Registered At</span>
               <span className="font-medium">
-                {moment(professional.created_at).format("ll")}
+                {moment(professional.createdAt).format("ll")}
               </span>
+            </li>
+            <li className="flex flex-wrap items-center justify-between gap-2 gap-y-2">
+              <span className="text-muted-foreground">Wallet Balance</span>
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                <span className="font-medium">
+                  {professional.wallet_id
+                    ? `${professional.wallet_id.balance.toLocaleString()} ETB`
+                    : "—"}
+                </span>
+                {professional._id && professional.wallet_id ? (
+                  <WalletDeductDialog
+                    professionalId={professional._id}
+                    professionalName={professional.full_name}
+                    maxDeductible={professional.wallet_id.balance}
+                    title="Deduct from wallet"
+                    submitLabel="Deduct amount"
+                    trigger={
+                      <Button
+                        disabled={professional.wallet_id.balance === 0}
+                        variant="outline"
+                        size="sm"
+                        className="h-8 text-xs"
+                      >
+                        Deduct
+                      </Button>
+                    }
+                  />
+                ) : null}
+              </div>
             </li>
             <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Status</span>

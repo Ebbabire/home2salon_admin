@@ -43,9 +43,6 @@ export const OrderDetail = () => {
 
   if (!order) return null
 
-  const professional = order.services[0]?.assigned_professionals?.[0]
-  const serviceNames = order.services.map((s) => s.service_id.name)
-
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center gap-3">
@@ -100,6 +97,14 @@ export const OrderDetail = () => {
                 <span className="font-medium">{order.advance_amount} ETB</span>
               </div>
             )}
+            {order.remaining_amount && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Remaining Amount</span>
+                <span className="font-medium">
+                  {order.remaining_amount} ETB
+                </span>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -111,8 +116,11 @@ export const OrderDetail = () => {
             <ul className="space-y-1 text-sm">
               {order.services.map((s, i) => (
                 <li key={i} className="flex justify-between">
-                  <span>{serviceNames[i]}</span>
+                  <span className="w-[40%] truncate">{s.service_id.name}</span>
                   <span className="font-medium">{s.price} ETB</span>
+                  <span className="font-medium">
+                    {s.assigned_professionals[0]?.full_name ?? "Not assigned"}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -121,16 +129,9 @@ export const OrderDetail = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Professional & Receipts</CardTitle>
+            <CardTitle className="text-base">Receipts</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Professional</span>
-              <span className="font-medium capitalize">
-                {professional?.full_name ?? "Not assigned"}
-              </span>
-            </div>
-
             {order.advance_payment_id?.receipt_image && (
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Advance Receipt</span>
@@ -147,11 +148,11 @@ export const OrderDetail = () => {
               </div>
             )}
 
-            {order.final_payment_receipt && (
+            {order.final_payment_id?.receipt_image && (
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Final Receipt</span>
                 <ImagePreviewDialog
-                  src={order.final_payment_receipt}
+                  src={`${import.meta.env.VITE_BASE_URL}/users/get-images?name=${order.final_payment_id.receipt_image}`}
                   alt="Final Payment Receipt"
                   trigger={
                     <button className="flex items-center gap-1 text-green-600 hover:underline">
@@ -185,6 +186,7 @@ export const OrderDetail = () => {
           <VerifyPaymentDialog
             paymentId={order.advance_payment_id?._id as string}
             receiptUrl={order.advance_payment_id?.receipt_image ?? ""}
+            orderId={order._id ?? ""}
           />
         )}
         {order.status === OrderStatus.PAYMENT_APPROVED && (

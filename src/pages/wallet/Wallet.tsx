@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { getWalletBalancesPaginated } from "@/services/walletServices"
+import { getWalletTransactionsAdminPaginated } from "@/services/walletServices"
 import { getSession } from "@/services/session"
 import Loading from "@/components/loader"
 import Error from "@/components/error-display"
 import { WalletDataTable } from "./data-table"
 import useWalletColumns from "./Columns"
 import { usePageParam } from "@/hooks/use-page-param"
-import type { IWalletBalance } from "@/types"
+import type { IWalletTransaction } from "@/types"
 
 export const Wallet = () => {
   const { userRole } = getSession()
@@ -16,28 +16,28 @@ export const Wallet = () => {
   const [limit] = useState(10)
 
   const {
-    data: balanceResponse,
+    data: txResponse,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["walletBalances", page, limit],
-    queryFn: () => getWalletBalancesPaginated({ page, limit }),
-    enabled: userRole === "Super Admin",
+    queryKey: ["walletTransactionsAdmin", page, limit],
+    queryFn: () => getWalletTransactionsAdminPaginated({ page, limit }),
+    enabled: userRole === "superadmin",
   })
 
-  const balances: IWalletBalance[] = balanceResponse
-    ? (Object.values(balanceResponse.data)[0] ?? [])
-    : []
-  const totalPages = balanceResponse?.totalPages ?? 0
-  const totalResults = balanceResponse?.totalResults ?? 0
+  const transactions: IWalletTransaction[] = txResponse?.data.transactions ?? []
+  const totalPages = txResponse?.totalPages ?? 0
+  const totalResults = txResponse?.totalResults ?? 0
+
+  console.log(transactions)
 
   useEffect(() => {
-    if (!balanceResponse) return
+    if (!txResponse) return
     if (page > totalPages && totalPages > 0) {
       setPage(totalPages)
     }
-  }, [balanceResponse, page, totalPages, setPage])
+  }, [txResponse, page, totalPages, setPage])
 
   if (userRole !== "superadmin") {
     return (
@@ -52,18 +52,21 @@ export const Wallet = () => {
   return (
     <>
       <h1 className="text-xl font-bold tracking-tight md:text-2xl">
-        Wallet Management
+        Wallet transactions
       </h1>
+      <p className="mb-2 text-sm text-muted-foreground">
+        All wallet movements across professionals (admin view).
+      </p>
       <div className="flex-1 rounded-xl border bg-card px-4 py-4 shadow-sm">
         {isLoading || isError ? (
           <div className="flex h-full items-center justify-center">
             <Loading isLoading={isLoading} />
             <Error error={error} />
           </div>
-        ) : balances.length > 0 ? (
+        ) : transactions.length > 0 ? (
           <WalletDataTable
             columns={columns}
-            data={balances}
+            data={transactions}
             page={page}
             totalPages={totalPages}
             totalResults={totalResults}
@@ -72,7 +75,7 @@ export const Wallet = () => {
         ) : (
           <div className="flex h-full flex-1 items-center justify-center">
             <h3 className="text-lg text-muted-foreground">
-              No wallet data available
+              No wallet transactions yet
             </h3>
           </div>
         )}

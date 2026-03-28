@@ -2,7 +2,7 @@
 
 **Purpose**: a single, versioned, repo-local source of truth the AI + humans read first to understand this project's architecture, conventions, and current state.
 
-**Last updated**: 2026-03-27
+**Last updated**: 2026-03-30
 
 ## What this repo is
 - **App type**: Beauty Service Admin Panel (Vite SPA)
@@ -40,6 +40,7 @@
 - `/professionals` → Professionals CRUD + detail panel
 - `/admins` → Admins CRUD + detail panel
 - `/wallet` → Wallet Management (Super Admin gated)
+- `/settings` → Settings (change password for all admins; advance payment % tab Super Admin only)
 - `/login` → Login page (outside `Layout`)
 
 ## Layout + navigation
@@ -52,6 +53,7 @@
   - Professionals (`/professionals`)
   - Admins (`/admins`)
   - Wallet (`/wallet`)
+  - Settings (`/settings`)
 - **Navbar**: `src/layout/navbar/Navbar.tsx`
   - Search input placeholder: "Search..."
   - User dropdown uses `useLogout()`
@@ -84,11 +86,15 @@
   - `serviceServices.ts`: `GET/POST /services`, `GET /services/category/:categoryId`, `GET/PATCH/DELETE /services/:id` (FormData for image upload)
   - `professionalServices.ts`: `GET/POST /professional`, `GET/PATCH /professional/:id`
   - `orderServices.ts`: `GET /order`, `GET /order/:id`, `PATCH /order/:id/request-payment`, `PATCH /order/:id/verify-payment`, `PATCH /order/:id/adjust-schedule`, `PATCH /order/:id/assign`, `PATCH /order/:id/complete`
-  - `walletServices.ts`: `GET /wallet`, `GET /wallet/:id/transactions`, `POST /wallet/:id/deduct`
+  - `walletServices.ts`: `GET /wallet/transactions-admin?page&limit` (paginated admin transaction feed), `GET /wallet/:professional_id/transactions`, `POST /wallet/:professional_id/deduct`
+  - `settingsServices.ts`: `GET /settings`, `PATCH /settings` (body: `advance_payment_percentage`)
+  - `adminServices.ts`: `POST /admins/change-password` (body: `current_password`, `new_password`)
 
 ## Shared types (`src/types/`)
 - `service.ts`: `ICategory`, `IService` use snake_case backend keys for timestamps (`created_at`, `updated_at`)
-- `professional.ts`: `IProfessional`, `IWalletTransaction`, `IWalletBalance` use snake_case backend keys (`full_name`, `phone_number`, `assigned_orders`, `created_at`, `updated_at`)
+- `professional.ts`: `IProfessional` uses snake_case backend keys (`full_name`, `phone_number`, `assigned_orders`, `created_at`, `updated_at`)
+- `wallet.ts`: `IWalletTransaction` matches API documents — `wallet_id`, populated `professional_id`, optional populated `order_id`, `type` (`earning` | `deduction`), `amount`, `note`, `createdAt` / `updatedAt` (camelCase)
+- `settings.ts`: `IAppSettings` — `advance_payment_percentage` (number)
 - `order.ts`: `IOrder`, `OrderStatus` enum, `IOrderedService`, `ICustomerInfo` use snake_case backend keys (`full_name`, `phone_number`, `total_price`, `scheduled_date`, `scheduled_time`, `advance_payment_*`, `created_at`, `updated_at`) + status grouping constants (`PENDING_STATUSES`, `ASSIGNED_STATUSES`, `COMPLETED_STATUSES`)
 - `index.ts`: barrel re-exports
 
@@ -119,14 +125,18 @@
 
 ### Professionals (`src/pages/professionals/`)
 - Same pattern as Admins: table + row-click detail panel + add/edit dialogs + status toggle
+- Detail panel: wallet balance + **`WalletDeductDialog`** (`Deduct`) when `wallet_id` is present (validates amount ≤ balance)
 - React Query keys: `["professionals"]`, `["professional", id]`
+
+### Settings (`src/pages/settings/`)
+- Card + shadcn **Tabs**: **Change password** (RHF + Zod; `changeAdminPassword` → `POST /admins/change-password`; success clears session → `/login`)
+- **Advance payment** tab only when `userRole === "superadmin"`: load/save `advance_payment_percentage` via `getAppSettings` / `updateAppSettings`, React Query key `["appSettings"]`
 
 ### Wallet (`src/pages/wallet/`)
 - Super Admin gated (session role check)
-- Table: professional name, phone, balance, actions
-- TransactionHistoryDialog per professional
-- RecordPayoutDialog (deduction)
-- React Query keys: `["walletBalances"]`, `["walletTransactions", professionalId]`
+- Main table: paginated **transactions** from `transactions-admin` (date, professional, phone, type, amount, order link, note, row actions)
+- TransactionHistoryDialog / RecordPayoutDialog per professional (same `IWalletTransaction` shape for `/wallet/:id/transactions`)
+- React Query keys: `["walletTransactionsAdmin", page, limit]`, `["walletTransactions", professionalId]`
 
 ### Admins (`src/pages/admins/*`)
 - `Admins.tsx`
@@ -154,6 +164,8 @@
 - **`Error`** (`src/components/error-display.tsx`): error state display with retry (reloads page).
 - **`StatusBadge`** (`src/components/status-badge.tsx`): maps `OrderStatus` enum → colored badge (label + Tailwind classes).
 - **`ImagePreviewDialog`** (`src/components/image-preview-dialog.tsx`): generic trigger-based dialog that shows a full-size image preview.
+- **`WalletDeductDialog`** (`src/components/wallet-deduct-dialog.tsx`): records wallet deduction via `recordPayout()`; optional `maxDeductible` client validation; invalidates `walletTransactionsAdmin`, `walletTransactions`, `professional`, `professionals`. Used from professional detail and thin `RecordPayoutDialog` in wallet table.
+- **Tabs** (`src/components/ui/tabs.tsx`): Radix tabs (shadcn-style); used on Settings page.
 
 ## "How we extend the app" (convention)
 - **Add a page**: `src/pages/<feature>/<Feature>.tsx`
@@ -178,6 +190,11 @@
 - **Mock data active**: All services use in-memory mock — swap back to fetch when backend is ready.
 
 ## Change log
+- 2026-03-30: Added **Settings** at `/settings` — `src/pages/settings/{Settings.tsx,change-password-tab.tsx,advance-payment-tab.tsx}` (card + tabs); `changeAdminPassword` in `adminServices.ts` (`POST /admins/change-password`); `settingsServices.ts` for `GET/PATCH /settings`; `IAppSettings` in `src/types/settings.ts`; route + sidebar **Settings** (`BiCog`). Advance payment tab visible only for `superadmin`.
+- 2026-03-29: Shared **`WalletDeductDialog`** (`src/components/wallet-deduct-dialog.tsx`) for wallet deductions via existing `recordPayout` API; **`RecordPayoutDialog`** refactored to wrap it; professional **`detail-page.tsx`** shows **Deduct** next to balance with `maxDeductible` = current balance; invalidates professional + professionals queries on success.
+- 2026-03-29: Wallet domain aligned to transaction documents — added `src/types/wallet.ts` (`IWalletTransaction` with populated `professional_id` / optional `order_id`, `note`, camelCase timestamps); removed `IWalletBalance` and old wallet types from `professional.ts`; `walletServices.ts` uses `getWalletTransactionsAdminPaginated()` for `GET /wallet/transactions-admin` with `data.transactions`; `Wallet.tsx` / `Columns.tsx` / `data-table.tsx` list transactions (order deep-link, type/amount badges); `transaction-history-dialog.tsx` uses `note`, `createdAt`, `order_id`; payout mutation invalidates `walletTransactionsAdmin`; mock wallet data updated in `src/services/mock/data.ts`; `PROJECT_MEMORY_POOL` wallet + endpoints sections updated.
+- 2026-03-29: Assign-dialog professional lookup uses server query params — `getProfessionals` in `src/services/professionalServices.ts` accepts optional `full_name` / `phone_number` query strings; dialog module moved to `src/pages/orders/pending/components/assign-professional-dialog/` with `useAssignProfessionalDialog`, `query-keys.ts`, and split presentational components; debounced search + `keepPreviousData`, `Search by` select (name vs phone), refetch shimmer on query row, client-side filter to professionals whose `skills` include the active line’s service; `.cursor/rules/frontend-conventions.mdc` clarifies RHF+Zod vs simple search/filter UIs.
+- 2026-03-28: Redesigned assign-professional dialog as a desktop split-pane — assign dialog (now under `assign-professional-dialog/`) uses a left column (selectable services + assignment summary) and a right column (search + scrollable professional list with skill badges); assigning advances to the next unassigned service; wider dialog (`sm:max-w-3xl`), footer shows assigned count; success invalidation includes `["order", orderId]`.
 - 2026-03-27: Improved scalability of service-level professional assignment UI — updated `src/pages/orders/pending/components/assign-professional-dialog.tsx` to use searchable per-service select inputs (name/phone filter) instead of rendering large clickable lists; pre-fills existing service assignments when present, shows per-service required state, and keeps submit guarded until every service has a selected professional.
 - 2026-03-27: Switched order professional assignment to service-level payloads — updated `src/services/orderServices.ts` `assignProfessional()` to send backend-required `services: [{ service_id, professionals[] }]` payload; refactored `src/pages/orders/pending/components/assign-professional-dialog.tsx` to assign one professional per order service (service-grouped selector UI + per-service local state + submit guard requiring all services assigned); updated callsite in `src/pages/orders/pending/Columns.tsx` to pass `order.services` into assignment dialog.
 - 2026-03-27: Fixed image-preview loading collapse in modal — updated `src/components/image-preview-dialog.tsx` to reserve a stable image viewport (`aspect-[4/3]` with muted background) so `SmartImage` shimmer is visible immediately and the dialog no longer appears as an empty strip while image bytes are loading.

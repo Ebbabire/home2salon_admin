@@ -21,15 +21,7 @@ const useAssignedColumns = () => {
           </div>
         ),
       },
-      {
-        id: "professional",
-        header: "Professional",
-        cell: ({ row }) => {
-          const pro = row.original.services[0]?.assigned_professionals?.[0]
-          if (!pro) return <span className="text-muted-foreground">—</span>
-          return <div className="capitalize">{pro.full_name}</div>
-        },
-      },
+
       {
         id: "services",
         header: "Services",

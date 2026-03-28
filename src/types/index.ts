@@ -1,6 +1,12 @@
 export type { ICategory, IService } from "./service";
-export type { IProfessional, IWalletTransaction, IWalletBalance } from "./professional";
-export type { TransactionType } from "./professional";
+export type { IProfessional } from "./professional"
+export type {
+  IWalletTransaction,
+  IWalletTransactionOrder,
+  IWalletTransactionProfessional,
+  TransactionType,
+  WalletTransactionType,
+} from "./wallet"
 export type {
   IOrder,
   IOrderUser,
@@ -10,4 +16,5 @@ export type {
   IOrderServiceItem,
   IAdvancePayment,
 } from "./order";
-export { OrderStatus, PENDING_STATUSES, ASSIGNED_STATUSES, COMPLETED_STATUSES } from "./order";
+export { OrderStatus, PENDING_STATUSES, ASSIGNED_STATUSES, COMPLETED_STATUSES } from "./order"
+export type { IAppSettings } from "./settings"
