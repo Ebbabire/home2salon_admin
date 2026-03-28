@@ -9,40 +9,37 @@ type FormValues = z.infer<typeof formSchema>;
 
 // form schema for adding admins
 const formSchema = z.object({
-  fullName: z.string().min(1),
-  phoneNumber: z
+  full_name: z.string().min(1),
+  phone_number: z
     .string()
     .refine(
       (value) => /^(\+251|0)\d{9}$/.test(value),
       "Please enter a valid phone number",
     ),
-  email: z.string().email(),
   password: z.string().min(6, {
     message: "password must be at least 6 characters.",
   }),
-  role: z.union([z.literal("Admin"), z.literal("Super Admin")]),
+  role: z.union([z.literal("admin"), z.literal("superadmin")]),
 });
 
 // form schema when in editing mode
 const editFormSchema = z.object({
-  fullName: z.string().min(1),
-  phoneNumber: z
+  full_name: z.string().min(1),
+  phone_number: z
     .string()
     .refine(
       (value) => /^(\+251|0)\d{9}$/.test(value),
       "Please enter a valid phone number",
     ),
-  email: z.string().email(),
 
-  role: z.union([z.literal("Admin"), z.literal("Super Admin")]),
+  role: z.union([z.literal("admin"), z.literal("superadmin")]),
 });
 
 const AdminForm = ({ admin, submitFn, isPending, error }: AdminFormProps) => {
   // default values
   const defaultValues = {
-    fullName: admin ? admin.fullName : "",
-    phoneNumber: admin ? `0${admin.phoneNumber}` : "",
-    email: admin ? admin.email : "",
+    full_name: admin ? admin.full_name : "",
+    phone_number: admin ? `${admin.phone_number}` : "",
     role: admin ? admin.role : "",
     password: "",
   };
@@ -55,10 +52,10 @@ const AdminForm = ({ admin, submitFn, isPending, error }: AdminFormProps) => {
   // submit handler function
   function handleSubmit(values: FormValues) {
     // remove the "0" or "+251" from a phone number
-    const phoneNumber = slicePhoneNumber(values.phoneNumber);
+    const phone_number = slicePhoneNumber(values.phone_number);
 
     // submit the data
-    submitFn({ ...values, _id: admin?._id, phoneNumber });
+    submitFn({ ...values, _id: admin?._id, phone_number : `+251${phone_number}` });
   }
   return (
     <div>

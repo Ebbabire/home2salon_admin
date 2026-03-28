@@ -1,32 +1,14 @@
-import { getSession } from "./session";
-
-const BASE = import.meta.env.VITE_BASE_URL;
-
-function authHeaders() {
-  const { token } = getSession();
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-}
+import { apiFetch } from "./api";
 
 export interface DashboardStats {
-  totalOrders: number;
-  pendingOrders: number;
-  assignedOrders: number;
-  completedOrders: number;
-  totalProfessionals: number;
-  totalServices: number;
+  total_orders: number;
+  pending_orders: number;
+  assigned_orders: number;
+  completed_orders: number;
+  total_professionals: number;
+  total_services: number;
 }
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const res = await fetch(`${BASE}/dashboard/stats`, {
-    headers: authHeaders(),
-  });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message);
-  }
-  const data = await res.json();
-  return data.data ?? data;
+  return apiFetch<DashboardStats>("/dashboard/stats");
 }

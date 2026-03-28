@@ -8,21 +8,21 @@ const useWalletColumns = () => {
   const columns: ColumnDef<IWalletBalance, unknown>[] = useMemo(
     () => [
       {
-        id: "fullName",
-        accessorFn: (row) => row.professional.fullName,
+        id: "full_name",
+        accessorFn: (row) => row.professional.full_name,
         header: "Professional",
         cell: ({ row }) => (
           <div className="capitalize">
-            {row.original.professional.fullName}
+            {row.original.professional.full_name}
           </div>
         ),
       },
       {
-        id: "phoneNumber",
-        accessorFn: (row) => row.professional.phoneNumber,
+        id: "phone_number",
+        accessorFn: (row) => row.professional.phone_number,
         header: "Phone",
         cell: ({ row }) => (
-          <div>0{row.original.professional.phoneNumber}</div>
+          <div>0{row.original.professional.phone_number}</div>
         ),
       },
       {
@@ -39,7 +39,7 @@ const useWalletColumns = () => {
         header: () => <div className="text-right">Actions</div>,
         cell: ({ row }) => {
           const proId = row.original.professional._id ?? "";
-          const proName = row.original.professional.fullName;
+          const proName = row.original.professional.full_name;
           return (
             <div className="flex justify-end gap-2">
               <TransactionHistoryDialog

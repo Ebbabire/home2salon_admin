@@ -58,7 +58,7 @@ const FormComp = ({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid w-full gap-x-4 gap-y-6 lg:grid-cols-3">
+        <div className="grid w-full gap-x-4 gap-y-6 lg:grid-cols-6">
           {formFields?.map(
             ({ type, label, name, placeholder, className, options }) =>
               type === "select" ? (
@@ -67,7 +67,7 @@ const FormComp = ({
                   control={form.control}
                   name={name}
                   render={() => (
-                    <FormItem>
+                    <FormItem className={className}>
                       <FormLabel>{label}</FormLabel>
                       <FormControl>
                         <SelectInput
@@ -89,7 +89,7 @@ const FormComp = ({
                   control={form.control}
                   name={name}
                   render={() => (
-                    <FormItem>
+                    <FormItem className={className}>
                       <FormLabel>{label}</FormLabel>
                       <FormControl>
                         <Input
@@ -109,7 +109,7 @@ const FormComp = ({
                   control={form.control}
                   name={name}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className={className}>
                       <FormLabel>{label}</FormLabel>
                       <FormControl>
                         <Input

@@ -23,14 +23,6 @@ const STATUS_CONFIG: Record<OrderStatus, { label: string; className: string }> =
       label: "Assigned",
       className: "bg-indigo-100 text-indigo-800 hover:bg-indigo-100",
     },
-    [OrderStatus.SCHEDULED]: {
-      label: "Scheduled",
-      className: "bg-purple-100 text-purple-800 hover:bg-purple-100",
-    },
-    [OrderStatus.IN_PROGRESS]: {
-      label: "In Progress",
-      className: "bg-cyan-100 text-cyan-800 hover:bg-cyan-100",
-    },
     [OrderStatus.AWAITING_COMPLETION_CONFIRMATION]: {
       label: "Awaiting Confirmation",
       className: "bg-teal-100 text-teal-800 hover:bg-teal-100",

@@ -37,7 +37,8 @@ const AdjustAppointmentDialog = ({
   const { mutate, isPending } = useMutation({
     mutationFn: adjustAppointment,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["assignedOrders"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardOrders"] });
       queryClient.invalidateQueries({ queryKey: ["order", orderId] });
       setOpen(false);
       toast({
@@ -57,7 +58,7 @@ const AdjustAppointmentDialog = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate({ orderId, scheduledDate: date, scheduledTime: time });
+    mutate({ order_id: orderId, scheduled_date: date, scheduled_time: time });
   };
 
   return (

@@ -48,7 +48,7 @@ const AddAdmin = () => {
       <DialogTrigger asChild>
         <Button className="bg-primary hover:bg-primary/90">Add Admin</Button>
       </DialogTrigger>
-      <DialogContent className="h-[25rem] overflow-y-auto lg:max-w-3xl">
+      <DialogContent className="h-[22rem] overflow-y-auto lg:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="border-b border-muted-foreground pb-4">
             Add New Admin

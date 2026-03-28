@@ -4,13 +4,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { useState } from "react";
+} from "./ui/dialog"
+import { useState } from "react"
+import SmartImage from "./smart-image"
 
 interface ImagePreviewDialogProps {
-  src: string;
-  alt?: string;
-  trigger: React.ReactNode;
+  src: string
+  alt?: string
+  trigger: React.ReactNode
 }
 
 const ImagePreviewDialog = ({
@@ -18,7 +19,7 @@ const ImagePreviewDialog = ({
   alt = "Preview",
   trigger,
 }: ImagePreviewDialogProps) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -28,15 +29,18 @@ const ImagePreviewDialog = ({
           <DialogTitle>{alt}</DialogTitle>
         </DialogHeader>
         <div className="flex items-center justify-center">
-          <img
+          <SmartImage
             src={src}
             alt={alt}
-            className="max-h-[70vh] w-auto rounded-md object-contain"
+            loading="eager"
+            showRetry
+            wrapperClassName="aspect-[4/3] w-full max-w-[90vw] rounded-md bg-muted/20"
+            className="h-full w-full rounded-md object-contain"
           />
         </div>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default ImagePreviewDialog;
+export default ImagePreviewDialog

@@ -40,7 +40,7 @@ export const useDashboardData = (): UseDashboardDataResult => {
     isLoading: loadingOrders,
     error: ordersError,
   } = useQuery({
-    queryKey: ["orders"],
+    queryKey: ["dashboardOrders"],
     queryFn: getOrders,
   });
 
@@ -103,8 +103,8 @@ export const useDashboardData = (): UseDashboardDataResult => {
   const recentOrders = useMemo(() => {
     return [...orders]
       .sort((a, b) => {
-        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
         return bTime - aTime;
       })
       .slice(0, 5);

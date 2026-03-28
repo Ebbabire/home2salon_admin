@@ -33,13 +33,7 @@ const formatOrderDate = (value?: string) => {
 };
 
 const getOrderServiceNames = (order: IOrder) => {
-  return order.services
-    .map((orderedService) =>
-      typeof orderedService.service === "string"
-        ? orderedService.service
-        : orderedService.service.name,
-    )
-    .join(", ");
+  return order.services.map((orderedService) => orderedService.service_id.name).join(", ");
 };
 
 export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
@@ -67,14 +61,14 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
             </TableHeader>
             <TableBody>
               {orders.map((order) => (
-                <TableRow key={order._id ?? order.customer.phoneNumber}>
+                <TableRow key={order._id}>
                   <TableCell className="capitalize">
-                    {order.customer.fullName}
+                    {order.user_id.full_name ?? "—"}
                   </TableCell>
                   <TableCell className="max-w-[150px] truncate">
                     {getOrderServiceNames(order)}
                   </TableCell>
-                  <TableCell>{order.totalPrice} ETB</TableCell>
+                  <TableCell>{order.total_price} ETB</TableCell>
                   <TableCell>{formatOrderDate(order.createdAt)}</TableCell>
                   <TableCell>
                     <StatusBadge status={order.status} />

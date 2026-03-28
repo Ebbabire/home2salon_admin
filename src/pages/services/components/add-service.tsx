@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/hooks/use-toast";
 import moment from "moment";
 import { addService } from "@/services/serviceServices";
+import { uploadImageAndGetKey } from "@/services/uploadServices";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,7 +24,18 @@ const AddService = ({ categoryId }: AddServiceProps) => {
   const { toast } = useToast();
 
   const { mutate, isPending, error } = useMutation({
-    mutationFn: addService,
+    mutationFn: async (values: ServiceFormValues) => {
+      const imageFile = values.image?.[0];
+      const imageKey = imageFile ? await uploadImageAndGetKey(imageFile) : undefined;
+
+      return addService({
+        name: values.name,
+        price: values.price,
+        category: categoryId,
+        description: values.description,
+        image_url: imageKey,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["services", categoryId] });
       setOpen(false);
@@ -43,13 +55,7 @@ const AddService = ({ categoryId }: AddServiceProps) => {
   });
 
   const handleSubmit = (values: ServiceFormValues) => {
-    const fd = new FormData();
-    fd.append("name", values.name);
-    fd.append("price", String(values.price));
-    fd.append("category", categoryId);
-    if (values.description) fd.append("description", values.description);
-    if (values.image?.[0]) fd.append("image", values.image[0]);
-    mutate(fd);
+    mutate(values);
   };
 
   return (

@@ -1,31 +1,48 @@
-import { DataTable } from "./data-table";
-import useColumns from "./Column";
-import { getAdmins } from "@/services/adminServices";
+import { useEffect, useState } from "react"
+import { DataTable } from "./data-table"
+import useColumns from "./Column"
+import { getAdminsPaginated } from "@/services/adminServices"
 
-import AddAdmin from "./component/add-admin";
-import Loading from "@/components/loader";
-import Error from "@/components/error-display";
-import { useQuery } from "@tanstack/react-query";
+import AddAdmin from "./component/add-admin"
+import Loading from "@/components/loader"
+import Error from "@/components/error-display"
+import { useQuery } from "@tanstack/react-query"
+import { usePageParam } from "@/hooks/use-page-param"
 
 export interface IAdmin {
-  _id?: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  role: "Admin" | "Super Admin";
-  status?: string;
-  createdAt?: Date;
+  _id?: string
+  full_name: string
+  phone_number: string
+  role: "admin" | "superadmin"
+  status?: string
+  created_at?: Date
 }
 
 export const Admins = () => {
-  const columns = useColumns();
+  const columns = useColumns()
+  const { page, setPage } = usePageParam("page")
+  const [limit] = useState(10)
 
   const {
-    data: admins,
+    data: adminResponse,
     isLoading,
     isError,
     error,
-  } = useQuery({ queryKey: ["admins"], queryFn: getAdmins });
+  } = useQuery({
+    queryKey: ["admins", page, limit],
+    queryFn: () => getAdminsPaginated({ page, limit }),
+  })
+
+  const admins = adminResponse?.data.admins ?? []
+  const totalPages = adminResponse?.totalPages ?? 0
+  const totalResults = adminResponse?.totalResults ?? 0
+
+  useEffect(() => {
+    if (!adminResponse) return
+    if (page > totalPages && totalPages > 0) {
+      setPage(totalPages)
+    }
+  }, [adminResponse, page, totalPages, setPage])
 
   return (
     <>
@@ -37,7 +54,14 @@ export const Admins = () => {
         {!isLoading && !isError && admins ? (
           <>
             {admins.length ? (
-              <DataTable columns={columns} data={admins} />
+              <DataTable
+                columns={columns}
+                data={admins}
+                page={page}
+                totalPages={totalPages}
+                totalResults={totalResults}
+                onPageChange={setPage}
+              />
             ) : (
               <div className="flex h-full flex-1 items-center justify-center">
                 <div className="flex flex-col items-center gap-1 text-center">
@@ -60,5 +84,5 @@ export const Admins = () => {
         )}
       </div>
     </>
-  );
-};
+  )
+}

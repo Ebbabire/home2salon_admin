@@ -83,7 +83,7 @@ const EditAdmin = ({ admin }: { admin: IAdmin }) => {
         </TooltipProvider>
       </DialogTrigger>
 
-      <DialogContent className="h-[25rem] overflow-y-auto lg:max-w-3xl">
+      <DialogContent className="h-[22rem] overflow-y-auto lg:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="border-b border-muted-foreground pb-4">
             Edit Admin

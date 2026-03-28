@@ -58,14 +58,14 @@ export default function AdminDetail({ userId, close }: AdminDetailProps) {
           <CardHeader className="flex flex-row items-start bg-muted/50">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
-                {CamelCase(admin?.fullName)}
+                {CamelCase(admin?.full_name)}
               </CardTitle>
               <CardDescription>{admin?.role}</CardDescription>
             </div>
 
-            {admin.role === "Super Admin" ? (
+            {admin.role === "superadmin" ? (
               <>
-                {user.userRole === "Super Admin" && (
+                {user.userRole === "superadmin" && (
                   <div className="ml-auto flex items-center gap-2 text-green-600">
                     <EditAdmin admin={admin} />
                   </div>
@@ -83,12 +83,9 @@ export default function AdminDetail({ userId, close }: AdminDetailProps) {
               <ul className="flex flex-col gap-3">
                 <li className="flex items-center justify-between gap-4">
                   <span className="text-muted-foreground">Phone Number</span>
-                  <span className="font-medium">0{admin?.phoneNumber}</span>
+                  <span className="font-medium">{admin?.phone_number}</span>
                 </li>
-                <li className="flex items-center justify-between gap-4">
-                  <span className="text-muted-foreground">Email</span>
-                  <span className="font-medium">{admin?.email}</span>
-                </li>
+               
               </ul>
               <Separator className="my-2" />
               <div className="font-semibold">Admin Details</div>
@@ -96,7 +93,7 @@ export default function AdminDetail({ userId, close }: AdminDetailProps) {
                 <li className="flex items-center justify-between gap-4">
                   <span className="text-muted-foreground">Registed At</span>
                   <span className="font-medium">
-                    {moment(admin?.createdAt).format("ll")}
+                    {moment(admin?.created_at).format("ll")}
                   </span>
                 </li>
                 <li className="flex items-center justify-between gap-4">
@@ -106,7 +103,7 @@ export default function AdminDetail({ userId, close }: AdminDetailProps) {
                   >
                     {admin?.status}
                     {admin._id !== user.id &&
-                      user.userRole === "Super Admin" && (
+                      user.userRole === "superadmin" && (
                         <ChangeStatus
                           id={admin._id ?? ""}
                           status={admin.status ?? ""}

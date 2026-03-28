@@ -1,103 +1,116 @@
-import type { IOrder } from "@/types";
-import { OrderStatus } from "@/types";
-import { mockOrders, mockProfessionals } from "./mock/data";
+import type { IOrder } from "@/types"
+import { apiFetch, type PaginatedResponse } from "./api"
 
-const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
+type OrderStatusQuery =
+  | "pendingReview"
+  | "advancePaymentRequested"
+  | "advancePaymentSubmitted"
+  | "paymentApproved"
+  | "professionalAssigned"
+  | "awaitingCompletionConfirmation"
+  | "completed"
+  | "cancelled"
+
+export const ORDER_PAGE_STATUSES: Record<
+  "pending" | "assigned" | "completed",
+  OrderStatusQuery[]
+> = {
+  pending: [
+    "pendingReview",
+    "advancePaymentRequested",
+    "advancePaymentSubmitted",
+    "paymentApproved",
+  ],
+  assigned: ["professionalAssigned", "awaitingCompletionConfirmation"],
+  completed: ["completed"],
+}
+
+interface GetOrdersPaginatedParams {
+  statuses: OrderStatusQuery[]
+  page?: number
+  limit?: number
+}
 
 export async function getOrders(): Promise<IOrder[]> {
-  await delay();
-  return [...mockOrders];
+  return apiFetch<IOrder[]>("/order")
+}
+
+export async function getOrdersPaginated({
+  statuses,
+  page = 1,
+  limit = 10,
+}: GetOrdersPaginatedParams): Promise<PaginatedResponse<IOrder[]>> {
+  const params = new URLSearchParams()
+  params.set("page", String(page))
+  params.set("limit", String(limit))
+  statuses.forEach((status) => params.append("status", status))
+
+  return apiFetch<PaginatedResponse<IOrder[]>>(`/orders?${params.toString()}`, {
+    unwrapData: false,
+  })
 }
 
 export async function getOrderById(id: string): Promise<IOrder> {
-  await delay();
-  const order = mockOrders.find((o) => o._id === id);
-  if (!order) throw new Error("Order not found");
-  return { ...order };
+  return apiFetch<IOrder>(`/orders/${id}`)
 }
 
 export async function requestAdvancePayment(payload: {
-  orderId: string;
-  amount: number;
-  instructions: string;
+  order_id: string
 }): Promise<IOrder> {
-  await delay();
-  const idx = mockOrders.findIndex((o) => o._id === payload.orderId);
-  if (idx === -1) throw new Error("Order not found");
-  mockOrders[idx] = {
-    ...mockOrders[idx],
-    status: OrderStatus.ADVANCE_PAYMENT_REQUESTED,
-    advancePaymentAmount: payload.amount,
-    advancePaymentInstructions: payload.instructions,
-    updatedAt: new Date().toISOString(),
-  };
-  return mockOrders[idx];
+  return apiFetch<IOrder>(`/orders/${payload.order_id}/request-advance`, {
+    method: "POST",
+  })
 }
 
 export async function verifyAdvancePayment(payload: {
-  orderId: string;
-  approved: boolean;
-  reason?: string;
+  payment_id: string
+  approved: boolean
+  reason?: string
 }): Promise<IOrder> {
-  await delay();
-  const idx = mockOrders.findIndex((o) => o._id === payload.orderId);
-  if (idx === -1) throw new Error("Order not found");
-  mockOrders[idx] = {
-    ...mockOrders[idx],
-    status: payload.approved
-      ? OrderStatus.PAYMENT_APPROVED
-      : OrderStatus.PENDING_REVIEW,
-    updatedAt: new Date().toISOString(),
-  };
-  return mockOrders[idx];
+  return apiFetch<IOrder>(`/orders/verify-payment`, {
+    method: "POST",
+    body: {
+      payment_id: payload.payment_id,
+      approve: payload.approved,
+      reason: payload.reason,
+    },
+  })
 }
 
 export async function adjustAppointment(payload: {
-  orderId: string;
-  scheduledDate: string;
-  scheduledTime: string;
+  order_id: string
+  scheduled_date: string
+  scheduled_time: string
 }): Promise<IOrder> {
-  await delay();
-  const idx = mockOrders.findIndex((o) => o._id === payload.orderId);
-  if (idx === -1) throw new Error("Order not found");
-  mockOrders[idx] = {
-    ...mockOrders[idx],
-    scheduledDate: payload.scheduledDate,
-    scheduledTime: payload.scheduledTime,
-    updatedAt: new Date().toISOString(),
-  };
-  return mockOrders[idx];
+  return apiFetch<IOrder>(`/orders/${payload.order_id}/adjust-schedule`, {
+    method: "PATCH",
+    body: {
+      scheduled_date: payload.scheduled_date,
+      scheduled_time: payload.scheduled_time,
+    },
+  })
 }
 
 export async function assignProfessional(payload: {
-  orderId: string;
-  professionalId: string;
+  order_id: string
+  services: {
+    service_id: string
+    professionals: string[]
+  }[]
 }): Promise<IOrder> {
-  await delay();
-  const idx = mockOrders.findIndex((o) => o._id === payload.orderId);
-  if (idx === -1) throw new Error("Order not found");
-
-  const pro = mockProfessionals.find((p) => p._id === payload.professionalId);
-
-  mockOrders[idx] = {
-    ...mockOrders[idx],
-    status: OrderStatus.PROFESSIONAL_ASSIGNED,
-    professional: pro ?? payload.professionalId,
-    updatedAt: new Date().toISOString(),
-  };
-  return mockOrders[idx];
+  return apiFetch<IOrder>(`/orders/assign-professionals`, {
+    method: "POST",
+    body: {
+      order_id: payload.order_id,
+      services: payload.services,
+    },
+  })
 }
 
 export async function confirmOrderCompletion(
-  orderId: string,
+  order_id: string
 ): Promise<IOrder> {
-  await delay();
-  const idx = mockOrders.findIndex((o) => o._id === orderId);
-  if (idx === -1) throw new Error("Order not found");
-  mockOrders[idx] = {
-    ...mockOrders[idx],
-    status: OrderStatus.COMPLETED,
-    updatedAt: new Date().toISOString(),
-  };
-  return mockOrders[idx];
+  return apiFetch<IOrder>(`/orders/${order_id}/complete`, {
+    method: "PATCH",
+  })
 }

@@ -13,6 +13,8 @@ import {
 
 import { navLinks } from "./data/nav-links";
 
+import logo from "@/assets/logo.png";
+
 export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
@@ -23,9 +25,7 @@ export function AppSidebar() {
               size="lg"
               className="font-bold tracking-tight text-primary data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
-                H2
-              </span>
+              <img src={logo} className="flex size-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground"/>
               <span className="text-base">Home2Salon</span>
             </SidebarMenuButton>
           </SidebarMenuItem>

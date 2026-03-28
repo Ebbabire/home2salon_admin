@@ -56,7 +56,11 @@ const RecordPayoutDialog = ({ professionalId, professionalName }: Props) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!amount) return;
-    mutate({ professionalId, amount: Number(amount), notes: notes || undefined });
+    mutate({
+      professional_id: professionalId,
+      amount: Number(amount),
+      notes: notes || undefined,
+    });
   };
 
   return (

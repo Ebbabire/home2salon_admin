@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getOrders } from "@/services/orderServices";
-import { COMPLETED_STATUSES } from "@/types";
+import { getOrdersPaginated, ORDER_PAGE_STATUSES } from "@/services/orderServices";
+import { usePageParam } from "@/hooks/use-page-param";
 import Loading from "@/components/loader";
 import Error from "@/components/error-display";
 import { OrderDataTable } from "../components/order-data-table";
@@ -8,16 +9,34 @@ import useCompletedColumns from "./Columns";
 
 export const CompletedOrders = () => {
   const columns = useCompletedColumns();
+  const { page, setPage } = usePageParam("page");
+  const limit = 10;
 
   const {
-    data: allOrders,
+    data: response,
     isLoading,
     isError,
     error,
-  } = useQuery({ queryKey: ["orders"], queryFn: getOrders });
+  } = useQuery({
+    queryKey: ["completedOrders", page, limit],
+    queryFn: () =>
+      getOrdersPaginated({
+        statuses: ORDER_PAGE_STATUSES.completed,
+        page,
+        limit,
+      }),
+  });
 
-  const orders =
-    allOrders?.filter((o) => COMPLETED_STATUSES.includes(o.status)) ?? [];
+  const orders = response?.data.orders ?? [];
+  const totalPages = response?.totalPages ?? 0;
+  const totalResults = response?.totalResults ?? orders.length;
+
+  useEffect(() => {
+    if (!response) return;
+    if (totalPages > 0 && page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [response, page, setPage, totalPages]);
 
   return (
     <>
@@ -28,14 +47,15 @@ export const CompletedOrders = () => {
             <Loading isLoading={isLoading} />
             <Error error={error} />
           </div>
-        ) : orders.length ? (
-          <OrderDataTable columns={columns} data={orders} />
         ) : (
-          <div className="flex h-full flex-1 items-center justify-center">
-            <h3 className="text-lg text-muted-foreground">
-              No completed orders
-            </h3>
-          </div>
+          <OrderDataTable
+            columns={columns}
+            data={orders}
+            page={page}
+            totalPages={totalPages}
+            totalResults={totalResults}
+            onPageChange={setPage}
+          />
         )}
       </div>
     </>

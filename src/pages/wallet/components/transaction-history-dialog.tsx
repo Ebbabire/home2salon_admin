@@ -84,7 +84,7 @@ const TransactionHistoryDialog = ({
                     {tx.amount} ETB
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    {moment(tx.date ?? tx.createdAt).format("ll")}
+                    {moment(tx.date ?? tx.created_at).format("ll")}
                   </span>
                 </div>
               </div>

@@ -1,17 +1,12 @@
-import type { IProfessional } from "./professional";
-import type { IService } from "./service";
-
 export enum OrderStatus {
-  PENDING_REVIEW = "Pending Review",
-  ADVANCE_PAYMENT_REQUESTED = "Advance Payment Requested",
-  ADVANCE_PAYMENT_SUBMITTED = "Advance Payment Submitted",
-  PAYMENT_APPROVED = "Payment Approved",
-  PROFESSIONAL_ASSIGNED = "Professional Assigned",
-  SCHEDULED = "Scheduled",
-  IN_PROGRESS = "In Progress",
-  AWAITING_COMPLETION_CONFIRMATION = "Awaiting Completion Confirmation",
-  COMPLETED = "Completed",
-  CANCELLED = "Cancelled",
+  PENDING_REVIEW = "pendingReview",
+  ADVANCE_PAYMENT_REQUESTED = "advancePaymentRequested",
+  ADVANCE_PAYMENT_SUBMITTED = "advancePaymentSubmitted",
+  PAYMENT_APPROVED = "paymentApproved",
+  PROFESSIONAL_ASSIGNED = "professionalAssigned",
+  AWAITING_COMPLETION_CONFIRMATION = "awaitingCompletionConfirmation",
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
 }
 
 export const PENDING_STATUSES: OrderStatus[] = [
@@ -19,43 +14,70 @@ export const PENDING_STATUSES: OrderStatus[] = [
   OrderStatus.ADVANCE_PAYMENT_REQUESTED,
   OrderStatus.ADVANCE_PAYMENT_SUBMITTED,
   OrderStatus.PAYMENT_APPROVED,
-];
+]
 
 export const ASSIGNED_STATUSES: OrderStatus[] = [
   OrderStatus.PROFESSIONAL_ASSIGNED,
-  OrderStatus.SCHEDULED,
-  OrderStatus.IN_PROGRESS,
   OrderStatus.AWAITING_COMPLETION_CONFIRMATION,
-];
+]
 
-export const COMPLETED_STATUSES: OrderStatus[] = [OrderStatus.COMPLETED];
+export const COMPLETED_STATUSES: OrderStatus[] = [OrderStatus.COMPLETED]
 
-export interface ICustomerInfo {
-  _id?: string;
-  fullName: string;
-  phoneNumber: string;
+export interface IOrderUser {
+  _id: string
+  full_name?: string
+  phone_number: string
 }
 
-export interface IOrderedService {
-  service: string | IService;
-  price: number;
+export interface IOrderLocation {
+  type: "Point"
+  coordinates: [number, number]
+  address: string
+  description?: string
+}
+
+export interface IOrderServiceRef {
+  _id: string
+  name: string
+  price: number
+  image_url?: string
+  commission_percentage?: number
+}
+
+export interface IOrderAssignedProfessional {
+  _id: string
+  full_name: string
+  phone_number: string
+}
+
+export interface IOrderServiceItem {
+  _id: string
+  service_id: IOrderServiceRef
+  price: number
+  assigned_professionals: IOrderAssignedProfessional[]
+}
+
+export interface IAdvancePayment {
+  amount: number
+  receipt_image?: string
+  _id: string
 }
 
 export interface IOrder {
-  _id?: string;
-  customer: ICustomerInfo;
-  services: IOrderedService[];
-  totalPrice: number;
-  scheduledDate: string;
-  scheduledTime: string;
-  location: string;
-  notes?: string;
-  status: OrderStatus;
-  advancePaymentAmount?: number;
-  advancePaymentInstructions?: string;
-  advancePaymentReceipt?: string;
-  finalPaymentReceipt?: string;
-  professional?: string | IProfessional;
-  createdAt?: string;
-  updatedAt?: string;
+  _id: string
+  user_id: IOrderUser
+  location: IOrderLocation
+  services: IOrderServiceItem[]
+  total_price: number
+  remaining_amount: number
+  scheduled_date: string
+  scheduled_time: string
+  notes?: string
+  status: OrderStatus
+  advance_amount: number
+  advance_percentage: number
+  advance_payment_id?: IAdvancePayment
+  final_payment_receipt?: string
+  createdAt: string
+  updatedAt: string
 }

@@ -29,7 +29,9 @@ const ConfirmCompletionDialog = ({ orderId }: Props) => {
   const { mutate, isPending, error } = useMutation({
     mutationFn: confirmOrderCompletion,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["assignedOrders"] });
+      queryClient.invalidateQueries({ queryKey: ["completedOrders"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardOrders"] });
       queryClient.invalidateQueries({ queryKey: ["order", orderId] });
       setOpen(false);
       toast({

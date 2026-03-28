@@ -6,7 +6,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -20,28 +19,42 @@ import {
 } from "@/components/ui/table";
 import Filter from "@/components/filter/Filter";
 import type { IService } from "@/types";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface Props {
   columns: ColumnDef<IService, unknown>[];
   data: IService[];
+  page: number;
+  totalPages: number;
+  totalResults: number;
+  onPageChange: (page: number) => void;
 }
 
-export function ServiceDataTable({ columns, data }: Props) {
+export function ServiceDataTable({
+  columns,
+  data,
+  page,
+  totalPages,
+  totalResults,
+  onPageChange,
+}: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 9 });
-
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination,
-    state: { sorting, columnFilters, pagination },
+    state: { sorting, columnFilters },
   });
 
   return (
@@ -88,6 +101,37 @@ export function ServiceDataTable({ columns, data }: Props) {
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <p className="text-sm text-muted-foreground">
+          Page {page} of {totalPages} ({totalResults} total)
+        </p>
+        <Pagination className="mx-0 w-auto justify-end">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (page > 1) onPageChange(page - 1);
+                }}
+                className={page <= 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (page < totalPages) onPageChange(page + 1);
+                }}
+                className={
+                  page >= totalPages ? "pointer-events-none opacity-50" : ""
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

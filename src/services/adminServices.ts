@@ -1,71 +1,79 @@
 import { type IAdmin } from "@/pages/admins/Admins";
-import { mockAdmins, nextId } from "./mock/data";
+import { apiFetch, type PaginatedResponse } from "./api";
 
-import { Login } from "@/pages/login/Login";
-
-const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
+interface LoginRequest {
+  phone_number: string;
+  password: string;
+}
 
 export const login = async (
-  authDetail: Login,
+  authDetail: LoginRequest,
 ): Promise<{ token: string; admin: IAdmin }> => {
-  await delay(500);
-
-  const admin = mockAdmins.find(
-    (a) =>
-      a.phoneNumber === authDetail.phoneNumber ||
-      a.email === authDetail.phoneNumber,
+  const data = await apiFetch<{ token: string; admin: IAdmin }>(
+    "/admins/login",
+    {
+      method: "POST",
+      body: authDetail,
+      auth: false,
+    },
   );
 
-  if (!admin) throw new Error("Invalid credentials");
+  sessionStorage.setItem("token", JSON.stringify(data.token));
+  sessionStorage.setItem("id", JSON.stringify(data.admin._id));
+  sessionStorage.setItem("userName", JSON.stringify(data.admin.full_name));
+  sessionStorage.setItem("userRole", JSON.stringify(data.admin.role));
 
-  const token = "mock-token-" + Date.now();
-  sessionStorage.setItem("token", JSON.stringify(token));
-  sessionStorage.setItem("id", JSON.stringify(admin._id));
-  sessionStorage.setItem("userName", JSON.stringify(admin.fullName));
-  sessionStorage.setItem("userRole", JSON.stringify(admin.role));
-
-  return { token, admin };
+  return data;
 };
 
 export async function getAdmins(): Promise<IAdmin[]> {
-  await delay();
-  return [...mockAdmins];
+  return apiFetch<IAdmin[]>("/admin");
+}
+
+interface ListParams {
+  page?: number;
+  limit?: number;
+}
+
+export async function getAdminsPaginated(
+  params: ListParams = {},
+): Promise<PaginatedResponse<IAdmin[]>> {
+  const page = params.page ?? 1;
+  const limit = params.limit ?? 10;
+
+  return apiFetch<PaginatedResponse<IAdmin[]>>(
+    `/admins?page=${page}&limit=${limit}`,
+    { unwrapData: false },
+  );
 }
 
 export async function getAdminById(id?: string): Promise<IAdmin> {
-  await delay();
-  const admin = mockAdmins.find((a) => a._id === id);
-  if (!admin) throw new Error("Admin not found");
-  return { ...admin };
+  if (!id) throw new Error("Admin id is required");
+  return apiFetch<IAdmin>(`/admins/${id}`);
 }
 
 export async function addAdmin(admin: IAdmin): Promise<IAdmin> {
-  await delay();
-  const newAdmin: IAdmin = {
-    ...admin,
-    _id: nextId(),
-    status: "Active",
-    createdAt: new Date(),
-  };
-  mockAdmins.push(newAdmin);
-  return newAdmin;
+  return apiFetch<IAdmin>("/admins", {
+    method: "POST",
+    body: admin,
+  });
 }
 
 export async function updateAdmin(updatedAdmin: IAdmin): Promise<IAdmin> {
-  await delay();
-  const idx = mockAdmins.findIndex((a) => a._id === updatedAdmin._id);
-  if (idx === -1) throw new Error("Admin not found");
-  mockAdmins[idx] = { ...mockAdmins[idx], ...updatedAdmin };
-  return mockAdmins[idx];
+  if (!updatedAdmin._id) throw new Error("Admin id is required");
+
+  return apiFetch<IAdmin>(`/admins/${updatedAdmin._id}`, {
+    method: "PATCH",
+    body: updatedAdmin,
+  });
 }
 
 export async function changeAdminStatus(status: {
   id: string;
   status: string;
 }): Promise<IAdmin> {
-  await delay();
-  const idx = mockAdmins.findIndex((a) => a._id === status.id);
-  if (idx === -1) throw new Error("Admin not found");
-  mockAdmins[idx] = { ...mockAdmins[idx], status: status.status };
-  return mockAdmins[idx];
+  return apiFetch<IAdmin>(`/admins/${status.id}`, {
+    method: "PATCH",
+    body: { status: status.status },
+  });
 }

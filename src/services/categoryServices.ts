@@ -1,44 +1,54 @@
-import type { ICategory } from "@/types";
-import { mockCategories, nextId } from "./mock/data";
+import type { ICategory } from "@/types"
+import { apiFetch, type PaginatedResponse } from "./api"
 
-const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
+export async function getCategories(): Promise<{ categories: ICategory[] }> {
+  return apiFetch<{ categories: ICategory[] }>("/categories")
+}
 
-export async function getCategories(): Promise<ICategory[]> {
-  await delay();
-  return [...mockCategories];
+interface ListParams {
+  page?: number
+  limit?: number
+}
+
+export async function getCategoriesPaginated(
+  params: ListParams = {}
+): Promise<PaginatedResponse<ICategory[]>> {
+  const page = params.page ?? undefined
+  const limit = params.limit ?? undefined
+
+  return apiFetch<PaginatedResponse<ICategory[]>>(
+    `/categories?${page ? `page=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
+    { unwrapData: false }
+  )
 }
 
 export async function getCategoryById(id: string): Promise<ICategory> {
-  await delay();
-  const cat = mockCategories.find((c) => c._id === id);
-  if (!cat) throw new Error("Category not found");
-  return { ...cat };
+  return apiFetch<ICategory>(`/categories/${id}`)
 }
 
 export async function addCategory(
-  category: Pick<ICategory, "name">,
+  category: Pick<ICategory, "name" | "image_url">
 ): Promise<ICategory> {
-  await delay();
-  const newCat: ICategory = {
-    _id: nextId(),
-    name: category.name,
-    createdAt: new Date().toISOString(),
-  };
-  mockCategories.push(newCat);
-  return newCat;
+  return apiFetch<ICategory>("/categories", {
+    method: "POST",
+    body: category,
+  })
 }
 
-export async function updateCategory(category: ICategory): Promise<ICategory> {
-  await delay();
-  const idx = mockCategories.findIndex((c) => c._id === category._id);
-  if (idx === -1) throw new Error("Category not found");
-  mockCategories[idx] = { ...mockCategories[idx], name: category.name };
-  return mockCategories[idx];
+export async function updateCategory(
+  id: string,
+  category: Pick<ICategory, "name" | "image_url">
+): Promise<ICategory> {
+  if (!id) throw new Error("Category id is required")
+
+  return apiFetch<ICategory>(`/categories/${id}`, {
+    method: "PATCH",
+    body: category,
+  })
 }
 
 export async function deleteCategory(id: string): Promise<void> {
-  await delay();
-  const idx = mockCategories.findIndex((c) => c._id === id);
-  if (idx === -1) throw new Error("Category not found");
-  mockCategories.splice(idx, 1);
+  await apiFetch<unknown>(`/categories/${id}`, {
+    method: "DELETE",
+  })
 }

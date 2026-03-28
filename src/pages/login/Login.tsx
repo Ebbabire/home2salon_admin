@@ -19,6 +19,8 @@ import {
 } from "./utils/validator";
 import { login } from "@/services/adminServices";
 import Loading from "@/components/loader";
+import logo from "@/assets/logo.png";
+
 
 export type Login = {
   password: string;
@@ -91,11 +93,11 @@ export function LoginForm() {
 
     setIsLoading(true);
     try {
-      const data = await login({
-        phoneNumber: `${phoneNum}`,
+      await login({
+        phone_number: `+251${phoneNum}`,
         password: loginData.password,
       });
-      data.token && navigate("/");
+      navigate("/");
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -107,10 +109,11 @@ export function LoginForm() {
 
   return (
     <div className="flex min-h-screen w-screen">
-      <div className="hidden flex-col items-center justify-center gap-8 bg-primary px-12 text-primary-foreground lg:flex lg:w-1/2">
+      <div className="hidden flex-col items-center justify-center gap-8 bg-primary/90 px-12 text-primary-foreground lg:flex lg:w-1/2">
         <div className="flex flex-col items-center gap-4">
-          <div className="flex size-14 items-center justify-center rounded-2xl bg-white/10 text-xl font-bold backdrop-blur-sm">
-            H2
+          <div className="flex size-24 items-center justify-center rounded-2xl text-xl font-bold backdrop-blur-sm">
+            <img src={logo} />
+              
           </div>
           <h1 className="text-4xl font-bold tracking-tight">Home2Salon</h1>
           <p className="text-lg font-medium text-primary-foreground/70">

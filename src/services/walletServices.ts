@@ -1,59 +1,45 @@
 import type { IWalletBalance, IWalletTransaction } from "@/types";
-import {
-  mockWalletBalances,
-  mockWalletTransactions,
-  nextId,
-} from "./mock/data";
-
-const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
+import { apiFetch, type PaginatedResponse } from "./api";
 
 export async function getWalletBalances(): Promise<IWalletBalance[]> {
-  await delay();
-  return [...mockWalletBalances];
+  return apiFetch<IWalletBalance[]>("/wallet");
+}
+
+interface ListParams {
+  page?: number;
+  limit?: number;
+}
+
+export async function getWalletBalancesPaginated(
+  params: ListParams = {},
+): Promise<PaginatedResponse<IWalletBalance[]>> {
+  const page = params.page ?? 1;
+  const limit = params.limit ?? 10;
+
+  return apiFetch<PaginatedResponse<IWalletBalance[]>>(
+    `/wallet?page=${page}&limit=${limit}`,
+    { unwrapData: false },
+  );
 }
 
 export async function getWalletTransactions(
-  professionalId: string,
+  professional_id: string,
 ): Promise<IWalletTransaction[]> {
-  await delay();
-  return [...(mockWalletTransactions[professionalId] ?? [])];
+  return apiFetch<IWalletTransaction[]>(
+    `/wallet/${professional_id}/transactions`,
+  );
 }
 
 export async function recordPayout(payload: {
-  professionalId: string;
+  professional_id: string;
   amount: number;
   notes?: string;
 }): Promise<IWalletTransaction> {
-  await delay();
-
-  const balIdx = mockWalletBalances.findIndex(
-    (w) => w.professional._id === payload.professionalId,
-  );
-  if (balIdx === -1) throw new Error("Professional wallet not found");
-
-  if (mockWalletBalances[balIdx].balance < payload.amount) {
-    throw new Error("Insufficient wallet balance");
-  }
-
-  mockWalletBalances[balIdx] = {
-    ...mockWalletBalances[balIdx],
-    balance: mockWalletBalances[balIdx].balance - payload.amount,
-  };
-
-  const tx: IWalletTransaction = {
-    _id: nextId(),
-    professional: payload.professionalId,
-    type: "deduction",
-    amount: payload.amount,
-    date: new Date().toISOString(),
-    notes: payload.notes,
-    createdAt: new Date().toISOString(),
-  };
-
-  if (!mockWalletTransactions[payload.professionalId]) {
-    mockWalletTransactions[payload.professionalId] = [];
-  }
-  mockWalletTransactions[payload.professionalId].unshift(tx);
-
-  return tx;
+  return apiFetch<IWalletTransaction>(`/wallet/${payload.professional_id}/deduct`, {
+    method: "POST",
+    body: {
+      amount: payload.amount,
+      notes: payload.notes,
+    },
+  });
 }

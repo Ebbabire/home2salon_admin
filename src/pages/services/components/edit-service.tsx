@@ -4,6 +4,7 @@ import { useToast } from "@/components/hooks/use-toast";
 import moment from "moment";
 import type { IService } from "@/types";
 import { updateService } from "@/services/serviceServices";
+import { uploadImageAndGetKey } from "@/services/uploadServices";
 import {
   Dialog,
   DialogContent,
@@ -25,13 +26,27 @@ const EditService = ({ service }: { service: IService }) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+
   const categoryId =
-    typeof service.category === "string"
-      ? service.category
-      : service.category._id ?? "";
+    typeof service.category_id === "string"
+      ? service.category_id
+      : service.category_id._id ?? "";
 
   const { mutate, isPending, error } = useMutation({
-    mutationFn: (fd: FormData) => updateService(service._id ?? "", fd),
+    mutationFn: async (values: ServiceFormValues) => {
+      const imageFile = values.image?.[0];
+      const imageKey = imageFile
+        ? await uploadImageAndGetKey(imageFile)
+        : service.image_url;
+
+      return updateService(service._id ?? "", {
+        name: values.name,
+        price: values.price,
+        category: categoryId,
+        description: values.description,
+        image_url: imageKey,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["services", categoryId],
@@ -53,13 +68,7 @@ const EditService = ({ service }: { service: IService }) => {
   });
 
   const handleSubmit = (values: ServiceFormValues) => {
-    const fd = new FormData();
-    fd.append("name", values.name);
-    fd.append("price", String(values.price));
-    fd.append("category", categoryId);
-    if (values.description) fd.append("description", values.description);
-    if (values.image?.[0]) fd.append("image", values.image[0]);
-    mutate(fd);
+    mutate(values);
   };
 
   return (
@@ -92,6 +101,7 @@ const EditService = ({ service }: { service: IService }) => {
           isPending={isPending}
           error={error}
           isEdit
+          existingImageUrl={service.image_url}
         />
       </DialogContent>
     </Dialog>

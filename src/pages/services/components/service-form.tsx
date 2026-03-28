@@ -1,3 +1,4 @@
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/loader";
+import SmartImage from "@/components/smart-image";
 
 const serviceSchema = z.object({
   name: z.string().min(1, "Service name is required"),
@@ -28,6 +30,7 @@ interface ServiceFormProps {
   isPending: boolean;
   error: Error | null;
   isEdit?: boolean;
+  existingImageUrl?: string;
 }
 
 const ServiceForm = ({
@@ -36,6 +39,7 @@ const ServiceForm = ({
   isPending,
   error,
   isEdit,
+  existingImageUrl,
 }: ServiceFormProps) => {
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceSchema),
@@ -45,6 +49,25 @@ const ServiceForm = ({
       description: defaultValues?.description ?? "",
     },
   });
+
+  const selectedFile = form.watch("image")?.[0];
+  const selectedPreviewUrl = useMemo(
+    () => (selectedFile ? URL.createObjectURL(selectedFile) : null),
+    [selectedFile],
+  );
+
+  useEffect(
+    () => () => {
+      if (selectedPreviewUrl) URL.revokeObjectURL(selectedPreviewUrl);
+    },
+    [selectedPreviewUrl],
+  );
+
+  const previewUrl =
+    selectedPreviewUrl ??
+    (existingImageUrl
+      ? `${import.meta.env.VITE_BASE_URL}/users/get-images/?name=${existingImageUrl}`
+      : null);
 
   return (
     <Form {...form}>
@@ -110,6 +133,18 @@ const ServiceForm = ({
             </FormItem>
           )}
         />
+        {previewUrl ? (
+          <div className="overflow-hidden rounded-md border">
+            <SmartImage
+              src={previewUrl}
+              alt="Service preview"
+              loading="eager"
+              showRetry
+              wrapperClassName="h-40 w-full rounded-md"
+              className="h-40 w-full object-cover"
+            />
+          </div>
+        ) : null}
 
         <div className="flex items-center justify-end gap-2">
           {error && (
@@ -121,9 +156,7 @@ const ServiceForm = ({
             disabled={isPending}
           >
             {isPending ? (
-              <span className="w-14">
-                <Loading isLoading={isPending} />
-              </span>
+                <Loading isLoading={isPending} width="w-14" />
             ) : isEdit ? (
               "Update"
             ) : (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -7,10 +7,9 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+} from "@tanstack/react-table"
 import {
   Table,
   TableBody,
@@ -18,50 +17,75 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import Filter from "@/components/filter/Filter";
-import ProfessionalDetail from "./components/detail-page";
-import type { IProfessional } from "@/types";
+} from "@/components/ui/table"
+import Filter from "@/components/filter/Filter"
+import ProfessionalDetail from "./components/detail-page"
+import type { IProfessional } from "@/types"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 interface Props {
-  columns: ColumnDef<IProfessional, unknown>[];
-  data: IProfessional[];
+  columns: ColumnDef<IProfessional, unknown>[]
+  data: IProfessional[]
+  page: number
+  totalPages: number
+  totalResults: number
+  onPageChange: (page: number) => void
 }
 
-export function ProfessionalDataTable({ columns, data }: Props) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 9 });
+export function ProfessionalDataTable({
+  columns,
+  data,
+  page,
+  totalPages,
+  totalResults,
+  onPageChange,
+}: Props) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState("")
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState("");
+  useEffect(() => {
+    if (!data.length) {
+      setIsOpen(false)
+      setSelectedId("")
+      return
+    }
+
+    setIsOpen(true)
+    setSelectedId(data[0]._id ?? "")
+  }, [])
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
-    state: { sorting, columnFilters, columnVisibility, rowSelection, pagination },
-  });
+    state: { sorting, columnFilters, columnVisibility, rowSelection },
+  })
 
   const handleClick = (id: string | undefined) => {
-    setIsOpen(true);
-    if (id) setSelectedId(id);
-  };
+    setIsOpen(true)
+    if (id) setSelectedId(id)
+  }
 
   const handleClose = () => {
-    setIsOpen(false);
-    setSelectedId("");
-  };
+    setIsOpen(false)
+    setSelectedId("")
+  }
 
   return (
     <div className="flex flex-col justify-between gap-4 overflow-hidden lg:flex-row">
@@ -80,7 +104,7 @@ export function ProfessionalDataTable({ columns, data }: Props) {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   ))}
@@ -93,13 +117,16 @@ export function ProfessionalDataTable({ columns, data }: Props) {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className={`cursor-pointer hover:bg-green-300/20 ${
+                      row.original._id === selectedId ? "bg-green-700/20" : ""
+                    }`}
                     onClick={() => handleClick(row.original._id)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext(),
+                          cell.getContext()
                         )}
                       </TableCell>
                     ))}
@@ -118,6 +145,37 @@ export function ProfessionalDataTable({ columns, data }: Props) {
             </TableBody>
           </Table>
         </div>
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Page {page} of {totalPages} ({totalResults} total)
+          </p>
+          <Pagination className="mx-0 w-auto justify-end">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    if (page > 1) onPageChange(page - 1)
+                  }}
+                  className={page <= 1 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    if (page < totalPages) onPageChange(page + 1)
+                  }}
+                  className={
+                    page >= totalPages ? "pointer-events-none opacity-50" : ""
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
       {isOpen && (
         <div className="mx-auto w-[85%] transition-all duration-150 sm:w-[55%] lg:w-[25%]">
@@ -128,5 +186,5 @@ export function ProfessionalDataTable({ columns, data }: Props) {
         </div>
       )}
     </div>
-  );
+  )
 }

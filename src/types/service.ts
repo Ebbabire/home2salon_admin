@@ -1,17 +1,18 @@
 export interface ICategory {
   _id?: string;
   name: string;
-  createdAt?: string;
-  updatedAt?: string;
+  image_url?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IService {
   _id?: string;
   name: string;
   price: number;
-  category: string | ICategory;
+  category_id: string | ICategory;
   description?: string;
-  image?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  image_url?: string;
+  created_at?: string;
+  updated_at?: string;
 }

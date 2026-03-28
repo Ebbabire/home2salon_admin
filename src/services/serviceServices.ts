@@ -1,66 +1,63 @@
-import type { IService } from "@/types";
-import { mockServices, nextId } from "./mock/data";
+import type { IService } from "@/types"
+import { apiFetch, type PaginatedResponse } from "./api"
 
-const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
-
-export async function getServices(): Promise<IService[]> {
-  await delay();
-  return [...mockServices];
+export async function getServices(): Promise<{ services: IService[] }> {
+  return apiFetch<{ services: IService[] }>("/services")
 }
 
 export async function getServicesByCategory(
-  categoryId: string,
+  categoryId: string
 ): Promise<IService[]> {
-  await delay();
-  return mockServices.filter((s) => {
-    const catId = typeof s.category === "string" ? s.category : s.category._id;
-    return catId === categoryId;
-  });
+  return apiFetch<IService[]>(`/services/category/${categoryId}`)
+}
+
+interface ListParams {
+  page?: number
+  limit?: number
+}
+
+export async function getServicesByCategoryPaginated(
+  categoryId: string,
+  params: ListParams = {}
+): Promise<PaginatedResponse<IService[]>> {
+  const page = params.page ?? 1
+  const limit = params.limit ?? 10
+
+  return apiFetch<PaginatedResponse<IService[]>>(
+    `/services/category/${categoryId}?page=${page}&limit=${limit}`,
+    { unwrapData: false }
+  )
 }
 
 export async function getServiceById(id: string): Promise<IService> {
-  await delay();
-  const svc = mockServices.find((s) => s._id === id);
-  if (!svc) throw new Error("Service not found");
-  return { ...svc };
+  return apiFetch<IService>(`/services/${id}`)
 }
 
-export async function addService(formData: FormData): Promise<IService> {
-  await delay();
-  const newService: IService = {
-    _id: nextId(),
-    name: formData.get("name") as string,
-    price: Number(formData.get("price")),
-    category: formData.get("category") as string,
-    description: (formData.get("description") as string) || undefined,
-    image: "https://placehold.co/200x200/e2e8f0/64748b?text=New",
-    createdAt: new Date().toISOString(),
-  };
-  mockServices.push(newService);
-  return newService;
+export async function addService(
+  payload: Pick<IService, "name" | "price" | "description" | "image_url"> & {
+    category: string
+  }
+): Promise<IService> {
+  return apiFetch<IService>("/services", {
+    method: "POST",
+    body: payload,
+  })
 }
 
 export async function updateService(
   id: string,
-  formData: FormData,
+  payload: Pick<IService, "name" | "price" | "description" | "image_url"> & {
+    category: string
+  }
 ): Promise<IService> {
-  await delay();
-  const idx = mockServices.findIndex((s) => s._id === id);
-  if (idx === -1) throw new Error("Service not found");
-  mockServices[idx] = {
-    ...mockServices[idx],
-    name: (formData.get("name") as string) || mockServices[idx].name,
-    price: Number(formData.get("price")) || mockServices[idx].price,
-    description:
-      (formData.get("description") as string) ||
-      mockServices[idx].description,
-  };
-  return mockServices[idx];
+  return apiFetch<IService>(`/services/${id}`, {
+    method: "PATCH",
+    body: payload,
+  })
 }
 
 export async function deleteService(id: string): Promise<void> {
-  await delay();
-  const idx = mockServices.findIndex((s) => s._id === id);
-  if (idx === -1) throw new Error("Service not found");
-  mockServices.splice(idx, 1);
+  await apiFetch<unknown>(`/services/${id}`, {
+    method: "DELETE",
+  })
 }

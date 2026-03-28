@@ -2,7 +2,7 @@
 
 **Purpose**: a single, versioned, repo-local source of truth the AI + humans read first to understand this project's architecture, conventions, and current state.
 
-**Last updated**: 2026-03-25
+**Last updated**: 2026-03-27
 
 ## What this repo is
 - **App type**: Beauty Service Admin Panel (Vite SPA)
@@ -73,12 +73,13 @@
 
 ## Data + API conventions
 - **Base URL**: `import.meta.env.VITE_BASE_URL`
-- **HTTP**: direct `fetch()` calls in `src/services/*`
+- **HTTP**: shared `apiFetch()` wrapper in `src/services/api.ts` (fetch + JSON parsing + typed `ApiError`)
 - **Auth/session**: stored in `sessionStorage`
   - Stored keys: `token`, `id`, `userName`, `userRole`, `phoneNumber`
-  - Session helper: `src/services/session.ts`
+  - Session helper: `src/services/session.ts` (`getSession()` + `clearSession()`)
+- **Auth behavior**: `apiFetch()` injects `Authorization: Bearer <token>` by default; set `{ auth: false }` for public endpoints (login). On `401` for auth requests, session is cleared and browser redirects to `/login`.
 - **Endpoints by service file**:
-  - `adminServices.ts`: `POST /admin/login`, `GET/POST /admin`, `GET/PATCH /admin/:id`
+  - `adminServices.ts`: `POST /admins/login` (current), plus admin CRUD endpoints (see backend)
   - `categoryServices.ts`: `GET/POST /categories`, `GET/PATCH/DELETE /categories/:id`
   - `serviceServices.ts`: `GET/POST /services`, `GET /services/category/:categoryId`, `GET/PATCH/DELETE /services/:id` (FormData for image upload)
   - `professionalServices.ts`: `GET/POST /professional`, `GET/PATCH /professional/:id`
@@ -86,9 +87,9 @@
   - `walletServices.ts`: `GET /wallet`, `GET /wallet/:id/transactions`, `POST /wallet/:id/deduct`
 
 ## Shared types (`src/types/`)
-- `service.ts`: `ICategory`, `IService` (optional `description`)
-- `professional.ts`: `IProfessional`, `IWalletTransaction`, `IWalletBalance`
-- `order.ts`: `IOrder`, `OrderStatus` enum, `IOrderedService`, `ICustomerInfo`, status grouping constants (`PENDING_STATUSES`, `ASSIGNED_STATUSES`, `COMPLETED_STATUSES`)
+- `service.ts`: `ICategory`, `IService` use snake_case backend keys for timestamps (`created_at`, `updated_at`)
+- `professional.ts`: `IProfessional`, `IWalletTransaction`, `IWalletBalance` use snake_case backend keys (`full_name`, `phone_number`, `assigned_orders`, `created_at`, `updated_at`)
+- `order.ts`: `IOrder`, `OrderStatus` enum, `IOrderedService`, `ICustomerInfo` use snake_case backend keys (`full_name`, `phone_number`, `total_price`, `scheduled_date`, `scheduled_time`, `advance_payment_*`, `created_at`, `updated_at`) + status grouping constants (`PENDING_STATUSES`, `ASSIGNED_STATUSES`, `COMPLETED_STATUSES`)
 - `index.ts`: barrel re-exports
 
 ## Feature modules (current)
@@ -165,12 +166,9 @@
 - `.cursor/rules/project-memory-pool.mdc` — always-on rule that reads + updates this file per completed task.
 - `.cursor/rules/frontend-conventions.mdc` — TS/React/UI coding standards (activates for `src/**/*.{ts,tsx}`).
 
-## Mock data layer (active)
-- **All service files** (`src/services/*.ts`) currently use in-memory mock data from `src/services/mock/data.ts` instead of real API calls.
-- Mutations modify the arrays in place (state persists within the browser session only).
-- Mock login accepts any admin's phone/email with any password.
-- A 300ms delay simulates network latency.
-- **To switch to real API**: replace each service file's contents with the real `fetch()` implementations (the real implementations were the original code before the mock swap — use the endpoint patterns documented above).
+## Mock data layer (status)
+- **Previously active**: services used in-memory mock data (`src/services/mock/data.ts`) with simulated delay.
+- **Current**: service layer has been migrated back to real HTTP via `apiFetch()` (`src/services/api.ts`) across `src/services/*` (including login).
 
 ## Known gaps / tech debt (keep short, high-signal)
 - **Route protection**: auth guard is currently commented out in `src/App.tsx` (routes are effectively public).
@@ -180,6 +178,28 @@
 - **Mock data active**: All services use in-memory mock — swap back to fetch when backend is ready.
 
 ## Change log
+- 2026-03-27: Improved scalability of service-level professional assignment UI — updated `src/pages/orders/pending/components/assign-professional-dialog.tsx` to use searchable per-service select inputs (name/phone filter) instead of rendering large clickable lists; pre-fills existing service assignments when present, shows per-service required state, and keeps submit guarded until every service has a selected professional.
+- 2026-03-27: Switched order professional assignment to service-level payloads — updated `src/services/orderServices.ts` `assignProfessional()` to send backend-required `services: [{ service_id, professionals[] }]` payload; refactored `src/pages/orders/pending/components/assign-professional-dialog.tsx` to assign one professional per order service (service-grouped selector UI + per-service local state + submit guard requiring all services assigned); updated callsite in `src/pages/orders/pending/Columns.tsx` to pass `order.services` into assignment dialog.
+- 2026-03-27: Fixed image-preview loading collapse in modal — updated `src/components/image-preview-dialog.tsx` to reserve a stable image viewport (`aspect-[4/3]` with muted background) so `SmartImage` shimmer is visible immediately and the dialog no longer appears as an empty strip while image bytes are loading.
+- 2026-03-27: Completed SmartImage rollout for service form previews — updated `src/pages/services/components/service-form.tsx` to use `SmartImage` (skeleton/fade/error+retry), and fixed preview URL construction to avoid invalid image requests when no existing image is present.
+- 2026-03-27: Improved image-loading UX with reusable smart image primitive — added `src/components/smart-image.tsx` (skeleton placeholder, fade-in on load, graceful fallback, optional retry, lazy/eager modes); integrated into `src/components/image-preview-dialog.tsx`, order payment verification dialog (`src/pages/orders/pending/components/verify-payment-dialog.tsx`), service table thumbnails (`src/pages/services/Columns.tsx`), and category previews/list thumbnails (`src/pages/services/components/category-list.tsx`) to reduce perceived latency and avoid abrupt image pop-in.
+- 2026-03-27: Fixed global pagination "bounce-back" race across all paginated pages — updated clamp logic in `src/pages/{orders/pending/PendingOrders.tsx,orders/assigned/AssignedOrders.tsx,orders/completed/CompletedOrders.tsx,admins/Admins.tsx,professionals/Professionals.tsx,wallet/Wallet.tsx,services/components/service-table.tsx}` to clamp only after the current response exists (prevents fallback `totalPages` from forcing page back to 1 during fetch transitions); in services table, replaced unconditional category reset effect with previous-category tracking to reset `servicePage` only on actual category changes; normalized wallet paginated typing/consumption in `src/services/walletServices.ts` and `src/pages/wallet/Wallet.tsx` to keep table data array stable.
+- 2026-03-27: Fixed Orders pagination rendering and response contract usage — kept paginated list parsing aligned to backend contract `data: { orders: [...] }` via `response.data.orders` while using `PaginatedResponse<IOrder[]>` typing in `src/services/orderServices.ts`; updated `src/pages/orders/{pending/PendingOrders.tsx,assigned/AssignedOrders.tsx,completed/CompletedOrders.tsx}` to always render `OrderDataTable` after successful fetch (even when row list is empty) so pagination controls remain visible and page navigation does not disappear on empty pages.
+- 2026-03-27: Redefined Orders domain types to backend-native strict shape (no unions) — updated `src/types/order.ts` to camelCase API statuses (`pendingReview`, `professionalAssigned`, etc.), nested location object, `user_id`, populated `services[].service_id`, `assigned_professionals`, `advance_payment_id`, and `createdAt`/`updatedAt`; updated exports in `src/types/index.ts`; aligned order consumers in `src/pages/orders/{pending/Columns.tsx,assigned/Columns.tsx,completed/Columns.tsx,detail/OrderDetail.tsx}` plus dashboard recent orders (`src/pages/dashboard/components/RecentOrdersTable.tsx`) and removed legacy status usage in `src/components/status-badge.tsx` (plus mock enum cleanup in `src/services/mock/data.ts`).
+- 2026-03-27: Refactored Orders lists to server-side status pagination with unique cache keys — added `getOrdersPaginated()` and shared `ORDER_PAGE_STATUSES` in `src/services/orderServices.ts` (query sends repeated `status` params with `page`/`limit`); wired `src/pages/orders/{pending/ PendingOrders.tsx,assigned/AssignedOrders.tsx,completed/CompletedOrders.tsx}` to `usePageParam("page")` + server metadata; updated `src/pages/orders/components/order-data-table.tsx` to server-driven pagination controls (removed local row-model pagination); replaced generic `["orders"]` list keys/invalidation with page-specific keys (`["pendingOrders"]`, `["assignedOrders"]`, `["completedOrders"]`) and dashboard key (`["dashboardOrders"]`) across order mutation dialogs and `src/pages/dashboard/hooks/useDashboardData.ts`.
+- 2026-03-27: Normalized professional skills for mixed API shapes — updated `src/types/professional.ts` so `IProfessional.skills` accepts populated service objects or IDs (`Array<string | IService>`); updated edit defaults in `src/pages/professionals/components/professional-form.tsx` to normalize populated skills into ID array before submit; updated `src/pages/professionals/components/detail-page.tsx` to derive skill labels directly from populated skills without requiring additional service lookup.
+- 2026-03-27: Added professional skills field — added `skills?: string[]` to `IProfessional` in `src/types/professional.ts`; created `src/pages/professionals/components/skills-picker.tsx` (category-grouped multi-select using Checkbox + Collapsible, fetches all categories/services and groups client-side); refactored `src/pages/professionals/components/professional-form.tsx` from data-driven `FormComp` to manual react-hook-form fields to integrate `SkillsPicker`; updated `src/pages/professionals/components/detail-page.tsx` to display skill badges by resolving service names from IDs.
+- 2026-03-26: Refactored pagination URL-sync into reusable hook — added `src/components/hooks/use-page-param.ts` (`usePageParam`) using router location/navigation; replaced ad-hoc search-param pagination logic in `src/pages/{admins/Admins.tsx,professionals/Professionals.tsx,wallet/Wallet.tsx,services/components/service-table.tsx}` with the hook; preserved clamp-to-total-pages behavior and kept `servicePage` reset-to-1 on category change.
+- 2026-03-26: Persisted table pagination via URL search params — wired `page` query param sync (init, back/forward sync, clamp to total pages) in `src/pages/{admins/Admins.tsx,professionals/Professionals.tsx,wallet/Wallet.tsx}`; wired `servicePage` query param sync in `src/pages/services/components/service-table.tsx` and reset `servicePage` to `1` whenever `categoryId` changes.
+- 2026-03-26: Admins detail panel now opens first row by default — `src/pages/admins/data-table.tsx` initializes the right-side `AdminDetail` panel from the first admin whenever table data loads/changes (and closes when empty), while preserving click-to-open behavior for row selection.
+- 2026-03-26: Fixed category submit UX during image uploads — `src/pages/services/components/category-list.tsx` now tracks upload-in-progress state, disables form inputs/submit button while uploading or mutating, and shows loading spinner for both upload and API submit phases to prevent duplicate submissions.
+- 2026-03-26: Switched Services/Categories image flow to upload-first key-based payloads — added `src/services/uploadServices.ts` to upload image files and return `data[0].key`; updated service create/edit (`src/pages/services/components/{add-service,edit-service}.tsx`) to upload selected image first and send resulting key as `image_url`; updated category create/edit in `src/pages/services/components/category-list.tsx` to do the same; changed `src/services/{serviceServices,categoryServices}.ts` create/update methods to send JSON payloads with `image_url` instead of multipart image blobs.
+- 2026-03-26: Added image thumbnails in Services UI lists — `src/pages/services/Columns.tsx` now resolves and displays service images with safe URL handling/fallback; `src/pages/services/components/category-list.tsx` now renders category thumbnails in the list and uses the same safe image URL resolution for row items and edit-preview fallback.
+- 2026-03-26: Added image upload/preview flow for Services and Categories — `src/services/categoryServices.ts` now sends `FormData` for category create/update (supports image); `src/pages/services/components/category-list.tsx` now includes image file input with preview (existing `image_url` shown on edit until replaced); `src/pages/services/components/service-form.tsx` now previews selected image and falls back to existing `image_url` in edit mode; `src/pages/services/components/edit-service.tsx` passes current image URL to the form.
+- 2026-03-26: Added server-side pagination support across list APIs and key tables — `src/services/api.ts` now supports `PaginatedResponse<T>` with optional `unwrapData`; added paginated service methods in `src/services/{admin,professional,wallet,service,category}Services.ts`; wired page + limit React Query keys in `src/pages/{admins,professionals,wallet,services}/*.tsx`; added previous/next pagination controls and server page summaries in `src/pages/{admins,professionals,wallet}/data-table.tsx`, `src/pages/services/components/{service-data-table,category-list}.tsx`; removed local row-model pagination in affected tables to avoid double pagination.
+- 2026-03-25: Began Option-B snake_case domain migration (backend-aligned keys) — updated shared types in `src/types/{order,professional,service}.ts` and migrated usages in dashboard/order/professional/wallet/admin pages plus `adminServices` login request mapping (`phone_number`) to align request/response object keys with backend schema.
+- 2026-03-25: Migrated services from in-memory mocks to real HTTP — updated `src/services/{category,service,professional,order,wallet}.ts` and `src/services/dashboardServices.ts` to use `apiFetch()`; enhanced `apiFetch()` to support `FormData` (service image upload) without forcing JSON content-type.
+- 2026-03-25: Wired real admin login via shared API client — added `src/services/api.ts` (`ApiError`, `apiFetch`, 401 handling); hardened `src/services/session.ts` (null-safe parsing + `clearSession()`); updated `src/services/adminServices.ts` `login()` to `POST /admins/login`; updated `src/pages/login/Login.tsx` to navigate on success. Kept feature logic and component tree intact.
 - 2026-03-25: UI modernization (presentation-only skin pass) — refined CSS tokens (`index.css`: softer borders, white cards, `--radius: 0.75rem`, antialiased body); updated 12 `src/components/ui/*` primitives (button: `rounded-lg` + shadow + gap; card: `rounded-xl`; input/select: hover-border + ring polish; table: muted header bg + uppercase `text-xs` heads; badge: `rounded-md`; dialog/alert-dialog/toast: `rounded-xl` + `shadow-xl`; dropdown: `rounded-xl` + `p-1.5`; tooltip: `rounded-lg`; skeleton: `rounded-lg`); modernized sidebar (white bg, branded H2 pill logo, border-top footer, `text-muted-foreground` icons); navbar frosted glass effect (`backdrop-blur-md`, ghost search input); unified all page containers from `border-dashed` → `rounded-xl border bg-card`; standardized headings to `text-xl font-bold tracking-tight`; elevated login card (`shadow-lg` + frosted H2 badge on green panel); softened error-display layout; added `cursor-pointer` to admins data-table clickable rows. No logic, hooks, services, routes, or component tree changes.
 - 2026-03-23: Refactored Dashboard for maintainability and resilience — split `src/pages/dashboard/Dashboard.tsx` into orchestration + extracted `hooks/useDashboardData.ts`, `components/DashboardStatsGrid.tsx`, and `components/RecentOrdersTable.tsx`; added combined query error state, memoized dashboard derivations, and replaced click-only navigation with accessible links.
 - 2026-03-17: Removed dark mode — deleted `theme-provider.tsx` + `mood-toggle.tsx`; removed `ThemeProvider` from `main.tsx`; removed `.dark` CSS vars block; removed `darkMode` from tailwind config; stripped `dark:` classes from Navbar, Sidebar, Login, Admins, Input.

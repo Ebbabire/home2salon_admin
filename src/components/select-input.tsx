@@ -26,8 +26,8 @@ const SelectInput = ({
   placeholder,
 }: SelectInputProps) => {
   return (
-    <Select onValueChange={onValueChange} value={value}>
-      <SelectTrigger className="w-[180px]">
+    <Select onValueChange={onValueChange} value={value} >
+      <SelectTrigger className="w-[100%]">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

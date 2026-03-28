@@ -1,12 +1,4 @@
 import type { IAdmin } from "@/pages/admins/Admins";
-import type {
-  ICategory,
-  IService,
-  IProfessional,
-  IOrder,
-  IWalletBalance,
-  IWalletTransaction,
-} from "@/types";
 import { OrderStatus } from "@/types";
 
 const PLACEHOLDER_IMG = "https://placehold.co/200x200/e2e8f0/64748b?text=Service";
@@ -19,35 +11,35 @@ const nextId = () => String(++_id);
 export const mockAdmins: IAdmin[] = [
   {
     _id: "a1",
-    fullName: "Abebe Kebede",
+    full_name: "Abebe Kebede",
     email: "abebe@home2salon.com",
-    phoneNumber: "911223344",
+    phone_number: "911223344",
     role: "Super Admin",
     status: "Active",
-    createdAt: new Date("2025-06-10"),
+    created_at: new Date("2025-06-10"),
   },
   {
     _id: "a2",
-    fullName: "Sara Tesfaye",
+    full_name: "Sara Tesfaye",
     email: "sara@home2salon.com",
-    phoneNumber: "922334455",
+    phone_number: "922334455",
     role: "Admin",
     status: "Active",
-    createdAt: new Date("2025-09-15"),
+    created_at: new Date("2025-09-15"),
   },
   {
     _id: "a3",
-    fullName: "Daniel Bekele",
+    full_name: "Daniel Bekele",
     email: "daniel@home2salon.com",
-    phoneNumber: "933445566",
+    phone_number: "933445566",
     role: "Admin",
     status: "Inactive",
-    createdAt: new Date("2025-11-20"),
+    created_at: new Date("2025-11-20"),
   },
 ];
 
 // ─── Categories ──────────────────────────────────────────
-export const mockCategories: ICategory[] = [
+export const mockCategories = [
   { _id: "cat1", name: "Hair", createdAt: "2025-08-01T00:00:00Z" },
   { _id: "cat2", name: "Nails", createdAt: "2025-08-01T00:00:00Z" },
   { _id: "cat3", name: "Makeup", createdAt: "2025-08-05T00:00:00Z" },
@@ -55,7 +47,7 @@ export const mockCategories: ICategory[] = [
 ];
 
 // ─── Services ────────────────────────────────────────────
-export const mockServices: IService[] = [
+export const mockServices = [
   {
     _id: "s1",
     name: "Women's Haircut",
@@ -146,7 +138,7 @@ export const mockServices: IService[] = [
 ];
 
 // ─── Professionals ───────────────────────────────────────
-export const mockProfessionals: IProfessional[] = [
+export const mockProfessionals = [
   {
     _id: "p1",
     fullName: "Hiwot Alemayehu",
@@ -182,7 +174,7 @@ export const mockProfessionals: IProfessional[] = [
 ];
 
 // ─── Orders ──────────────────────────────────────────────
-export const mockOrders: IOrder[] = [
+export const mockOrders = [
   {
     _id: "ord1",
     customer: { _id: "c1", fullName: "Liya Haile", phoneNumber: "912345678" },
@@ -277,7 +269,7 @@ export const mockOrders: IOrder[] = [
     scheduledDate: "2026-03-18T00:00:00Z",
     scheduledTime: "15:00",
     location: "Piassa, Addis Ababa",
-    status: OrderStatus.IN_PROGRESS,
+    status: OrderStatus.PROFESSIONAL_ASSIGNED,
     professional: { _id: "p2", fullName: "Meron Tadesse", phoneNumber: "955667788", status: "Active" },
     advancePaymentAmount: 1150,
     advancePaymentReceipt: RECEIPT_IMG,
@@ -362,14 +354,14 @@ export const mockOrders: IOrder[] = [
 ];
 
 // ─── Wallet ──────────────────────────────────────────────
-export const mockWalletBalances: IWalletBalance[] = [
+export const mockWalletBalances = [
   { professional: mockProfessionals[0], balance: 4500 },
   { professional: mockProfessionals[1], balance: 7200 },
   { professional: mockProfessionals[2], balance: 2100 },
   { professional: mockProfessionals[3], balance: 0 },
 ];
 
-export const mockWalletTransactions: Record<string, IWalletTransaction[]> = {
+export const mockWalletTransactions: Record<string, unknown[]> = {
   p1: [
     { _id: "wt1", professional: "p1", type: "earning", amount: 1200, date: "2026-03-15T12:00:00Z", order: "ord8", notes: "Completed order #ord8" },
     { _id: "wt2", professional: "p1", type: "earning", amount: 3800, date: "2026-03-10T14:00:00Z", order: "ord5", notes: "Completed order #ord5" },

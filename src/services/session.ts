@@ -1,24 +1,37 @@
 type SessionReturn = {
   token: string | null;
-  id: string;
-  userRole: string;
-  userName: string;
-  phoneNumber: string;
+  id: string | null;
+  userRole: string | null;
+  userName: string | null;
+  phoneNumber: string | null;
 };
+
+function getSessionItem(key: string): string | null {
+  const raw = sessionStorage.getItem(key);
+  if (!raw) return null;
+
+  try {
+    return JSON.parse(raw) as string;
+  } catch {
+    return raw;
+  }
+}
+
+export function clearSession(): void {
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("id");
+  sessionStorage.removeItem("userRole");
+  sessionStorage.removeItem("userName");
+  sessionStorage.removeItem("phoneNumber");
+}
 
 // function to get session data
 export function getSession(): SessionReturn {
-  const token = JSON.parse(sessionStorage.getItem("token") || "{}");
-  const id = JSON.parse(sessionStorage.getItem("id") || "{}");
-  const userRole = JSON.parse(sessionStorage.getItem("userRole") || "{}");
-  const userName = JSON.parse(sessionStorage.getItem("userName") || "{}");
-  const phoneNumber = JSON.parse(sessionStorage.getItem("phoneNumber") || "{}");
-
   return {
-    token,
-    id,
-    userRole,
-    userName,
-    phoneNumber,
+    token: getSessionItem("token"),
+    id: getSessionItem("id"),
+    userRole: getSessionItem("userRole"),
+    userName: getSessionItem("userName"),
+    phoneNumber: getSessionItem("phoneNumber"),
   };
 }

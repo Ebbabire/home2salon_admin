@@ -1,30 +1,35 @@
-import { useMemo } from "react";
-import { ColumnDef } from "@tanstack/react-table";
-import type { IService } from "@/types";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
-import EditService from "./components/edit-service";
-import DeleteService from "./components/delete-service";
+import { useMemo } from "react"
+import { ColumnDef } from "@tanstack/react-table"
+import type { IService } from "@/types"
+import { Button } from "@/components/ui/button"
+import { ArrowUpDown } from "lucide-react"
+import EditService from "./components/edit-service"
+import DeleteService from "./components/delete-service"
+import SmartImage from "@/components/smart-image"
+
+const resolveImageSrc = (value?: string) => {
+  if (!value) return null
+  if (value.startsWith("http://") || value.startsWith("https://")) return value
+  return `${import.meta.env.VITE_BASE_URL}/users/get-images/?name=${value}`
+}
 
 const useServiceColumns = () => {
   const columns: ColumnDef<IService, unknown>[] = useMemo(
     () => [
       {
-        accessorKey: "image",
+        accessorKey: "image_url",
         header: () => <div className="w-12">Image</div>,
         cell: ({ row }) => {
-          const img = row.getValue("image") as string | undefined;
-          return img ? (
-            <img
-              src={img}
-              alt=""
+          const imageName = row.getValue("image_url") as string | undefined
+          const imageSrc = resolveImageSrc(imageName)
+          return (
+            <SmartImage
+              src={imageSrc}
+              alt={row.original.name}
+              wrapperClassName="h-10 w-10 rounded-md"
               className="h-10 w-10 rounded-md object-cover"
             />
-          ) : (
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-xs text-muted-foreground">
-              N/A
-            </div>
-          );
+          )
         },
       },
       {
@@ -32,9 +37,7 @@ const useServiceColumns = () => {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "asc")
-            }
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Name
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -49,9 +52,7 @@ const useServiceColumns = () => {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "asc")
-            }
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Price
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -74,19 +75,19 @@ const useServiceColumns = () => {
         id: "actions",
         header: () => <div className="text-right">Actions</div>,
         cell: ({ row }) => {
-          const service = row.original;
+          const service = row.original
           return (
             <div className="flex justify-end gap-2">
               <EditService service={service} />
               <DeleteService serviceId={service._id ?? ""} />
             </div>
-          );
+          )
         },
       },
     ],
-    [],
-  );
-  return columns;
-};
+    []
+  )
+  return columns
+}
 
-export default useServiceColumns;
+export default useServiceColumns

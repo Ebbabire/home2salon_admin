@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react"
 
 import {
   ColumnDef,
@@ -8,10 +8,9 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+} from "@tanstack/react-table"
 
 import {
   Table,
@@ -20,63 +19,84 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import Filter from "@/components/filter/Filter";
-import AdminDetail from "./component/detaile-page";
-import { IAdmin } from "./Admins";
+} from "@/components/ui/table"
+import Filter from "@/components/filter/Filter"
+import AdminDetail from "./component/detaile-page"
+import { IAdmin } from "./Admins"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 interface DataTableProps {
-  columns: ColumnDef<IAdmin, unknown>[];
-  data: IAdmin[];
+  columns: ColumnDef<IAdmin, unknown>[]
+  data: IAdmin[]
+  page: number
+  totalPages: number
+  totalResults: number
+  onPageChange: (page: number) => void
 }
 
-export function DataTable({ columns, data }: DataTableProps) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-  const [pagination, setPagination] = useState({
-    pageIndex: 0, //initial page index
-    pageSize: 9, //default page size
-  });
+export function DataTable({
+  columns,
+  data,
+  page,
+  totalPages,
+  totalResults,
+  onPageChange,
+}: DataTableProps) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [userId, setUserId] = useState("")
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [userId, setUserId] = useState("");
+  useEffect(() => {
+    if (!data.length) {
+      setIsOpen(false)
+      setUserId("")
+      return
+    }
+
+    setIsOpen(true)
+    setUserId(data[0]._id ?? "")
+  }, [])
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
-      pagination,
     },
-  });
+  })
 
   const handleClick = (id: string | undefined) => {
-    setIsOpen(true);
-    id && setUserId(id);
-  };
+    setIsOpen(true)
+    id && setUserId(id)
+  }
   const handleClose = () => {
-    setIsOpen(false);
-    setUserId("");
-  };
+    setIsOpen(false)
+    setUserId("")
+  }
 
   return (
     <div className="flex flex-col justify-between gap-4 overflow-hidden lg:flex-row">
       <div
-        className={` ${
+        className={`${
           isOpen ? "lg:w-[70%] xl:w-[72%]" : "mx-auto w-[90%]"
         } transition-all duration-150`}
       >
@@ -93,10 +113,10 @@ export function DataTable({ columns, data }: DataTableProps) {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext(),
+                              header.getContext()
                             )}
                       </TableHead>
-                    );
+                    )
                   })}
                 </TableRow>
               ))}
@@ -107,14 +127,14 @@ export function DataTable({ columns, data }: DataTableProps) {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="cursor-pointer"
+                    className={`cursor-pointer hover:bg-green-300/20 ${row.original._id === userId ? "bg-green-700/20" : ""}`}
                     onClick={() => handleClick(row.original._id)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext(),
+                          cell.getContext()
                         )}
                       </TableCell>
                     ))}
@@ -133,6 +153,37 @@ export function DataTable({ columns, data }: DataTableProps) {
             </TableBody>
           </Table>
         </div>
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Page {page} of {totalPages} ({totalResults} total)
+          </p>
+          <Pagination className="mx-0 w-auto justify-end">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    if (page > 1) onPageChange(page - 1)
+                  }}
+                  className={page <= 1 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    if (page < totalPages) onPageChange(page + 1)
+                  }}
+                  className={
+                    page >= totalPages ? "pointer-events-none opacity-50" : ""
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
       {isOpen && (
         <div className="mx-auto w-[85%] transition-all duration-150 sm:w-[55%] lg:w-[25%]">
@@ -143,5 +194,5 @@ export function DataTable({ columns, data }: DataTableProps) {
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -1,33 +1,31 @@
-import { useMemo } from "react";
-import { ColumnDef } from "@tanstack/react-table";
-import type { IProfessional } from "@/types";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import { useMemo } from "react"
+import { ColumnDef } from "@tanstack/react-table"
+import type { IProfessional } from "@/types"
+import { Button } from "@/components/ui/button"
+import { ArrowUpDown } from "lucide-react"
 
 const useProfessionalColumns = () => {
   const columns: ColumnDef<IProfessional, unknown>[] = useMemo(
     () => [
       {
-        accessorKey: "fullName",
+        accessorKey: "full_name",
         header: ({ column }) => (
           <Button
             variant="ghost"
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "asc")
-            }
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Full Name
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => (
-          <div className="px-4 capitalize">{row.getValue("fullName")}</div>
+          <div className="px-4 capitalize">{row.getValue("full_name")}</div>
         ),
       },
       {
-        accessorKey: "phoneNumber",
+        accessorKey: "phone_number",
         header: () => <div className="w-32">Phone Number</div>,
-        cell: ({ row }) => <div>0{row.getValue("phoneNumber")}</div>,
+        cell: ({ row }) => <div>{row.getValue("phone_number")}</div>,
       },
       {
         accessorKey: "status",
@@ -41,9 +39,9 @@ const useProfessionalColumns = () => {
         ),
       },
     ],
-    [],
-  );
-  return columns;
-};
+    []
+  )
+  return columns
+}
 
-export default useProfessionalColumns;
+export default useProfessionalColumns

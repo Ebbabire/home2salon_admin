@@ -1,20 +1,25 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/services/categoryServices";
-import Loading from "@/components/loader";
-import Error from "@/components/error-display";
-import CategoryList from "./components/category-list";
-import ServiceTable from "./components/service-table";
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { getCategoriesPaginated } from "@/services/categoryServices"
+import Loading from "@/components/loader"
+import Error from "@/components/error-display"
+import CategoryList from "./components/category-list"
+import ServiceTable from "./components/service-table"
 
 export const Services = () => {
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("")
 
   const {
-    data: categories,
+    data: categoryResponse,
     isLoading,
     isError,
     error,
-  } = useQuery({ queryKey: ["categories"], queryFn: getCategories });
+  } = useQuery({
+    queryKey: ["categoriesPaginated"],
+    queryFn: () => getCategoriesPaginated(),
+  })
+
+  const categories = categoryResponse?.data.categories ?? []
 
   if (isLoading || isError) {
     return (
@@ -22,15 +27,15 @@ export const Services = () => {
         <Loading isLoading={isLoading} />
         <Error error={error} />
       </div>
-    );
+    )
   }
 
   return (
     <>
-      <h1 className="text-xl font-bold tracking-tight md:text-2xl">Services</h1>
+      {/* <h1 className="text-xl font-bold tracking-tight md:text-2xl">Services</h1> */}
       <div className="flex flex-1 gap-4 rounded-xl border bg-card p-4 shadow-sm">
         <CategoryList
-          categories={categories ?? []}
+          categories={categories}
           selectedId={selectedCategoryId}
           onSelect={setSelectedCategoryId}
         />
@@ -45,5 +50,5 @@ export const Services = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
