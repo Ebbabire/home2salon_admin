@@ -24,7 +24,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Filter from "@/components/filter/Filter";
 import type { IOrder } from "@/types";
 
 interface Props {
@@ -60,7 +59,7 @@ export function OrderDataTable({
 
   return (
     <div>
-      <Filter table={table} />
+      {/* <Filter table={table} /> */}
       <div className="rounded-lg border">
         <Table>
           <TableHeader>

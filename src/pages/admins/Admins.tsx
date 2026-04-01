@@ -12,6 +12,7 @@ import { usePageParam } from "@/hooks/use-page-param"
 export interface IAdmin {
   _id?: string
   full_name: string
+  email?: string
   phone_number: string
   role: "admin" | "superadmin"
   status?: string

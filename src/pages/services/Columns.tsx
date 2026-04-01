@@ -44,7 +44,9 @@ const useServiceColumns = () => {
           </Button>
         ),
         cell: ({ row }) => (
-          <div className="px-4 font-medium">{row.getValue("name")}</div>
+          <div className="px-4 font-medium capitalize">
+            {row.getValue("name")}
+          </div>
         ),
       },
       {
@@ -61,6 +63,29 @@ const useServiceColumns = () => {
         cell: ({ row }) => (
           <div className="px-4">{row.getValue("price")} ETB</div>
         ),
+      },
+      {
+        accessorKey: "commission_percentage",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Commission
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const value = row.getValue("commission_percentage") as
+            | number
+            | undefined
+            | null
+          return (
+            <div className="px-4">
+              {typeof value === "number" ? `${value}%` : "—"}
+            </div>
+          )
+        },
       },
       {
         accessorKey: "description",

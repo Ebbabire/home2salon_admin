@@ -18,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import Filter from "@/components/filter/Filter"
 import ProfessionalDetail from "./components/detail-page"
 import type { IProfessional } from "@/types"
 import {
@@ -92,7 +91,7 @@ export function ProfessionalDataTable({
       <div
         className={`${isOpen ? "lg:w-[70%] xl:w-[72%]" : "mx-auto w-[90%]"} transition-all duration-150`}
       >
-        <Filter table={table} />
+        {/* <Filter table={table} /> */}
         <div className="rounded-lg border">
           <Table>
             <TableHeader>

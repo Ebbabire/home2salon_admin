@@ -38,7 +38,9 @@ const useAssignedColumns = () => {
         cell: ({ row }) => (
           <div className="text-sm">
             {moment(row.original.scheduled_date).format("ll")}{" "}
-            {row.original.scheduled_time}
+            {moment(row.original.scheduled_time, "HH:mm", true).isValid()
+              ? moment(row.original.scheduled_time, "HH:mm").format("hh:mm A")
+              : row.original.scheduled_time}
           </div>
         ),
       },

@@ -2,7 +2,7 @@
 
 **Purpose**: a single, versioned, repo-local source of truth the AI + humans read first to understand this project's architecture, conventions, and current state.
 
-**Last updated**: 2026-03-30
+**Last updated**: 2026-03-31
 
 ## What this repo is
 - **App type**: Beauty Service Admin Panel (Vite SPA)
@@ -190,6 +190,9 @@
 - **Mock data active**: All services use in-memory mock — swap back to fetch when backend is ready.
 
 ## Change log
+- 2026-03-31: Services now support per-service `commission_percentage` (validated 0–100) in create/edit form and payload; displayed in Services table. Touched: `src/types/service.ts`, `src/pages/services/components/service-form.tsx`, `src/pages/services/components/{add-service,edit-service}.tsx`, `src/services/serviceServices.ts`, `src/pages/services/Columns.tsx`.
+- 2026-03-31: Disabled rendering of the shared table **`Filter`** UI across all table pages (kept table filtering state wired, but hid the filter component). Touched: `src/pages/admins/data-table.tsx`, `src/pages/orders/components/order-data-table.tsx`, `src/pages/professionals/data-table.tsx`, `src/pages/services/components/service-data-table.tsx`.
+- 2026-03-31: Updated Order Detail **Adjust Schedule** flow to call `PATCH /orders/:id/update-schedule` and keep the action visible-but-disabled unless status is `pendingReview` (tooltip explains why). Touched: `src/services/orderServices.ts`, `src/pages/orders/detail/OrderDetail.tsx`, `src/pages/orders/detail/components/adjust-appointment-dialog.tsx`.
 - 2026-03-30: Added **Settings** at `/settings` — `src/pages/settings/{Settings.tsx,change-password-tab.tsx,advance-payment-tab.tsx}` (card + tabs); `changeAdminPassword` in `adminServices.ts` (`POST /admins/change-password`); `settingsServices.ts` for `GET/PATCH /settings`; `IAppSettings` in `src/types/settings.ts`; route + sidebar **Settings** (`BiCog`). Advance payment tab visible only for `superadmin`.
 - 2026-03-29: Shared **`WalletDeductDialog`** (`src/components/wallet-deduct-dialog.tsx`) for wallet deductions via existing `recordPayout` API; **`RecordPayoutDialog`** refactored to wrap it; professional **`detail-page.tsx`** shows **Deduct** next to balance with `maxDeductible` = current balance; invalidates professional + professionals queries on success.
 - 2026-03-29: Wallet domain aligned to transaction documents — added `src/types/wallet.ts` (`IWalletTransaction` with populated `professional_id` / optional `order_id`, `note`, camelCase timestamps); removed `IWalletBalance` and old wallet types from `professional.ts`; `walletServices.ts` uses `getWalletTransactionsAdminPaginated()` for `GET /wallet/transactions-admin` with `data.transactions`; `Wallet.tsx` / `Columns.tsx` / `data-table.tsx` list transactions (order deep-link, type/amount badges); `transaction-history-dialog.tsx` uses `note`, `createdAt`, `order_id`; payout mutation invalidates `walletTransactionsAdmin`; mock wallet data updated in `src/services/mock/data.ts`; `PROJECT_MEMORY_POOL` wallet + endpoints sections updated.

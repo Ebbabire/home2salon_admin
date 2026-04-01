@@ -18,6 +18,10 @@ import SmartImage from "@/components/smart-image";
 const serviceSchema = z.object({
   name: z.string().min(1, "Service name is required"),
   price: z.coerce.number().min(0, "Price must be >= 0"),
+  commission_percentage: z.coerce
+    .number()
+    .min(0, "Commission must be >= 0")
+    .max(100, "Commission must be <= 100"),
   description: z.string().optional(),
   image: z.instanceof(FileList).optional(),
 });
@@ -46,6 +50,7 @@ const ServiceForm = ({
     defaultValues: {
       name: defaultValues?.name ?? "",
       price: defaultValues?.price ?? 0,
+      commission_percentage: defaultValues?.commission_percentage ?? 0,
       description: defaultValues?.description ?? "",
     },
   });
@@ -94,6 +99,28 @@ const ServiceForm = ({
               <FormLabel>Price (ETB)</FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="commission_percentage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Commission (%)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  inputMode="decimal"
+                  placeholder="0"
+                  min={0}
+                  max={100}
+                  step="0.01"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

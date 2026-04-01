@@ -45,22 +45,25 @@ export const useDashboardData = (): UseDashboardDataResult => {
   });
 
   const {
-    data: professionals = [],
+    data: professionalsResponse,
     isLoading: loadingProfessionals,
     error: professionalsError,
   } = useQuery({
     queryKey: ["professionals"],
-    queryFn: getProfessionals,
+    queryFn: () => getProfessionals(),
   });
 
   const {
-    data: services = [],
+    data: servicesResponse,
     isLoading: loadingServices,
     error: servicesError,
   } = useQuery({
     queryKey: ["services"],
     queryFn: getServices,
   });
+
+  const professionals = professionalsResponse?.professionals ?? []
+  const services = servicesResponse?.services ?? []
 
   const isLoading = loadingOrders || loadingProfessionals || loadingServices;
 

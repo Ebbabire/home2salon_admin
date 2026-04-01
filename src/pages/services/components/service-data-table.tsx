@@ -17,7 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Filter from "@/components/filter/Filter";
 import type { IService } from "@/types";
 import {
   Pagination,
@@ -59,7 +58,7 @@ export function ServiceDataTable({
 
   return (
     <div>
-      <Filter table={table} />
+      {/* <Filter table={table} /> */}
       <div className="rounded-lg border">
         <Table>
           <TableHeader>

@@ -42,6 +42,7 @@ const EditService = ({ service }: { service: IService }) => {
       return updateService(service._id ?? "", {
         name: values.name,
         price: values.price,
+        commission_percentage: values.commission_percentage,
         category: categoryId,
         description: values.description,
         image_url: imageKey,
@@ -95,6 +96,7 @@ const EditService = ({ service }: { service: IService }) => {
           defaultValues={{
             name: service.name,
             price: service.price,
+            commission_percentage: service.commission_percentage ?? 0,
             description: service.description,
           }}
           onSubmit={handleSubmit}

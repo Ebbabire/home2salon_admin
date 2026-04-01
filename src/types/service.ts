@@ -10,6 +10,7 @@ export interface IService {
   _id?: string;
   name: string;
   price: number;
+  commission_percentage?: number;
   category_id: string | ICategory;
   description?: string;
   image_url?: string;

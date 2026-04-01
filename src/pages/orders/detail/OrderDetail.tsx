@@ -85,7 +85,11 @@ export const OrderDetail = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Time</span>
-              <span className="font-medium">{order.scheduled_time}</span>
+              <span className="font-medium">
+                {moment(order.scheduled_time, "HH:mm", true).isValid()
+                  ? moment(order.scheduled_time, "HH:mm").format("hh:mm A")
+                  : order.scheduled_time}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Total Price</span>
@@ -199,6 +203,8 @@ export const OrderDetail = () => {
           orderId={order._id ?? ""}
           currentDate={order.scheduled_date}
           currentTime={order.scheduled_time}
+          disabled={order.status !== OrderStatus.PENDING_REVIEW}
+          disabledReason="Only Pending Review orders can be rescheduled."
         />
         {order.status === OrderStatus.AWAITING_COMPLETION_CONFIRMATION && (
           <ConfirmCompletionDialog orderId={order._id ?? ""} />

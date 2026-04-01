@@ -5,6 +5,12 @@ import moment from "moment";
 import { adjustAppointment } from "@/services/orderServices";
 import { Button } from "@/components/ui/button";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -19,12 +25,16 @@ interface Props {
   orderId: string;
   currentDate: string;
   currentTime: string;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 const AdjustAppointmentDialog = ({
   orderId,
   currentDate,
   currentTime,
+  disabled = false,
+  disabledReason = "You can only adjust schedule when the order is in Pending Review.",
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(
@@ -37,7 +47,7 @@ const AdjustAppointmentDialog = ({
   const { mutate, isPending } = useMutation({
     mutationFn: adjustAppointment,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assignedOrders"] });
+      queryClient.invalidateQueries({ queryKey: ["pendingOrders"] });
       queryClient.invalidateQueries({ queryKey: ["dashboardOrders"] });
       queryClient.invalidateQueries({ queryKey: ["order", orderId] });
       setOpen(false);
@@ -61,12 +71,27 @@ const AdjustAppointmentDialog = ({
     mutate({ order_id: orderId, scheduled_date: date, scheduled_time: time });
   };
 
+  const trigger = (
+    <Button size="sm" variant="outline" disabled={disabled}>
+      Adjust Schedule
+    </Button>
+  );
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline">
-          Adjust Schedule
-        </Button>
+        {disabled ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>{trigger}</span>
+              </TooltipTrigger>
+              <TooltipContent>{disabledReason}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          trigger
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>

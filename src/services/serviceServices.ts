@@ -34,9 +34,15 @@ export async function getServiceById(id: string): Promise<IService> {
 }
 
 export async function addService(
-  payload: Pick<IService, "name" | "price" | "description" | "image_url"> & {
-    category: string
-  }
+  payload: Pick<
+    IService,
+    | "name"
+    | "price"
+    | "description"
+    | "image_url"
+    | "commission_percentage"
+    | "category_id"
+  >
 ): Promise<IService> {
   return apiFetch<IService>("/services", {
     method: "POST",
@@ -46,7 +52,10 @@ export async function addService(
 
 export async function updateService(
   id: string,
-  payload: Pick<IService, "name" | "price" | "description" | "image_url"> & {
+  payload: Pick<
+    IService,
+    "name" | "price" | "description" | "image_url" | "commission_percentage"
+  > & {
     category: string
   }
 ): Promise<IService> {

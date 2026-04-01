@@ -47,11 +47,11 @@ const useCompletedColumns = () => {
         cell: ({ row }) => <div>{row.original.total_price} ETB</div>,
       },
       {
-        accessorKey: "updatedAt",
+        accessorKey: "updated_at",
         header: "Completed",
         cell: ({ row }) => (
           <div className="text-sm">
-            {moment(row.original.updatedAt).format("ll")}
+            {moment(row.original.updated_at).format("ll")}
           </div>
         ),
       },
@@ -65,11 +65,12 @@ const useCompletedColumns = () => {
         header: () => <div className="text-right">Actions</div>,
         cell: ({ row }) => {
           const order = row.original
+          const finalReceiptName = order.final_payment_id?.receipt_image
           return (
             <div className="flex items-center justify-end gap-2">
-              {order.final_payment_receipt && (
+              {finalReceiptName && (
                 <ImagePreviewDialog
-                  src={order.final_payment_receipt}
+                  src={`${import.meta.env.VITE_BASE_URL}/users/get-images?name=${finalReceiptName}`}
                   alt="Final Receipt"
                   trigger={
                     <button className="rounded p-1 hover:bg-muted">

@@ -82,7 +82,7 @@ export async function adjustAppointment(payload: {
   scheduled_date: string
   scheduled_time: string
 }): Promise<IOrder> {
-  return apiFetch<IOrder>(`/orders/${payload.order_id}/adjust-schedule`, {
+  return apiFetch<IOrder>(`/orders/${payload.order_id}/update-schedule`, {
     method: "PATCH",
     body: {
       scheduled_date: payload.scheduled_date,

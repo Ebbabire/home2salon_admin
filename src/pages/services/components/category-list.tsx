@@ -283,7 +283,7 @@ const CategoryList = ({
                 wrapperClassName="h-7 w-7 rounded"
                 className="h-7 w-7 rounded object-cover"
               />
-              <span className="truncate">{cat.name}</span>
+              <span className="truncate capitalize">{cat.name}</span>
             </div>
             <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
               <button

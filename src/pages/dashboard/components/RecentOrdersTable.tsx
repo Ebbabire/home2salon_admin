@@ -69,7 +69,7 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
                     {getOrderServiceNames(order)}
                   </TableCell>
                   <TableCell>{order.total_price} ETB</TableCell>
-                  <TableCell>{formatOrderDate(order.createdAt)}</TableCell>
+                  <TableCell>{formatOrderDate(order.created_at)}</TableCell>
                   <TableCell>
                     <StatusBadge status={order.status} />
                   </TableCell>
