@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
-import { Eye } from "lucide-react";
-import type { IOrder } from "@/types";
-import StatusBadge from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom"
+import { Eye } from "lucide-react"
+import type { IOrder } from "@/types"
+import StatusBadge from "@/components/status-badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
   TableBody,
@@ -11,30 +11,32 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table"
 
 interface RecentOrdersTableProps {
-  orders: IOrder[];
+  orders: IOrder[]
 }
 
-const DATE_FORMATTER = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" });
+const DATE_FORMATTER = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" })
 
 const formatOrderDate = (value?: string) => {
   if (!value) {
-    return "-";
+    return "-"
   }
 
-  const date = new Date(value);
+  const date = new Date(value)
   if (Number.isNaN(date.getTime())) {
-    return "-";
+    return "-"
   }
 
-  return DATE_FORMATTER.format(date);
-};
+  return DATE_FORMATTER.format(date)
+}
 
 const getOrderServiceNames = (order: IOrder) => {
-  return order.services.map((orderedService) => orderedService.service_id.name).join(", ");
-};
+  return order.services
+    .map((orderedService) => orderedService.service_id.name)
+    .join(", ")
+}
 
 export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
   return (
@@ -63,19 +65,27 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
               {orders.map((order) => (
                 <TableRow key={order._id}>
                   <TableCell className="capitalize">
-                    {order.user_id.full_name ?? "—"}
+                    {order.user_id.phone_number ?? "—"}
                   </TableCell>
                   <TableCell className="max-w-[150px] truncate">
                     {getOrderServiceNames(order)}
                   </TableCell>
                   <TableCell>{order.total_price} ETB</TableCell>
-                  <TableCell>{formatOrderDate(order.created_at)}</TableCell>
+                  <TableCell>{formatOrderDate(order.scheduled_date)}</TableCell>
                   <TableCell>
                     <StatusBadge status={order.status} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button asChild size="icon" variant="ghost" className="h-8 w-8">
-                      <Link to={`/orders/${order._id}`} aria-label="View order detail">
+                    <Button
+                      asChild
+                      size="icon"
+                      variant="ghost"
+                      className="h-8 w-8"
+                    >
+                      <Link
+                        to={`/orders/${order._id}`}
+                        aria-label="View order detail"
+                      >
                         <Eye className="h-4 w-4" />
                       </Link>
                     </Button>
@@ -87,5 +97,5 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
         )}
       </CardContent>
     </Card>
-  );
-};
+  )
+}

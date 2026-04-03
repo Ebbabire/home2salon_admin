@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useEffect, useMemo } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -9,11 +9,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Loading from "@/components/loader";
-import SmartImage from "@/components/smart-image";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import Loading from "@/components/loader"
+import SmartImage from "@/components/smart-image"
 
 const serviceSchema = z.object({
   name: z.string().min(1, "Service name is required"),
@@ -24,17 +24,17 @@ const serviceSchema = z.object({
     .max(100, "Commission must be <= 100"),
   description: z.string().optional(),
   image: z.instanceof(FileList).optional(),
-});
+})
 
-export type ServiceFormValues = z.infer<typeof serviceSchema>;
+export type ServiceFormValues = z.infer<typeof serviceSchema>
 
 interface ServiceFormProps {
-  defaultValues?: Partial<ServiceFormValues>;
-  onSubmit: (values: ServiceFormValues) => void;
-  isPending: boolean;
-  error: Error | null;
-  isEdit?: boolean;
-  existingImageUrl?: string;
+  defaultValues?: Partial<ServiceFormValues>
+  onSubmit: (values: ServiceFormValues) => void
+  isPending: boolean
+  error: Error | null
+  isEdit?: boolean
+  existingImageUrl?: string
 }
 
 const ServiceForm = ({
@@ -53,26 +53,26 @@ const ServiceForm = ({
       commission_percentage: defaultValues?.commission_percentage ?? 0,
       description: defaultValues?.description ?? "",
     },
-  });
+  })
 
-  const selectedFile = form.watch("image")?.[0];
+  const selectedFile = form.watch("image")?.[0]
   const selectedPreviewUrl = useMemo(
     () => (selectedFile ? URL.createObjectURL(selectedFile) : null),
-    [selectedFile],
-  );
+    [selectedFile]
+  )
 
   useEffect(
     () => () => {
-      if (selectedPreviewUrl) URL.revokeObjectURL(selectedPreviewUrl);
+      if (selectedPreviewUrl) URL.revokeObjectURL(selectedPreviewUrl)
     },
-    [selectedPreviewUrl],
-  );
+    [selectedPreviewUrl]
+  )
 
   const previewUrl =
     selectedPreviewUrl ??
     (existingImageUrl
       ? `${import.meta.env.VITE_BASE_URL}/users/get-images/?name=${existingImageUrl}`
-      : null);
+      : null)
 
   return (
     <Form {...form}>
@@ -105,7 +105,7 @@ const ServiceForm = ({
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="commission_percentage"
           render={({ field }) => (
@@ -125,9 +125,9 @@ const ServiceForm = ({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
@@ -139,7 +139,7 @@ const ServiceForm = ({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}
@@ -183,7 +183,7 @@ const ServiceForm = ({
             disabled={isPending}
           >
             {isPending ? (
-                <Loading isLoading={isPending} width="w-14" />
+              <Loading isLoading={isPending} width="w-14" />
             ) : isEdit ? (
               "Update"
             ) : (
@@ -193,7 +193,7 @@ const ServiceForm = ({
         </div>
       </form>
     </Form>
-  );
-};
+  )
+}
 
-export default ServiceForm;
+export default ServiceForm

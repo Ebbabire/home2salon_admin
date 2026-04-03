@@ -4,7 +4,7 @@ import {
   BiClipboard,
   BiCut,
   BiGroup,
-  BiWallet,
+  // BiWallet,
   BiCog,
 } from "react-icons/bi"
 
@@ -27,6 +27,6 @@ export const navLinks = [
   { url: "/services", title: "Services", icon: BiCut },
   { url: "/professionals", title: "Professionals", icon: BiGroup },
   { url: "/admins", title: "Admins", icon: BiUser },
-  { url: "/wallet", title: "Wallet", icon: BiWallet },
+  // { url: "/wallet", title: "Wallet", icon: BiWallet },
   { url: "/settings", title: "Settings", icon: BiCog },
 ]

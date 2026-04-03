@@ -33,7 +33,6 @@ const AddService = ({ categoryId }: AddServiceProps) => {
       return addService({
         name: values.name,
         price: values.price,
-        commission_percentage: values.commission_percentage,
         category_id: categoryId,
         description: values.description,
         image_url: imageKey,
@@ -66,10 +65,10 @@ const AddService = ({ categoryId }: AddServiceProps) => {
       <DialogTrigger asChild>
         <Button className="bg-primary hover:bg-primary/90">Add Service</Button>
       </DialogTrigger>
-      <DialogContent className="h-[80vh] overflow-y-auto lg:max-w-lg">
+      <DialogContent className="h-[50vh] overflow-y-auto lg:max-w-lg">
         <DialogHeader>
           <DialogTitle className="border-b border-muted-foreground pb-4">
-            Add New Servic
+            Add New Service
           </DialogTitle>
         </DialogHeader>
         <ServiceForm

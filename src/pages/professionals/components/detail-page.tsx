@@ -14,9 +14,9 @@ import {
 import { Separator } from "@/components/ui/separator"
 import Loading from "@/components/loader"
 import Error from "@/components/error-display"
-import { WalletDeductDialog } from "@/components/wallet-deduct-dialog"
 import EditProfessional from "./edit-professional"
 import ChangeProfessionalStatus from "./change-status"
+import { getSession } from "@/services/session"
 
 interface Props {
   professionalId: string | undefined
@@ -24,6 +24,9 @@ interface Props {
 }
 
 export default function ProfessionalDetail({ professionalId, close }: Props) {
+  const { userRole } = getSession()
+  const isSuperAdmin = userRole === "superadmin"
+
   const {
     data: professional,
     isLoading,
@@ -77,7 +80,7 @@ export default function ProfessionalDetail({ professionalId, close }: Props) {
                 {moment(professional.createdAt).format("ll")}
               </span>
             </li>
-            <li className="flex flex-wrap items-center justify-between gap-2 gap-y-2">
+            {/* <li className="flex flex-wrap items-center justify-between gap-2 gap-y-2">
               <span className="text-muted-foreground">Wallet Balance</span>
               <div className="flex flex-wrap items-center justify-end gap-2">
                 <span className="font-medium">
@@ -105,17 +108,19 @@ export default function ProfessionalDetail({ professionalId, close }: Props) {
                   />
                 ) : null}
               </div>
-            </li>
+            </li> */}
             <li className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">Status</span>
               <span
                 className={`flex items-center gap-2 font-medium capitalize ${professional.status === "Active" ? "text-green-600" : "text-red-600"}`}
               >
                 {professional.status}
-                <ChangeProfessionalStatus
-                  id={professional._id ?? ""}
-                  status={professional.status ?? ""}
-                />
+                {isSuperAdmin && (
+                  <ChangeProfessionalStatus
+                    id={professional._id ?? ""}
+                    status={professional.status ?? ""}
+                  />
+                )}
               </span>
             </li>
           </ul>

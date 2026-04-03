@@ -1,48 +1,47 @@
-import { Link } from "react-router-dom";
-import type { LucideIcon } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Link } from "react-router-dom"
 
-interface DashboardStat {
-  title: string;
-  value: number;
-  icon: LucideIcon;
-  color: string;
-  bg: string;
-  href: string;
-}
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { DashboardStatDisplay } from "@/pages/dashboard/dashboardStatConfig"
 
 interface DashboardStatsGridProps {
-  stats: DashboardStat[];
+  stats: DashboardStatDisplay[]
 }
 
 export const DashboardStatsGrid = ({ stats }: DashboardStatsGridProps) => {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-      {stats.map((stat) => (
-        <Card key={stat.title} className="hover:shadow-md">
-          <Link
-            to={stat.href}
-            className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      {stats.map((stat) => {
+        const Icon = stat.icon
+        return (
+          <Card
+            key={stat.rowKey}
+            className="p-0 shadow-sm transition-shadow hover:shadow-md"
           >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
-              <div className={`rounded-lg p-2 ${stat.bg}`}>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold tabular-nums">{stat.value}</div>
-            </CardContent>
-          </Link>
-        </Card>
-      ))}
+            <Link
+              to={stat.href}
+              aria-label={`${stat.title}: ${stat.count}. Open related page.`}
+              className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 p-6 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </CardTitle>
+                <div
+                  className={`rounded-lg p-2 ${stat.iconBgClass}`}
+                  aria-hidden
+                >
+                  <Icon className={`h-4 w-4 ${stat.iconClass}`} />
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <div className="text-3xl font-bold tabular-nums">
+                  {stat.count}
+                </div>
+              </CardContent>
+            </Link>
+          </Card>
+        )
+      })}
     </div>
-  );
-};
+  )
+}

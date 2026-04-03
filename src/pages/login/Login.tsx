@@ -1,7 +1,7 @@
-import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { FormEvent, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -9,103 +9,102 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   slicePhoneNumber,
   validatePass,
   validatePhone,
-} from "./utils/validator";
-import { login } from "@/services/adminServices";
-import Loading from "@/components/loader";
-import logo from "@/assets/logo.png";
-
+} from "./utils/validator"
+import { login } from "@/services/adminServices"
+import Loading from "@/components/loader"
+import logo from "@/assets/logo.png"
 
 export type Login = {
-  password: string;
-  phoneNumber: string;
-};
+  password: string
+  phoneNumber: string
+}
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const navigate = useNavigate()
 
   const [loginData, setLoginData] = useState({
     phoneNumber: "",
     password: "",
-  });
+  })
 
   const [isValid, setIsValid] = useState({
     isPassValid: true,
     isPhoneNumValid: true,
-  });
+  })
 
-  const { isPhoneNumValid, isPassValid } = isValid;
-  const { phoneNumber, password } = loginData;
+  const { isPhoneNumValid, isPassValid } = isValid
+  const { phoneNumber, password } = loginData
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
 
     if (name === "phoneNumber") {
       if (value.length > 13) {
-        setError(`Phone number cannot exceed 13 digits.`);
+        setError(`Phone number cannot exceed 13 digits.`)
       }
     }
 
     setLoginData((prevState) => ({
       ...prevState,
       [name]: value,
-    }));
+    }))
 
     if (name === "phoneNumber") {
       setIsValid((prevState) => ({
         ...prevState,
         isPhoneNumValid: validatePhone(value),
-      }));
+      }))
     } else if (name === "password") {
       setIsValid((prevState) => ({
         ...prevState,
         isPassValid: validatePass(value),
-      }));
+      }))
     }
-  };
+  }
   const handlePhoneNumBlur = () => {
     setIsValid((prevState) => ({
       ...prevState,
       isPhoneNumValid: validatePhone(phoneNumber),
-    }));
-  };
+    }))
+  }
 
   const handlePassBlur = () => {
     setIsValid((prevState) => ({
       ...prevState,
       isPassValid: validatePass(password),
-    }));
-  };
+    }))
+  }
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!isPassValid || !isPhoneNumValid) return;
+    e.preventDefault()
+    if (!isPassValid || !isPhoneNumValid) return
 
-    const phoneNum = slicePhoneNumber(loginData.phoneNumber);
+    const phoneNum = slicePhoneNumber(loginData.phoneNumber)
 
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       await login({
         phone_number: `+251${phoneNum}`,
         password: loginData.password,
-      });
-      navigate("/");
+      })
+      navigate("/")
     } catch (error) {
       if (error instanceof Error) {
-        setError(error.message);
+        setError(error.message)
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex min-h-screen w-screen">
@@ -113,7 +112,6 @@ export function LoginForm() {
         <div className="flex flex-col items-center gap-4">
           <div className="flex size-24 items-center justify-center rounded-2xl text-xl font-bold backdrop-blur-sm">
             <img src={logo} />
-              
           </div>
           <h1 className="text-4xl font-bold tracking-tight">Home2Salon</h1>
           <p className="text-lg font-medium text-primary-foreground/70">
@@ -121,8 +119,7 @@ export function LoginForm() {
           </p>
         </div>
         <p className="max-w-sm text-center text-sm leading-relaxed text-primary-foreground/50">
-          Manage services, professionals, orders, and wallets — all from one
-          dashboard.
+          Manage services, professionals, and orders — all from one dashboard.
         </p>
       </div>
 
@@ -215,5 +212,5 @@ export function LoginForm() {
         </form>
       </div>
     </div>
-  );
+  )
 }

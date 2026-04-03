@@ -8,6 +8,7 @@ import Loading from "@/components/loader"
 import Error from "@/components/error-display"
 import { useQuery } from "@tanstack/react-query"
 import { usePageParam } from "@/hooks/use-page-param"
+import { getSession } from "@/services/session"
 
 export interface IAdmin {
   _id?: string
@@ -20,6 +21,9 @@ export interface IAdmin {
 }
 
 export const Admins = () => {
+  const { userRole } = getSession()
+  const isSuperAdmin = userRole === "superadmin"
+
   const columns = useColumns()
   const { page, setPage } = usePageParam("page")
   const [limit] = useState(10)
@@ -49,7 +53,7 @@ export const Admins = () => {
     <>
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold tracking-tight md:text-2xl">Admins</h1>
-        {!isLoading && !isError && admins ? <AddAdmin /> : null}
+        {!isLoading && !isError && admins && isSuperAdmin ? <AddAdmin /> : null}
       </div>
       <div className="flex-1 rounded-xl border bg-card px-4 py-4 shadow-sm">
         {!isLoading && !isError && admins ? (

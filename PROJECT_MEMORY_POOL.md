@@ -2,7 +2,7 @@
 
 **Purpose**: a single, versioned, repo-local source of truth the AI + humans read first to understand this project's architecture, conventions, and current state.
 
-**Last updated**: 2026-03-31
+**Last updated**: 2026-04-02
 
 ## What this repo is
 - **App type**: Beauty Service Admin Panel (Vite SPA)
@@ -101,12 +101,13 @@
 ## Feature modules (current)
 
 ### Dashboard (`src/pages/dashboard/Dashboard.tsx`)
-- Stats cards: pending/assigned/completed order counts, total professionals, total services
+- Stats cards: API rows from `GET /orders/dashboard` (`DashboardStatFromApi`: optional `key`, `title`, `count`); `dashboardStatConfig.ts` maps `key` (or legacy `title` when still machine ids) to Lucide icon + `href` + tint classes; `useDashboardData` enriches via `enrichDashboardStats()`.
 - Recent orders table (5 latest) with eye icon → detail page
-- React Query keys: `["orders"]`, `["professionals"]`, `["services"]`
+- React Query keys: `["dashboard"]` for dashboard payload
 - Refactored into smaller units:
-  - `hooks/useDashboardData.ts` (queries + memoized counts/stats/recent orders + combined error)
-  - `components/DashboardStatsGrid.tsx` (keyboard-accessible stat navigation via links)
+  - `hooks/useDashboardData.ts` (dashboard query + enriched stats + combined error)
+  - `components/DashboardStatsGrid.tsx` (whole card as `Link`, focus ring, icon header)
+  - `dashboardStatConfig.ts` (stat key → icon/link UI)
   - `components/RecentOrdersTable.tsx` (date/service formatting helpers, link-based row action)
 
 ### Orders (`src/pages/orders/`)
@@ -190,6 +191,7 @@
 - **Mock data active**: All services use in-memory mock — swap back to fetch when backend is ready.
 
 ## Change log
+- 2026-04-02: Dashboard stat cards — API type `DashboardStatFromApi` (`key?`, `title`, `count`); `dashboardStatConfig.ts` maps stat keys (camelCase + snake_case aliases) to Lucide icons and routes; `DashboardStatsGrid` wraps each card in an accessible `Link`. Touched: `src/services/dashboardServices.ts`, `src/pages/dashboard/{dashboardStatConfig.ts,hooks/useDashboardData.ts,components/DashboardStatsGrid.tsx}`.
 - 2026-03-31: Services now support per-service `commission_percentage` (validated 0–100) in create/edit form and payload; displayed in Services table. Touched: `src/types/service.ts`, `src/pages/services/components/service-form.tsx`, `src/pages/services/components/{add-service,edit-service}.tsx`, `src/services/serviceServices.ts`, `src/pages/services/Columns.tsx`.
 - 2026-03-31: Disabled rendering of the shared table **`Filter`** UI across all table pages (kept table filtering state wired, but hid the filter component). Touched: `src/pages/admins/data-table.tsx`, `src/pages/orders/components/order-data-table.tsx`, `src/pages/professionals/data-table.tsx`, `src/pages/services/components/service-data-table.tsx`.
 - 2026-03-31: Updated Order Detail **Adjust Schedule** flow to call `PATCH /orders/:id/update-schedule` and keep the action visible-but-disabled unless status is `pendingReview` (tooltip explains why). Touched: `src/services/orderServices.ts`, `src/pages/orders/detail/OrderDetail.tsx`, `src/pages/orders/detail/components/adjust-appointment-dialog.tsx`.

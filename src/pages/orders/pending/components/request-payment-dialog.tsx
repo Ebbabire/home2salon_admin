@@ -30,6 +30,8 @@ const RequestPaymentDialog = ({ orderId }: Props) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pendingOrders"] })
       queryClient.invalidateQueries({ queryKey: ["dashboardOrders"] })
+
+      queryClient.invalidateQueries({ queryKey: ["order", orderId] })
       setOpen(false)
 
       toast({
